@@ -1,0 +1,39 @@
+{
+  "name": "master-valley",
+  "private": true,
+  "version": "74.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "NODE_OPTIONS='--no-deprecation' vite",
+    "dev:debug": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "cap:sync": "npx cap sync",
+    "cap:open": "npx cap open android",
+    "app:build": "npm run build && npx cap sync"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@capacitor-community/media": "^9.0.1",
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/filesystem": "^8.0.0",
+    "@capacitor/preferences": "^8.0.0",
+    "@capacitor/share": "^8.0.0",
+    "@codetrix-studio/capacitor-google-auth": "^3.3.1",
+    "@google/generative-ai": "^0.21.0",
+    "firebase": "^12.8.0",
+    "openai": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "replicate": "^0.25.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.9.3",
+    "vite": "^6.0.3"
+  }
+}

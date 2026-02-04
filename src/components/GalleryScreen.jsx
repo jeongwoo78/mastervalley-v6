@@ -1,0 +1,785 @@
+// GalleryScreen.jsx - 갤러리 컴포넌트 (IndexedDB 버전)
+// 대용량 이미지 저장 + 그리드 UI + 저장/공유/삭제 기능
+import React, { useState, useEffect } from 'react';
+import { saveImage as saveToDevice, shareImage, addWatermark, isNativePlatform } from '../utils/mobileShare';
+
+// ========== IndexedDB 설정 ==========
+const DB_NAME = 'PicoArtGallery';
+const DB_VERSION = 1;
+const STORE_NAME = 'images';
+
+// IndexedDB 열기
+const openDB = () => {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        store.createIndex('createdAt', 'createdAt', { unique: false });
+      }
+    };
+  });
+};
+
+// 모든 이미지 가져오기
+const getAllImages = async () => {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readonly');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.getAll();
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        // 최신순 정렬
+        const items = request.result.sort((a, b) => 
+          new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        resolve(items);
+      };
+    });
+  } catch (error) {
+    console.error('IndexedDB 읽기 실패:', error);
+    return [];
+  }
+};
+
+// 이미지 저장
+const saveImage = async (imageData) => {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.add(imageData);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(true);
+    });
+  } catch (error) {
+    console.error('IndexedDB 저장 실패:', error);
+    return false;
+  }
+};
+
+// 이미지 삭제
+const deleteImage = async (id) => {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.delete(id);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(true);
+    });
+  } catch (error) {
+    console.error('IndexedDB 삭제 실패:', error);
+    return false;
+  }
+};
+
+// Delete All
+const clearAllImages = async () => {
+  try {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.clear();
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(true);
+    });
+  } catch (error) {
+    console.error('IndexedDB Delete All 실패:', error);
+    return false;
+  }
+};
+
+// URL을 Base64로 변환 (이미지 영구 저장용)
+const urlToBase64 = async (url) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    console.error('이미지 변환 실패:', error);
+    return null;
+  }
+};
+
+
+// ========== 갤러리에 이미지 저장 (외부에서 사용) ==========
+export const saveToGallery = async (imageUrl, styleName, categoryName = '') => {
+  try {
+    // URL을 Base64로 변환
+    const base64Image = await urlToBase64(imageUrl);
+    if (!base64Image) {
+      console.error('이미지 변환 실패');
+      return false;
+    }
+    
+    // ========== 중복 체크 ==========
+    const existingItems = await getAllImages();
+    const alreadyExists = existingItems.some(item => item.imageData === base64Image);
+    if (alreadyExists) {
+      // console.log('⏭️ 이미 갤러리에 있음, 스킵:', styleName);
+      return true; // 이미 저장됨으로 처리
+    }
+    
+    const imageData = {
+      id: `gallery_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      imageData: base64Image,
+      styleName,
+      categoryName,
+      createdAt: new Date().toISOString()
+    };
+    
+    const saved = await saveImage(imageData);
+    if (saved) {
+      // console.log('✅ 갤러리에 저장됨 (IndexedDB):', styleName);
+    }
+    return saved;
+  } catch (error) {
+    console.error('갤러리 저장 실패:', error);
+    return false;
+  }
+};
+
+
+// ========== 갤러리 컴포넌트 ==========
+const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
+  const [galleryItems, setGalleryItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showSaveShareMenu, setShowSaveShareMenu] = useState(false);
+
+  // i18n texts
+  const texts = {
+    ko: {
+      title: '내 갤러리',
+      deleteAll: '전체 삭제',
+      saved: '저장됨',
+      empty: '아직 저장된 이미지가 없습니다',
+      emptySubtext: '사진을 변환하면 여기에 자동 저장됩니다',
+      saveShare: '💾 저장/공유',
+      save: '저장하기',
+      share: '공유하기',
+      close: '닫기',
+      confirmDelete: '이 이미지를 삭제할까요?',
+      confirmDeleteAll: '모든 이미지를 삭제할까요?\n이 작업은 취소할 수 없습니다.',
+      savedToGallery: '✅ 갤러리에 저장되었습니다!',
+      savedToFiles: '✅ 저장되었습니다!\n📁 파일 앱 → Documents → MasterValley',
+      saveFailed: '저장에 실패했습니다'
+    },
+    en: {
+      title: 'My Gallery',
+      deleteAll: 'Delete All',
+      saved: 'Saved',
+      empty: 'No saved images yet',
+      emptySubtext: 'Converted images will be saved here',
+      saveShare: '💾 Save/Share',
+      save: 'Save',
+      share: 'Share',
+      close: 'Close',
+      confirmDelete: 'Delete this image?',
+      confirmDeleteAll: 'Delete all images?\nThis cannot be undone.',
+      savedToGallery: '✅ Saved to Gallery!',
+      savedToFiles: '✅ Saved!\n📁 Files app → Documents → MasterValley',
+      saveFailed: 'Save failed'
+    }
+  };
+  const t = texts[lang] || texts.en;
+
+  // 갤러리 로드
+  useEffect(() => {
+    loadGallery();
+  }, []);
+
+  const loadGallery = async () => {
+    setIsLoading(true);
+    const items = await getAllImages();
+    setGalleryItems(items);
+    setIsLoading(false);
+  };
+
+  // 이미지 삭제
+  const handleDelete = async (id) => {
+    if (window.confirm(t.confirmDelete)) {
+      const success = await deleteImage(id);
+      if (success) {
+        setGalleryItems(prev => prev.filter(item => item.id !== id));
+        setSelectedItem(null);
+      }
+    }
+  };
+
+  // 이미지 저장 (mobileShare 사용)
+  const handleDownload = async (item) => {
+    try {
+      const fileName = `mastervalley_${item.styleName.replace(/\s+/g, '_')}_${Date.now()}.jpg`;
+      const result = await saveToDevice(item.imageData, fileName);
+      
+      if (result.success) {
+        if (result.gallery) {
+          alert(t.savedToGallery);
+        } else if (isNativePlatform()) {
+          alert(t.savedToFiles);
+        }
+      } else if (result.error) {
+        alert(`${t.saveFailed}: ${result.error}`);
+      }
+      setShowSaveShareMenu(false);
+      setSelectedItem(null);
+    } catch (error) {
+      console.error('저장 실패:', error);
+      alert(t.saveFailed);
+    }
+  };
+
+  // 이미지 공유 (워터마크 포함)
+  const handleShare = async (item) => {
+    try {
+      // 워터마크 추가
+      const watermarkedImage = await addWatermark(item.imageData);
+      
+      const shareTitle = lang === 'ko' ? 'Master Valley 작품' : 'Master Valley Art';
+      const shareText = lang === 'ko' 
+        ? `${item.styleName || '예술'} 스타일로 변환한 작품입니다 ✨`
+        : `Converted to ${item.styleName || 'art'} style ✨`;
+      
+      const result = await shareImage(watermarkedImage, shareTitle, shareText);
+      
+      if (result.clipboard) {
+        alert(lang === 'ko' ? '링크가 클립보드에 복사되었습니다!' : 'Link copied to clipboard!');
+      }
+      setShowSaveShareMenu(false);
+      setSelectedItem(null);
+    } catch (error) {
+      console.error('공유 실패:', error);
+    }
+  };
+
+  // Delete All
+  const handleClearAll = async () => {
+    if (window.confirm(t.confirmDeleteAll)) {
+      const success = await clearAllImages();
+      if (success) {
+        setGalleryItems([]);
+      }
+    }
+  };
+
+  // 날짜 포맷
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ko-KR', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.loading}>
+          <div style={styles.spinner}></div>
+          <p>{lang === 'ko' ? '갤러리 로딩 중...' : 'Loading gallery...'}</p>
+        </div>
+        <style>{animationStyle}</style>
+      </div>
+    );
+  }
+
+  return (
+    <div style={styles.container}>
+      {/* 헤더 */}
+      <div style={styles.header}>
+        <div style={styles.headerLeft}>
+          <button style={styles.backButton} onClick={onBack}>
+            ← {lang === 'ko' ? '뒤로' : 'Back'}
+          </button>
+          <button style={styles.homeButton} onClick={onHome}>
+            🏠 {lang === 'ko' ? '홈' : 'Home'}
+          </button>
+        </div>
+        <h2 style={styles.title}>{t.title}</h2>
+        {galleryItems.length > 0 && (
+          <button style={styles.clearButton} onClick={handleClearAll}>
+            {t.deleteAll}
+          </button>
+        )}
+      </div>
+
+      {/* 안내 메시지 */}
+      <div style={styles.notice}>
+        <p style={{ margin: 0 }}>{lang === 'ko' ? '💡 이미지는 기기에 저장됩니다.' : '💡 Images are saved on your device.'}</p>
+        <p style={styles.countText}>{t.saved}: {galleryItems.length}{lang === 'ko' ? '개' : ''}</p>
+      </div>
+
+      {/* 갤러리 그리드 */}
+      {galleryItems.length === 0 ? (
+        <div style={styles.empty}>
+          <p style={styles.emptyIcon}>🎨</p>
+          <p style={styles.emptyText}>{t.empty}</p>
+          <p style={styles.emptySubtext}>{t.emptySubtext}</p>
+        </div>
+      ) : (
+        <div className="gallery-grid">
+          {galleryItems.map((item) => (
+            <div
+              key={item.id}
+              className="gallery-item"
+              onClick={() => setSelectedItem(item)}
+            >
+              <img
+                src={item.imageData}
+                alt={item.styleName}
+                style={styles.thumbnail}
+                loading="lazy"
+              />
+              <div style={styles.itemLabel}>
+                <span style={styles.styleName}>{item.styleName}</span>
+                <span style={styles.date}>{formatDate(item.createdAt)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 상세 보기 모달 */}
+      {selectedItem && (
+        <div style={styles.modal} onClick={() => setSelectedItem(null)}>
+          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button
+              style={styles.closeButton}
+              onClick={() => setSelectedItem(null)}
+            >
+              ✕
+            </button>
+            
+            <img
+              src={selectedItem.imageData}
+              alt={selectedItem.styleName}
+              style={styles.modalImage}
+            />
+            
+            <div style={styles.modalInfo}>
+              <h3 style={styles.modalTitle}>{selectedItem.styleName}</h3>
+              <p style={styles.modalDate}>{formatDate(selectedItem.createdAt)}</p>
+              {selectedItem.categoryName && (
+                <p style={styles.modalCategory}>{selectedItem.categoryName}</p>
+              )}
+            </div>
+            
+            <div style={styles.modalActions}>
+              <button
+                style={styles.saveShareButton}
+                onClick={() => setShowSaveShareMenu(true)}
+              >
+                {t.saveShare}
+              </button>
+              <button
+                style={styles.deleteButton}
+                onClick={() => handleDelete(selectedItem.id)}
+              >
+                🗑️ {lang === 'ko' ? '삭제' : 'Delete'}
+              </button>
+            </div>
+            
+            {/* 저장/공유 팝업 메뉴 */}
+            {showSaveShareMenu && (
+              <div style={styles.saveShareOverlay} onClick={() => setShowSaveShareMenu(false)}>
+                <div style={styles.saveShareMenu} onClick={(e) => e.stopPropagation()}>
+                  <button 
+                    style={styles.menuItem}
+                    onClick={() => handleDownload(selectedItem)}
+                  >
+                    <span style={styles.menuIcon}>💾</span>
+                    {t.save}
+                  </button>
+                  <button 
+                    style={styles.menuItem}
+                    onClick={() => handleShare(selectedItem)}
+                  >
+                    <span style={styles.menuIcon}>📤</span>
+                    {t.share}
+                  </button>
+                  <button 
+                    style={{...styles.menuItem, ...styles.menuCancel}}
+                    onClick={() => setShowSaveShareMenu(false)}
+                  >
+                    {t.close}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* CSS 애니메이션 */}
+      <style>{animationStyle}</style>
+    </div>
+  );
+};
+
+// CSS 애니메이션 스타일
+const animationStyle = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .gallery-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .gallery-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(167, 139, 250, 0.3);
+  }
+  
+  @media (min-width: 768px) {
+    .gallery-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .gallery-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+`;
+
+// 스타일 정의
+const styles = {
+  container: {
+    minHeight: '100vh',
+    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+    color: 'white',
+    padding: '20px',
+  },
+  
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: '20px',
+    flexWrap: 'wrap',
+    gap: '10px',
+  },
+  
+  headerLeft: {
+    display: 'flex',
+    gap: '10px',
+  },
+  
+  backButton: {
+    background: 'rgba(255,255,255,0.1)',
+    border: 'none',
+    color: 'white',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '1rem',
+  },
+  
+  homeButton: {
+    background: 'rgba(255,255,255,0.2)',
+    border: 'none',
+    color: 'white',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '1rem',
+  },
+  
+  title: {
+    margin: 0,
+    fontSize: '1.5rem',
+  },
+  
+  clearButton: {
+    background: 'rgba(255,100,100,0.3)',
+    border: 'none',
+    color: '#ff6b6b',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+  },
+  
+  notice: {
+    background: 'rgba(255,255,255,0.1)',
+    borderRadius: '8px',
+    padding: '12px 16px',
+    marginBottom: '20px',
+    fontSize: '0.85rem',
+    opacity: 0.9,
+  },
+  
+  countText: {
+    margin: '8px 0 0',
+    color: '#a78bfa',
+    fontWeight: '600',
+  },
+  
+  loading: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '50vh',
+    fontSize: '1.1rem',
+    gap: '15px',
+  },
+  
+  spinner: {
+    width: '40px',
+    height: '40px',
+    border: '3px solid rgba(255,255,255,0.2)',
+    borderTop: '3px solid #a78bfa',
+    borderRadius: '50%',
+    animation: 'spin 1s linear infinite',
+  },
+  
+  empty: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '50vh',
+    textAlign: 'center',
+  },
+  
+  emptyIcon: {
+    fontSize: '4rem',
+    margin: 0,
+  },
+  
+  emptyText: {
+    fontSize: '1.2rem',
+    margin: '20px 0 10px',
+  },
+  
+  emptySubtext: {
+    fontSize: '0.9rem',
+    opacity: 0.7,
+    margin: 0,
+  },
+  
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '15px',
+  },
+  
+  gridItem: {
+    background: 'rgba(255,255,255,0.05)',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    cursor: 'pointer',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+  },
+  
+  thumbnail: {
+    width: '100%',
+    aspectRatio: '1',
+    objectFit: 'cover',
+    display: 'block',
+  },
+  
+  itemLabel: {
+    padding: '10px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  },
+  
+  styleName: {
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    color: '#a78bfa',
+  },
+  
+  date: {
+    fontSize: '0.75rem',
+    opacity: 0.6,
+  },
+  
+  // 모달 스타일
+  modal: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0,0,0,0.9)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+    padding: '20px',
+  },
+  
+  modalContent: {
+    background: '#1a1a2e',
+    borderRadius: '16px',
+    maxWidth: '500px',
+    width: '100%',
+    maxHeight: '90vh',
+    overflow: 'auto',
+    position: 'relative',
+  },
+  
+  closeButton: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    background: 'rgba(255,255,255,0.2)',
+    border: 'none',
+    color: 'white',
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
+    cursor: 'pointer',
+    fontSize: '1.2rem',
+    zIndex: 10,
+  },
+  
+  modalImage: {
+    width: '100%',
+    display: 'block',
+    borderRadius: '16px 16px 0 0',
+  },
+  
+  modalInfo: {
+    padding: '20px',
+    textAlign: 'center',
+  },
+  
+  modalTitle: {
+    margin: '0 0 8px',
+    fontSize: '1.3rem',
+    color: '#a78bfa',
+  },
+  
+  modalDate: {
+    margin: 0,
+    fontSize: '0.9rem',
+    opacity: 0.7,
+  },
+  
+  modalCategory: {
+    margin: '8px 0 0',
+    fontSize: '0.85rem',
+    color: '#67e8f9',
+  },
+  
+  modalActions: {
+    display: 'flex',
+    gap: '10px',
+    padding: '0 20px 20px',
+  },
+  
+  saveShareButton: {
+    flex: 1,
+    background: '#121212',
+    border: 'none',
+    color: 'white',
+    padding: '14px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '1rem',
+    fontWeight: '600',
+  },
+  
+  deleteButton: {
+    flex: 1,
+    background: 'rgba(255,100,100,0.2)',
+    border: '1px solid rgba(255,100,100,0.5)',
+    color: '#ff6b6b',
+    padding: '14px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '1rem',
+    fontWeight: '600',
+  },
+  
+  // 저장/공유 팝업 스타일
+  saveShareOverlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0,0,0,0.7)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2000,
+  },
+  
+  saveShareMenu: {
+    background: '#1a1a1a',
+    borderRadius: '16px',
+    padding: '8px',
+    minWidth: '200px',
+    boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+  },
+  
+  menuItem: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    padding: '16px 20px',
+    border: 'none',
+    background: 'transparent',
+    fontSize: '1rem',
+    cursor: 'pointer',
+    borderRadius: '8px',
+    transition: 'background 0.2s',
+  },
+  
+  menuIcon: {
+    marginRight: '12px',
+    fontSize: '1.2rem',
+  },
+  
+  menuCancel: {
+    color: '#999',
+    justifyContent: 'center',
+    borderTop: '1px solid #eee',
+    marginTop: '8px',
+    paddingTop: '16px',
+  },
+};
+
+export default GalleryScreen;

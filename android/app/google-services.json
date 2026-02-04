@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "539777702177",
+    "project_id": "master-valley",
+    "storage_bucket": "master-valley.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:539777702177:android:4361ec21188396f0dc8660",
+        "android_client_info": {
+          "package_name": "com.mastervalley.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "539777702177-qq92qe5ovt7vvc66fuu65lqdiec8agtv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mastervalley.app",
+            "certificate_hash": "030e79cab902eb70269c4ab8c9736f26baeefab0"
+          }
+        },
+        {
+          "client_id": "539777702177-kk0l660744km8e2lc4l171i8ida8a8af.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCi_6nu27bms3TNnelQn5w_RFKVKrV77yM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "539777702177-kk0l660744km8e2lc4l171i8ida8a8af.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "539777702177-cnqjf12ba1vjvv7kgc8qgorkjmvnih21.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mastervalley.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
