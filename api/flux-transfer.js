@@ -455,15 +455,31 @@ const ARTIST_WEIGHTS = {
     ]
   },
   
-  // 로코코
+  // 로코코 - v74: 사진 유형별 세분화
   rococo: {
+    portrait: [
+      { name: 'BOUCHER', weight: 70 },
+      { name: 'WATTEAU', weight: 30 }
+    ],
+    couple: [
+      { name: 'WATTEAU', weight: 60 },
+      { name: 'BOUCHER', weight: 40 }
+    ],
+    group: [
+      { name: 'WATTEAU', weight: 60 },
+      { name: 'BOUCHER', weight: 40 }
+    ],
     outdoor: [
       { name: 'WATTEAU', weight: 70 },
       { name: 'BOUCHER', weight: 30 }
     ],
+    indoor: [
+      { name: 'BOUCHER', weight: 80 },
+      { name: 'WATTEAU', weight: 20 }
+    ],
     default: [
-      { name: 'BOUCHER', weight: 70 },
-      { name: 'WATTEAU', weight: 30 }
+      { name: 'BOUCHER', weight: 60 },
+      { name: 'WATTEAU', weight: 40 }
     ]
   },
   
@@ -553,39 +569,41 @@ const ARTIST_WEIGHTS = {
     ]
   },
   
-  // 인상주의 (4명) - 피사로→칼리보트 교체 (도시풍경/남성인물 차별화)
+  // 인상주의 (3명 활성) - v74: 드가 비중 0
   impressionism: {
     portrait: [
-      { name: 'RENOIR', weight: 35 },      // 여성/아이 인물 (AI힌트로 분기)
-      { name: 'MONET', weight: 30 },
-      { name: 'CAILLEBOTTE', weight: 35 }  // 남성 인물 (AI힌트로 분기)
+      { name: 'RENOIR', weight: 40 },
+      { name: 'MONET', weight: 25 },
+      { name: 'CAILLEBOTTE', weight: 35 },
+      { name: 'DEGAS', weight: 0 }
     ],
     movement: [
-      { name: 'DEGAS', weight: 50 },
-      { name: 'RENOIR', weight: 30 },
-      { name: 'MONET', weight: 15 },
-      { name: 'CAILLEBOTTE', weight: 5 }
+      { name: 'RENOIR', weight: 45 },
+      { name: 'CAILLEBOTTE', weight: 35 },
+      { name: 'MONET', weight: 20 },
+      { name: 'DEGAS', weight: 0 }
     ],
-    landscape_nature: [  // 자연 풍경 (산, 숲, 바다, 정원)
-      { name: 'MONET', weight: 85 },       // 자연 풍경 전문
-      { name: 'RENOIR', weight: 15 }       // 야외 장면
-      // 드가/칼리보트 제외
+    landscape_nature: [
+      { name: 'MONET', weight: 85 },
+      { name: 'RENOIR', weight: 15 },
+      { name: 'DEGAS', weight: 0 }
     ],
-    landscape_urban: [   // 도시 풍경 (건물, 거리)
-      { name: 'CAILLEBOTTE', weight: 70 }, // 도시 풍경 전문
-      { name: 'MONET', weight: 30 }
+    landscape_urban: [
+      { name: 'CAILLEBOTTE', weight: 70 },
+      { name: 'MONET', weight: 30 },
+      { name: 'DEGAS', weight: 0 }
     ],
-    landscape: [  // 기본 풍경 (분류 불가 시)
+    landscape: [
       { name: 'MONET', weight: 70 },
       { name: 'RENOIR', weight: 20 },
-      { name: 'CAILLEBOTTE', weight: 10 }
-      // 드가 제외 (발레/실내 전문)
+      { name: 'CAILLEBOTTE', weight: 10 },
+      { name: 'DEGAS', weight: 0 }
     ],
     default: [
-      { name: 'RENOIR', weight: 35 },
+      { name: 'RENOIR', weight: 40 },
       { name: 'MONET', weight: 35 },
-      { name: 'CAILLEBOTTE', weight: 20 },
-      { name: 'DEGAS', weight: 10 }
+      { name: 'CAILLEBOTTE', weight: 25 },
+      { name: 'DEGAS', weight: 0 }
     ]
   },
   
@@ -613,22 +631,22 @@ const ARTIST_WEIGHTS = {
     ]
   },
   
-  // 야수파 (3명)
+  // 야수파 (3명) - v74: 드랭 비중 상향
   fauvism: {
     portrait: [
-      { name: 'MATISSE', weight: 45 },
-      { name: 'DERAIN', weight: 30 },
-      { name: 'VLAMINCK', weight: 25 }
+      { name: 'MATISSE', weight: 40 },
+      { name: 'DERAIN', weight: 40 },
+      { name: 'VLAMINCK', weight: 20 }
     ],
     landscape: [
-      { name: 'DERAIN', weight: 45 },
-      { name: 'VLAMINCK', weight: 35 },
-      { name: 'MATISSE', weight: 20 }
+      { name: 'DERAIN', weight: 55 },
+      { name: 'VLAMINCK', weight: 30 },
+      { name: 'MATISSE', weight: 15 }
     ],
     default: [
-      { name: 'MATISSE', weight: 35 },
-      { name: 'DERAIN', weight: 35 },
-      { name: 'VLAMINCK', weight: 30 }
+      { name: 'DERAIN', weight: 45 },
+      { name: 'MATISSE', weight: 30 },
+      { name: 'VLAMINCK', weight: 25 }
     ]
   },
   
@@ -675,9 +693,30 @@ function selectArtistByWeight(category, photoAnalysis) {
     }
   }
   
+  // 로코코 - v74: 사진 유형별 세분화
   if (category === 'rococo') {
-    if (photoAnalysis.background?.includes('outdoor') || photoAnalysis.background?.includes('garden')) {
+    const count = photoAnalysis.count || 1;
+    const background = (photoAnalysis.background || '').toLowerCase();
+    
+    // 커플 → 와토 우세
+    if (count === 2) {
+      return weightedRandomSelect(weights.couple);
+    }
+    // 단체 → 와토 우세
+    if (count >= 3) {
+      return weightedRandomSelect(weights.group);
+    }
+    // 야외/정원 → 와토 우세
+    if (background.includes('outdoor') || background.includes('garden')) {
       return weightedRandomSelect(weights.outdoor);
+    }
+    // 실내 → 부셰 우세
+    if (background.includes('indoor') || background.includes('room') || background.includes('interior')) {
+      return weightedRandomSelect(weights.indoor);
+    }
+    // 단독 인물 → 부셰 우세
+    if (count === 1) {
+      return weightedRandomSelect(weights.portrait);
     }
   }
   
@@ -709,14 +748,14 @@ function selectArtistByWeight(category, photoAnalysis) {
     const subject = (photoAnalysis.subject || '').toLowerCase();
     const background = (photoAnalysis.background || '').toLowerCase();
     
-    // 움직임/액션 → 드가
+    // 움직임/액션 → 르누아르/카유보트 (v74: 드가 비중 0)
     if (subject.includes('dance') || subject.includes('movement') || subject.includes('action') || subject.includes('sport')) {
       return weightedRandomSelect(weights.movement);
     }
     
     // 인물 사진 + 배경 체크 → 카유보트 조건부 제외
     if (subject.includes('person') || subject.includes('portrait') || subject === 'person') {
-      // 단색/단순 배경이면 카유보트 제외 (르누아르/모네/드가만)
+      // 단색/단순 배경이면 카유보트 제외 (르누아르/모네만)
       const isSimpleBackground = background.includes('plain') || background.includes('solid') || 
                                   background.includes('studio') || background.includes('simple') ||
                                   background.includes('white') || background.includes('gray') ||
@@ -729,12 +768,11 @@ function selectArtistByWeight(category, photoAnalysis) {
                                  background.includes('paris') || background.includes('cafe');
       
       if (isSimpleBackground && !isUrbanBackground) {
-        // 단순 배경: 카유보트 제외 (르누아르 60%, 모네 35%, 드가 5%)
+        // 단순 배경: 카유보트 제외 (르누아르 60%, 모네 40%) - v74: 드가 비중 0
         // console.log('🎨 Impressionism portrait: Simple background → Caillebotte excluded');
         return weightedRandomSelect([
           { name: 'RENOIR', weight: 60 },
-          { name: 'MONET', weight: 35 },
-          { name: 'DEGAS', weight: 5 }
+          { name: 'MONET', weight: 40 }
         ]);
       }
       // 도시/복잡한 배경이면 기존 portrait 비중 사용 (카유보트 포함)
@@ -1170,15 +1208,15 @@ function getNeoclassicismVsRomanticismVsRealismHints(photoAnalysis) {
   return '';
 }
 
-// 인상주의 (4명)
+// 인상주의 (3명) - v74: 드가 제외
 function getImpressionismGuidelines() {
   return `
 🚫🚫🚫 CRITICAL RESTRICTION 🚫🚫🚫
 YOU MUST ONLY SELECT FROM THE ARTISTS LISTED BELOW!
 DO NOT select artists from other movements (Post-Impressionism, Expressionism, Fauvism, etc.)
-ONLY Impressionism artists: RENOIR, MONET, DEGAS, CAILLEBOTTE!
+ONLY Impressionism artists: RENOIR, MONET, CAILLEBOTTE!
 
-Available Impressionism Artists (4명):
+Available Impressionism Artists (3명):
 
 1. RENOIR (르누아르) ⭐ Best - Best for portraits 
    - Specialty: SOFT WARM figures in dappled sunlight, joyful atmosphere, peachy skin tones
@@ -1186,19 +1224,13 @@ Available Impressionism Artists (4명):
    - Masterworks: "Luncheon of the Boating Party", "Bal du moulin de la Galette", "The Swing" ← SELECT ONE ONLY!
    - When to prioritize: Most portrait cases 
 
-2. DEGAS (드가) ⭐ Best for movement AND composition 
-   - Specialty: Movement capture, unusual angles, dynamic compositions, ballet dancers
-   - Best for: Action shots, dance, sports, movement, diagonal compositions, interesting angles
-   - Masterworks: "The Dance Class", "The Star", "L'Absinthe" ← SELECT ONE ONLY!
-   - When to prioritize: Movement/action/dance OR unique compositional angles 
-
-3. MONET (모네) ⭐ Good for landscapes 
+2. MONET (모네) ⭐ Good for landscapes 
    - Specialty: Light effects, outdoor atmosphere, water reflections
    - Best for: Landscapes, gardens, water scenes (NOT portraits)
    - Masterworks: "Water Lilies", "Impression, Sunrise", "Woman with a Parasol" ← SELECT ONE ONLY!
    - When to prioritize: Pure landscapes without people 
 
-4. CAILLEBOTTE (칼리보트) ⭐ Urban specialist 
+3. CAILLEBOTTE (칼리보트) ⭐ Urban specialist 
    - Specialty: Modern urban scenes, dramatic perspective, city life
    - Best for: City backgrounds, male portraits, geometric compositions
    - Masterworks: "Paris Street, Rainy Day", "The Floor Scrapers", "Man at the Window" ← SELECT ONE ONLY!
@@ -1209,7 +1241,7 @@ Available Impressionism Artists (4명):
 🎯 CRITICAL DECISION LOGIC:
 - Female/child portraits → RENOIR  ⭐ PRIMARY
 - Male portraits → CAILLEBOTTE  ⭐ (modern urban men)
-- Movement/action/interesting angles → DEGAS  ⭐
+- Movement/action → RENOIR or CAILLEBOTTE
 - Natural landscapes (no people) → MONET  ⭐
 - Urban/city scenes → CAILLEBOTTE  ⭐
 `;
@@ -1236,7 +1268,8 @@ Available Post-Impressionism Artists (3명) + MASTERWORKS:
    - "The Starry Night" (별이 빛나는 밤) → night, sky, landscape, FEMALE portrait | SWIRLING SPIRALS, cobalt blue + yellow
    - "Sunflowers" (해바라기) → flowers, still life | THICK IMPASTO, chrome yellow dominates
    - "Self-Portrait" (자화상) → MALE portrait ONLY | turquoise swirling background, intense gaze
-   - "Café Terrace at Night" (밤의 카페 테라스) → outdoor evening, cafe, street | yellow gas lamp, cobalt blue night
+   - "Café Terrace at Night" (밤의 카페 테라스) → outdoor evening, cafe, street, FEMALE portrait | yellow gas lamp, cobalt blue night
+   - "Wheat Field with Cypresses" (밀밭과 사이프러스) → landscape, FEMALE portrait | swirling sky, golden wheat
    
 2. GAUGUIN (고갱) - Flat bold colors, primitive exotic Tahitian style
    ⭐ BEST FOR: Portraits, tropical scenes, exotic mood
@@ -1256,7 +1289,7 @@ Available Post-Impressionism Artists (3명) + MASTERWORKS:
 🎯 CRITICAL MATCHING RULES:
 - PORTRAITS/PEOPLE → VAN GOGH or GAUGUIN (NEVER Cézanne!)
 - MALE portrait → Van Gogh Self-Portrait
-- FEMALE portrait → Van Gogh Starry Night or Gauguin Tahitian
+- FEMALE portrait → Van Gogh (Starry Night / Café Terrace / Wheatfield 동일 비중) or Gauguin Tahitian
 - STILL LIFE → CÉZANNE (Still Life with Apples)
 - NIGHT/EVENING → Van Gogh (Starry Night or Café Terrace)
 `;
@@ -1539,8 +1572,8 @@ const fallbackPrompts = {
     name: '피카소',
     artist: 'Pablo Picasso (1881-1973)',
     movement: '입체주의 (Cubism)',
-    defaultWork: 'Les Demoiselles d\'Avignon',
-    prompt: 'Cubist painting by Pablo Picasso, Picasso Cubism art style, MOST IMPORTANT THE FACE MUST BE CUBIST DECONSTRUCTED NOT REALISTIC, REQUIRED DISTORTIONS: show PROFILE NOSE side view while BOTH EYES face FORWARD on same face, FRAGMENT face into FLAT ANGULAR GEOMETRIC PLANES, break JAW FOREHEAD CHEEKS into separate angular shapes like shattered glass, Les Demoiselles d Avignon African mask angular style, Earth tones, ochre, brown, olive, grey, If the face looks normal or realistic YOU ARE DOING IT WRONG faces must look abstracted and geometrically impossible, Picasso Cubist masterpiece quality'
+    defaultWork: 'Portrait of Dora Maar',
+    prompt: 'Cubist painting by Pablo Picasso, Picasso Cubism art style, MOST IMPORTANT THE FACE MUST BE CUBIST DECONSTRUCTED NOT REALISTIC, REQUIRED DISTORTIONS: show PROFILE NOSE side view while BOTH EYES face FORWARD on same face, FRAGMENT face into FLAT ANGULAR GEOMETRIC PLANES, break JAW FOREHEAD CHEEKS into separate angular shapes like shattered glass, Earth tones, ochre, brown, olive, grey, If the face looks normal or realistic YOU ARE DOING IT WRONG faces must look abstracted and geometrically impossible, Picasso Cubist masterpiece quality'
   },
   
   frida: {
@@ -2243,10 +2276,9 @@ const MALE_BIASED_ARTISTS = [
 // 여성 편향: BOUCHER, WATTEAU, BOTTICELLI, RENOIR
 const MALE_SUITABLE_ARTISTS_BY_CATEGORY = {
   'impressionism': [
-    // RENOIR 제외
-    { name: 'CAILLEBOTTE', weight: 50 },  // 도시 남성 전문
-    { name: 'MONET', weight: 30 },
-    { name: 'DEGAS', weight: 20 }
+    // RENOIR 제외, v74: DEGAS 제외
+    { name: 'CAILLEBOTTE', weight: 60 },  // 도시 남성 전문
+    { name: 'MONET', weight: 40 }
   ],
   'postImpressionism': [
     // 시냐크 삭제
@@ -2583,23 +2615,24 @@ export default async function handler(req, res) {
     // (나중에 visionAnalysis 확인 후 조정됨)
     let landscapeStrengthBoost = false;
     
-    // v72: 일본 우키요에 - Vision 분석 + 고정 프롬프트
+    // v74: 일본 전통화 - 린파/우키요에 분기
+    // 린파: 꽃, 새, 동물 → 장식적 금박 스타일
+    // 우키요에: 인물, 풍경, 기타 모두 → 목판화 스타일
     if (selectedStyle.category === 'oriental' && selectedStyle.id === 'japanese') {
-      console.log('🇯🇵 Japanese Ukiyo-e - Vision + Fixed Prompt mode');
+      console.log('🇯🇵 Japanese Art - Rinpa/Ukiyo-e Branch');
       
-      // 1. Vision 분석으로 피사체 파악
       let subjectInfo = '';
+      let useRinpa = false;
       
       if (anthropicClient) {
         console.log('   🔑 anthropicClient ready, attempting Vision...');
         try {
-          // base64 프리픽스 제거 (data:image/jpeg;base64, 등)
           const cleanBase64 = image.replace(/^data:image\/\w+;base64,/, '');
           
           const visionPrompt = `Analyze this photo briefly. Return ONLY valid JSON:
 {
-  "subject_type": "person" or "animal" or "landscape" or "object",
-  "animal_type": "dog" or "cat" or "bird" or null,
+  "subject_type": "person" or "animal" or "flower" or "bird" or "landscape" or "object",
+  "animal_type": "dog" or "cat" or "bird" or other animal name or null,
   "person_count": number or 0,
   "gender": "male" or "female" or "mixed" or null
 }`;
@@ -2622,37 +2655,63 @@ export default async function handler(req, res) {
           const visionData = JSON.parse(visionText.replace(/```json\n?|\n?```/g, '').trim());
           console.log('   📊 Vision parsed:', JSON.stringify(visionData));
           
-          // 피사체 정보 구성
-          if (visionData.subject_type === 'animal' && visionData.animal_type) {
-            subjectInfo = `CRITICAL: The main subject is a ${visionData.animal_type}. Draw the ${visionData.animal_type} as the central subject in ukiyo-e style with bold outlines. DO NOT replace the ${visionData.animal_type} with people. `;
-            console.log('   🐕 Animal detected:', visionData.animal_type);
-          } else if (visionData.subject_type === 'person') {
+          // v74: 린파/우키요에 분기
+          // 사람 있으면 무조건 우키요에
+          // 꽃/새/동물만 있을 때만 린파
+          if (visionData.person_count > 0 || visionData.subject_type === 'person') {
+            // 사람 있음 → 우키요에 (사람+동물 같이 있어도)
+            useRinpa = false;
             const genderInfo = visionData.gender === 'male' ? 'male person in hakama' : 
                               visionData.gender === 'female' ? 'female person in elegant kimono' : 
                               'person in traditional Japanese attire';
             subjectInfo = `CRITICAL: Draw the ${genderInfo} as shown in the photo. `;
-            console.log('   👤 Person detected:', visionData.gender);
+            console.log('   👤 Person detected → UKIYO-E');
+          } else if (visionData.subject_type === 'flower') {
+            useRinpa = true;
+            console.log('   🌸 Flower only → RINPA');
+          } else if (visionData.subject_type === 'bird' || visionData.animal_type === 'bird') {
+            useRinpa = true;
+            subjectInfo = `CRITICAL: The main subject is a bird. Draw the bird as the central subject in Rinpa decorative style. `;
+            console.log('   🐦 Bird only → RINPA');
+          } else if (visionData.subject_type === 'animal' && visionData.animal_type) {
+            useRinpa = true;
+            subjectInfo = `CRITICAL: The main subject is a ${visionData.animal_type}. Draw the ${visionData.animal_type} as the central subject in Rinpa decorative style. `;
+            console.log('   🐕 Animal only:', visionData.animal_type, '→ RINPA');
           } else {
-            console.log('   ❓ Subject type:', visionData.subject_type);
+            // 풍경, 기타 → 우키요에
+            useRinpa = false;
+            console.log('   🗻 Landscape/Other:', visionData.subject_type, '→ UKIYO-E');
           }
           
         } catch (e) {
           console.log('   ⚠️ Vision analysis error:', e.message);
+          useRinpa = false; // 에러 시 기본값 우키요에
         }
       } else {
-        console.log('   ❌ ANTHROPIC_API_KEY not found, skipping Vision');
+        console.log('   ❌ ANTHROPIC_API_KEY not found, defaulting to Ukiyo-e');
+        useRinpa = false;
       }
       
       console.log('   📝 subjectInfo:', subjectInfo || '(empty)');
       
-      // 2. v73: 통합 프롬프트 사용
-      const ukiyoePromptData = getPrompt('ukiyoe');
-      const basePrompt = ukiyoePromptData ? ukiyoePromptData.prompt : fallbackPrompts.japanese.prompt;
-      finalPrompt = subjectInfo + basePrompt;
-      selectedArtist = ukiyoePromptData ? ukiyoePromptData.nameEn : '일본 우키요에';
-      selectionMethod = 'oriental_fixed_with_vision';
-      selectionDetails = { style: 'japanese_ukiyoe' };
-      console.log('   🎨 우키요에 통합 프롬프트 적용');
+      // v74: 린파 또는 우키요에 프롬프트 선택
+      if (useRinpa) {
+        const rinpaPromptData = getPrompt('rinpa');
+        const basePrompt = rinpaPromptData ? rinpaPromptData.prompt : fallbackPrompts.japanese.prompt;
+        finalPrompt = subjectInfo + basePrompt;
+        selectedArtist = rinpaPromptData ? rinpaPromptData.nameEn : '린파';
+        selectionMethod = 'oriental_rinpa';
+        selectionDetails = { style: 'japanese_rinpa' };
+        console.log('   🎨 린파 프롬프트 적용');
+      } else {
+        const ukiyoePromptData = getPrompt('ukiyoe');
+        const basePrompt = ukiyoePromptData ? ukiyoePromptData.prompt : fallbackPrompts.japanese.prompt;
+        finalPrompt = subjectInfo + basePrompt;
+        selectedArtist = ukiyoePromptData ? ukiyoePromptData.nameEn : '일본 우키요에';
+        selectionMethod = 'oriental_ukiyoe';
+        selectionDetails = { style: 'japanese_ukiyoe' };
+        console.log('   🎨 우키요에 프롬프트 적용');
+      }
       
     } else if (process.env.ANTHROPIC_API_KEY) {
       // console.log(`Trying AI artist selection for ${selectedStyle.name}...`);
@@ -3407,7 +3466,7 @@ export default async function handler(req, res) {
         
         if (!finalPrompt.includes('speech bubble')) {
           // 위치 명시 + 테두리 중복 제거
-          finalPrompt = finalPrompt + `, WHITE SPEECH BUBBLE near the figure's head, clearly visible, not obscured by borders, containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+`;
+          finalPrompt = finalPrompt + `, SINGLE WHITE SPEECH BUBBLE ABOVE the figure's head, fully visible within frame, complete uncut bubble, containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+`;
         }
       } else {
         console.log(`🎯 Lichtenstein - no speech bubble (isPerson: ${isPerson}, personCount: ${personCount})`);

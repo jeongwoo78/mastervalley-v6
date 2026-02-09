@@ -137,35 +137,35 @@ export const ANCIENT_MEDIEVAL_PROMPTS = {
   'islamic-youth': {
     name: '꽃을 든 귀족',
     nameEn: 'Youth Holding a Flower',
-    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail covering every surface including face, skin, and clothing. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Soft gold and jewel-bright pigments fill the surface. Gold 30%, ruby red 25%, sapphire blue 25%, ivory 20%. An elaborate floral border frames the background. A feathered turban ornament and floral motifs decorate the scene. Skin is rendered smooth in ivory and pale ochre. Gold leaf glows softly on the turban ornament and border. Brushwork flows in delicate curving lines. Gentle even light spreads throughout. Soft red-blue gradation shades the robe folds. Ruby and sapphire alternate within the gold border frame.`
+    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail throughout the composition. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Soft gold and jewel-bright pigments fill the surface. Gold 30%, ruby red 25%, sapphire blue 25%, ivory 20%. An elaborate floral border frames the background. A feathered turban ornament and floral motifs decorate the scene. Skin is rendered smooth in ivory and pale ochre. Gold leaf glows softly on the turban ornament and border. Brushwork flows in delicate curving lines. Gentle even light spreads throughout. Soft red-blue gradation shades the robe folds. Ruby and sapphire alternate within the gold border frame.`
   },
 
   // ★ 미라지 — 132w
   'islamic-miraj': {
     name: '미라지 (승천도)',
     nameEn: 'Miraj (Night Journey)',
-    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail covering every surface including face, skin, and clothing. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Blazing gold flames and lapis blue swirl across the scene. Gold 35%, lapis blue 25%, ruby red 20%, emerald 20%. Swirling clouds and flames fill the entire background. Flame halos and cloud spirals decorate the scene. Skin is rendered in ivory and pale gold with a luminous glow. Gold leaf blazes explosively on the flames and halo. Brushwork sweeps diagonally upward. Intense golden light pours from above. Lapis blue and ruby red contrast within the clouds. Four jewel colors are scattered like flames on the gold ground.`
+    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail throughout the composition. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Blazing gold flames and lapis blue swirl across the scene. Gold 35%, lapis blue 25%, ruby red 20%, emerald 20%. Swirling clouds and flames fill the entire background. Flame halos and cloud spirals decorate the scene. Skin is rendered in ivory and pale gold with a luminous glow. Gold leaf blazes explosively on the flames and halo. Brushwork sweeps diagonally upward. Intense golden light pours from above. Lapis blue and ruby red contrast within the clouds. Four jewel colors are scattered like flames on the gold ground.`
   },
 
   // ★ 시무르그 — 135w
   'islamic-simurgh': {
     name: '시무르그',
     nameEn: 'Simurgh',
-    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail covering every surface including face, skin, and clothing. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Turquoise and gold shimmer across a lush garden surface. Turquoise 30%, gold 30%, ruby red 20%, emerald 20%. A lush garden with flowers and trees fills the entire background. Flowers, vines, and feather motifs decorate every space. Skin is rendered in ivory and pale turquoise with a rich feel. Gold leaf shimmers on ornamental edges and petal tips. Brushwork follows the curves of vines and floral patterns. Even bright light shines throughout. Emerald and turquoise create depth in the foliage. Four colors are distributed by nature with emerald for leaves and ruby for flowers.`
+    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail throughout the composition. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Turquoise and gold shimmer across a lush garden surface. Turquoise 30%, gold 30%, ruby red 20%, emerald 20%. A lush garden with flowers and trees fills the entire background. Flowers, vines, and feather motifs decorate every space. Skin is rendered in ivory and pale turquoise with a rich feel. Gold leaf shimmers on ornamental edges and petal tips. Brushwork follows the curves of vines and floral patterns. Even bright light shines throughout. Emerald and turquoise create depth in the foliage. Four colors are distributed by nature with emerald for leaves and ruby for flowers.`
   },
 
   // ★ 정원의 연인들 — 136w
   'islamic-lovers': {
     name: '정원의 연인들',
     nameEn: 'Lovers in a Garden',
-    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail covering every surface including face, skin, and clothing. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Soft blue moonlight and gold reflections fill the scene. Gold 25%, soft blue 30%, rosy pink 25%, ivory 20%. A moonlit garden with cypress trees and flowering shrubs fills the background. Flowers, cypress, and crescent moon decorate the scene. Skin is rendered soft in ivory and pale peach. Gold leaf glows gently in the moonlight and water reflections. Brushwork follows the soft curves of trees and flowers. Gentle moonlight descends from above. Soft blue creates depth in the night sky and shadows. Pink and gold are placed like flower dots on the blue ground.`
+    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail throughout the composition. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Soft blue moonlight and gold reflections fill the scene. Gold 25%, soft blue 30%, rosy pink 25%, ivory 20%. A moonlit garden with cypress trees and flowering shrubs fills the background. Flowers, cypress, and crescent moon decorate the scene. Skin is rendered soft in ivory and pale peach. Gold leaf glows gently in the moonlight and water reflections. Brushwork follows the soft curves of trees and flowers. Gentle moonlight descends from above. Soft blue creates depth in the night sky and shadows. Pink and gold are placed like flower dots on the blue ground.`
   },
 
   // ★ 루스탐과 용 — 127w
   'islamic-rustam': {
     name: '루스탐과 용',
     nameEn: 'Rustam Slaying the Dragon',
-    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail covering every surface including face, skin, and clothing. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Vermillion and gold flash across rocky terrain. Vermillion 30%, lapis blue 25%, gold 25%, emerald 20%. Rocky mountains and rough terrain fill the background. Skin is rendered firm in ochre and ivory. Gold leaf flashes sharply on the highest surfaces. Brushwork crosses dynamically along diagonal lines. Intense light strikes from the upper left. Deep lapis blue adds weight to the rocks and shadows. Vermillion and gold are concentrated at the center of the scene.`
+    prompt: `Persian miniature painting of the subject on paper. Extremely fine thin brush with meticulous detail throughout the composition. Mineral pigments and gold leaf creating jewel-bright vivid colors. Intricate patterns filling garments densely. Fine precise black outlines defining forms. Clothing transformed into Persian court robes and turban. Vermillion and gold flash across rocky terrain. Vermillion 30%, lapis blue 25%, gold 25%, emerald 20%. Rocky mountains and rough terrain fill the background. Skin is rendered firm in ochre and ivory. Gold leaf flashes sharply on the highest surfaces. Brushwork crosses dynamically along diagonal lines. Intense light strikes from the upper left. Deep lapis blue adds weight to the rocks and shadows. Vermillion and gold are concentrated at the center of the scene.`
   }
 };
 
@@ -840,21 +840,21 @@ export const FAUVISM_PROMPTS = {
   'vlaminck-chatou': {
     name: '샤투의 집들',
     nameEn: 'Houses at Chatou',
-    prompt: `Hand-painted oil painting of the subject by Maurice de Vlaminck. Thick paint is hurled onto the canvas in fierce daubs and streaks. Explosive primary colors cover the face and skin roughly. Colors are pushed to extreme saturation. Outlines tremble within rough aggressive strokes. The surface is thick and rough with aggressive paint marks. Edges between forms are defined by intense color clashes. Intense colors are placed unmixed clashing hard. Orange ochre 30%, cobalt blue 25%, vermilion red 25%, ivory 20%. Intense primary colored houses and sky fill the background. Surfaces are covered thickly in orange-red and white. Chrome yellow light is hurled thickly on bright surfaces. Brushwork strikes roughly downward following the vertical structure of houses and tree trunks. Strong light illuminates the entire scene from the front. Cobalt blue sinks heavily into shadows and beneath the rooftops. Orange and red claim the houses with blue claiming the sky and shadows.`
+    prompt: `Hand-painted oil painting of the subject by Maurice de Vlaminck. Thick paint is hurled onto the canvas in fierce daubs and streaks. Explosive primary colors applied roughly with bold strokes. Colors are pushed to extreme saturation. Outlines tremble within rough aggressive strokes. The surface is thick and rough with aggressive paint marks. Edges between forms are defined by intense color clashes. Intense colors are placed unmixed clashing hard. Orange ochre 30%, cobalt blue 25%, vermilion red 25%, ivory 20%. Intense primary colored houses and sky fill the background. Surfaces are covered thickly in orange-red and white. Chrome yellow light is hurled thickly on bright surfaces. Brushwork strikes roughly downward following the vertical structure of houses and tree trunks. Strong light illuminates the entire scene from the front. Cobalt blue sinks heavily into shadows and beneath the rooftops. Orange and red claim the houses with blue claiming the sky and shadows.`
   },
 
   // ★ 붉은 나무들 — ~105w
   'vlaminck-redtrees': {
     name: '붉은 나무들',
     nameEn: 'Red Trees',
-    prompt: `Hand-painted oil painting of the subject by Maurice de Vlaminck. Thick paint is hurled onto the canvas in fierce daubs and streaks. Explosive primary colors cover the face and skin roughly. Colors are pushed to extreme saturation. Outlines tremble within rough aggressive strokes. The surface is thick and rough with aggressive paint marks. Edges between forms are defined by intense color clashes. Burning red and orange are laid thickly across the entire surface. Vermilion red 35%, orange 25%, cobalt blue 25%, chrome yellow 15%. Intense colored sky and fields fill the background. Forms are thickly covered in vermilion red and orange, ground roughly covered in yellow and ochre. Orange light rests thickly on the branches and bright surfaces. Brushwork surges intensely upward following the tree trunks. Strong light illuminates from behind the trees. Cobalt blue sinks heavily beneath the trees and into shadows. Red and orange claim the trees with blue claiming the sky and shadows.`
+    prompt: `Hand-painted oil painting of the subject by Maurice de Vlaminck. Thick paint is hurled onto the canvas in fierce daubs and streaks. Explosive primary colors applied roughly with bold strokes. Colors are pushed to extreme saturation. Outlines tremble within rough aggressive strokes. The surface is thick and rough with aggressive paint marks. Edges between forms are defined by intense color clashes. Burning red and orange are laid thickly across the entire surface. Vermilion red 35%, orange 25%, cobalt blue 25%, chrome yellow 15%. Intense colored sky and fields fill the background. Forms are thickly covered in vermilion red and orange, ground roughly covered in yellow and ochre. Orange light rests thickly on the branches and bright surfaces. Brushwork surges intensely upward following the tree trunks. Strong light illuminates from behind the trees. Cobalt blue sinks heavily beneath the trees and into shadows. Red and orange claim the trees with blue claiming the sky and shadows.`
   },
 
   // ★ 부지발의 식당 — ~105w
   'vlaminck-bougival': {
     name: '부지발의 식당',
     nameEn: 'Restaurant at Bougival',
-    prompt: `Hand-painted oil painting of the subject by Maurice de Vlaminck. Thick paint is hurled onto the canvas in fierce daubs and streaks. Explosive primary colors cover the face and skin roughly. Colors are pushed to extreme saturation. Outlines tremble within rough aggressive strokes. The surface is thick and rough with aggressive paint marks. Edges between forms are defined by intense color clashes. Intense primary colors are placed thickly unmixed side by side. Vermilion red 30%, cobalt blue 25%, chrome yellow 25%, emerald green 20%. Primary colored buildings and street fill the background. Surfaces are divided in pink-red and blue-purple, ground thickly covered in bright yellow-orange. Chrome yellow light rests in pure color on bright surfaces. Brushwork strikes roughly downward following the vertical lines of the buildings. Strong light illuminates the entire scene evenly. Cobalt blue and green sink heavily into shadows and lower areas. Red and yellow placed on the buildings with blue and green reserved for shadows and background.`
+    prompt: `Hand-painted oil painting of the subject by Maurice de Vlaminck. Thick paint is hurled onto the canvas in fierce daubs and streaks. Explosive primary colors applied roughly with bold strokes. Colors are pushed to extreme saturation. Outlines tremble within rough aggressive strokes. The surface is thick and rough with aggressive paint marks. Edges between forms are defined by intense color clashes. Intense primary colors are placed thickly unmixed side by side. Vermilion red 30%, cobalt blue 25%, chrome yellow 25%, emerald green 20%. Primary colored buildings and street fill the background. Surfaces are divided in pink-red and blue-purple, ground thickly covered in bright yellow-orange. Chrome yellow light rests in pure color on bright surfaces. Brushwork strikes roughly downward following the vertical lines of the buildings. Strong light illuminates the entire scene evenly. Cobalt blue and green sink heavily into shadows and lower areas. Red and yellow placed on the buildings with blue and green reserved for shadows and background.`
   }
 };
 
@@ -898,14 +898,14 @@ export const EXPRESSIONISM_PROMPTS = {
   'kokoschka-bride': {
     name: '바람의 신부',
     nameEn: 'Bride of the Wind',
-    prompt: `Hand-painted oil painting of the subject by Oskar Kokoschka. Heavy slashing marks claw across the canvas with thick raw paint. Outlines twist and tremble within rough rapid strokes. Edges dissolve and bleed within rough brushwork. Stormy blue and green swirl powerfully across the surface. Cobalt blue 30%, olive green 25%, warm ochre 25%, ivory 20%. Swirling storm clouds and waves fill the background. Face and skin are roughly distorted, the face stretches long, cheekbones jut sharply, eye sockets deeply hollowed, painted roughly in ochre and blue-green. Ochre light rests roughly on the protruding planes of the face and hands. Brushwork spirals powerfully following the swirling storm. Cold light illuminates the figures from above. Cobalt blue and olive green sink into the storm and dark areas. Ochre claims the figures with blue and green claiming the stormy background.`
+    prompt: `Hand-painted oil painting of the subject by Oskar Kokoschka. Heavy slashing marks claw across the canvas with thick raw paint. Outlines twist and tremble within rough rapid strokes. Edges dissolve and bleed within rough brushwork. Stormy blue and green swirl powerfully across the surface. Cobalt blue 30%, olive green 25%, warm ochre 25%, ivory 20%. Swirling storm clouds and waves fill the background. Face and skin are roughly distorted, the face stretches long, cheekbones defined with rough strokes, painted roughly in ochre and blue-green. Ochre light rests roughly on the protruding planes of the face and hands. Brushwork spirals powerfully following the swirling storm. Cold light illuminates the figures from above. Cobalt blue and olive green sink into the storm and dark areas. Ochre claims the figures with blue and green claiming the stormy background.`
   },
 
   // ★ 퇴폐 미술가의 자화상 — ~147w
   'kokoschka-degenerate': {
     name: '퇴폐 미술가의 자화상',
     nameEn: 'Self-Portrait of a Degenerate Artist',
-    prompt: `Hand-painted oil painting of the subject by Oskar Kokoschka. Heavy slashing marks claw across the canvas with thick raw paint. Outlines twist and tremble within rough rapid strokes. Edges dissolve and bleed within rough brushwork. Blue and green and ochre clash across the surface. Cobalt blue 30%, olive green 25%, ochre 25%, ivory 20%. Rough unstable color planes fill the background. Face and skin are roughly distorted in acidic blue-green tones covering the entire face, only the forehead and nose carry faint touches of ochre. Ochre light rests roughly on the protruding planes of the forehead and nose. Brushwork scratches across the face in short rapid strokes. Cold light illuminates the face directly from the front. Blue and green sink around the eyes and below the cheeks. Ochre placed on the bright planes with blue and green reserved for shadows and background.`
+    prompt: `Hand-painted oil painting of the subject by Oskar Kokoschka. Heavy slashing marks claw across the canvas with thick raw paint. Outlines twist and tremble within rough rapid strokes. Edges dissolve and bleed within rough brushwork. Blue and green and ochre clash across the surface. Cobalt blue 30%, olive green 25%, ochre 25%, ivory 20%. Rough unstable color planes fill the background. Face and skin are roughly distorted in acidic blue-green tones tinted across the face, only the forehead and nose carry faint touches of ochre. Ochre light rests roughly on the protruding planes of the forehead and nose. Brushwork scratches across the face in short rapid strokes. Cold light illuminates the face directly from the front. Blue and green sink around the eyes and below the cheeks. Ochre placed on the bright planes with blue and green reserved for shadows and background.`
   },
 
   // ★ 2인 초상 — ~146w
@@ -923,14 +923,14 @@ export const EXPRESSIONISM_PROMPTS = {
   'kirchner-berlin': {
     name: '베를린 거리 풍경',
     nameEn: 'Berlin Street Scene',
-    prompt: `Hand-painted oil painting of the subject by Ernst Ludwig Kirchner. Sharp angular forms cut across the canvas with raw brushmarks. Forms simplify into jagged primitive shapes. Outlines break at hard angles. Edges between forms are defined by sharp color collisions. Dark navy and pink clash sharply across the surface. Dark navy 35%, hot pink 25%, acid green 20%, black 20%. Angular jagged buildings and narrow streets fill the background in navy. Face and skin are painted roughly in acidic colors, the body stretches elongated, jawline cuts sharply, nose extends long, pink and apricot cover the face flatly. Pink light rests on sharp edges of the face and protruding forms. Brushwork strikes sharply downward along the diagonal lines of the street. Strong artificial light falls sharply from above. Black and dark navy sink heavily beneath the figures and into building shadows. Pink and apricot claim the faces with navy and black reserved for coats, street and shadows.`
+    prompt: `Hand-painted oil painting of the subject by Ernst Ludwig Kirchner. Sharp angular forms cut across the canvas with raw brushmarks. Forms simplify into jagged primitive shapes. Outlines break at hard angles. Edges between forms are defined by sharp color collisions. Dark navy and pink clash sharply across the surface. Dark navy 35%, hot pink 25%, acid green 20%, black 20%. Angular jagged buildings and narrow streets fill the background in navy. Face and skin are painted roughly in acidic colors, the body stretches elongated, jawline cuts sharply, nose extends long, pink and apricot tinted flatly across the face. Pink light rests on sharp edges of the face and protruding forms. Brushwork strikes sharply downward along the diagonal lines of the street. Strong artificial light falls sharply from above. Black and dark navy sink heavily beneath the figures and into building shadows. Pink and apricot claim the faces with navy and black reserved for coats, street and shadows.`
   },
 
   // ★ 군인으로서의 자화상 — ~154w
   'kirchner-soldier': {
     name: '군인으로서의 자화상',
     nameEn: 'Self-Portrait as a Soldier',
-    prompt: `Hand-painted oil painting of the subject by Ernst Ludwig Kirchner. Sharp angular forms cut across the canvas with raw brushmarks. Forms simplify into jagged primitive shapes. Outlines break at hard angles. Edges between forms are defined by sharp color collisions. Sickly yellow and blue clash across the surface. Cobalt blue 35%, sickly yellow 25%, vermilion red 20%, black 20%. Red-orange color planes fill the background. Face and skin are painted roughly in acidic colors, the body stretches elongated, the face sharply angular, sickly yellow and ochre cover the entire skin. Yellow light rests roughly on the protruding planes of the forehead and nose. Brushwork strikes sharply downward along the vertical axis of the figure. Cold light illuminates the face directly from the front. Black and cobalt blue sink heavily into the clothing folds and shadows. Yellow claims the skin with blue claiming the clothing and red reserved for the background.`
+    prompt: `Hand-painted oil painting of the subject by Ernst Ludwig Kirchner. Sharp angular forms cut across the canvas with raw brushmarks. Forms simplify into jagged primitive shapes. Outlines break at hard angles. Edges between forms are defined by sharp color collisions. Sickly yellow and blue clash across the surface. Cobalt blue 35%, sickly yellow 25%, vermilion red 20%, black 20%. Red-orange color planes fill the background. Face and skin are painted roughly in acidic colors, the body stretches elongated, the face sharply angular, sickly yellow and ochre tinted across the skin. Yellow light rests roughly on the protruding planes of the forehead and nose. Brushwork strikes sharply downward along the vertical axis of the figure. Cold light illuminates the face directly from the front. Black and cobalt blue sink heavily into the clothing folds and shadows. Yellow claims the skin with blue claiming the clothing and red reserved for the background.`
   }
 };
 
@@ -1255,7 +1255,7 @@ export const masterworkNameMapping = {
   
   // 샤갈
   'the birthday': 'chagall-lovers', '생일': 'chagall-lovers',
-  'la branche': 'chagall-labranche',
+  'i and the village': 'chagall-village', '나와 마을': 'chagall-village',
   'la mariée': 'chagall-lamariee', 'the bride': 'chagall-lamariee',
   
   // 리히텐슈타인
@@ -1404,7 +1404,7 @@ export function getArtistMasterworkList(artistKey) {
     'frida': ['frida-parrots', 'frida-monkeys'],
     'magritte': ['magritte-golconda'],
     'miro': ['miro-catalan', 'miro-constellation', 'miro-bluestar'],
-    'chagall': ['chagall-lovers', 'chagall-labranche', 'chagall-lamariee'],
+    'chagall': ['chagall-lovers', 'chagall-lamariee', 'chagall-village'],
     'lichtenstein': ['lichtenstein-inthecar', 'lichtenstein-mmaybe', 'lichtenstein-forgetit', 'lichtenstein-ohhhalright', 'lichtenstein-stilllife']
   };
   
@@ -1458,11 +1458,11 @@ LEONARDO DA VINCI - SELECT ONE:
 
   'vangogh': `
 VAN GOGH - SELECT ONE:
-1. "The Starry Night" → night sky, swirling, emotional | Style: swirling spirals, cobalt yellow
-2. "Café Terrace at Night" → outdoor café, night | Style: cobalt sky, yellow lanterns
+1. "The Starry Night" → night sky, swirling, landscape, FEMALE portrait | Style: swirling spirals, cobalt yellow
+2. "Café Terrace at Night" → outdoor café, night, FEMALE portrait | Style: cobalt sky, yellow lanterns
 3. "Sunflowers" → flowers, still life | Style: chrome yellow, thick impasto
-4. "Self-Portrait" → portrait, introspective | Style: swirling background, blue
-5. "Wheat Field with Cypresses" → landscape | Style: swirling sky, golden wheat`,
+4. "Self-Portrait" → MALE portrait ONLY | Style: swirling background, blue
+5. "Wheat Field with Cypresses" → landscape, FEMALE portrait | Style: swirling sky, golden wheat`,
 
   'klimt': `
 KLIMT - SELECT ONE:
@@ -1472,8 +1472,8 @@ KLIMT - SELECT ONE:
 
   'munch': `
 MUNCH - SELECT ONE:
-1. "The Scream" → anxiety, distress, iconic | Style: wavy lines, blood-red sky
-2. "Madonna" → sensual, mysterious | Style: flowing hair, dark aura
+1. "The Scream" → anxiety, distress, MALE portrait, FEMALE portrait | Style: wavy lines, blood-red sky
+2. "Madonna" → sensual, mysterious, FEMALE portrait ONLY | Style: flowing hair, dark aura
 3. "The Dance of Life" → GROUP, celebration | Style: pale figures, dark shore`,
 
   'matisse': `
@@ -1490,14 +1490,13 @@ PICASSO - SELECT ONE:
   'frida': `
 FRIDA KAHLO - SELECT ONE:
 1. "Me and My Parrots" → portrait with birds | Style: parrots on shoulders, lush leaves
-2. "Self-Portrait with Thorn Necklace" → portrait, symbolic | Style: thorns, hummingbird, monkey
-3. "Self-Portrait with Monkeys" → portrait with animals | Style: monkeys, tropical plants`,
+2. "Self-Portrait with Monkeys" → portrait with animals | Style: monkeys, tropical plants`,
 
   'chagall': `
 CHAGALL - SELECT ONE:
-1. "The Birthday" → COUPLE, floating, romantic | Style: floating figures, dreamlike
-2. "La Branche" → nature, dreamlike | Style: flowers, moon, soft colors
-3. "La Mariée" → bride, celebration | Style: red wedding, floating`,
+1. "Lovers with Flowers" → COUPLE, romantic, flowers | Style: floating figures, dreamlike, bouquet
+2. "La Mariée" → bride, celebration, wedding | Style: red veil, night sky, floating
+3. "I and the Village" → portrait, village, dreamlike | Style: geometric planes, emerald green`,
 
   'lichtenstein': `
 LICHTENSTEIN - SELECT ONE:
