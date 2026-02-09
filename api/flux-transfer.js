@@ -1882,36 +1882,47 @@ CRITICAL: Keep prompt field UNDER 150 WORDS to avoid truncation.`;
       }
       
       if (styleId === 'japanese') {
-        // 일본 - 우키요에 (Vision 분석 + 동물/사람 보존)
-        promptText = `You are converting a photo to Japanese Ukiyo-e woodblock print style.
+        // v74: 일본 - 린파/우키요에 분기 (AI가 판단)
+        // 린파: 꽃, 새, 동물만 / 우키요에: 인물, 풍경, 기타
+        promptText = `You are converting a photo to Japanese traditional art style.
 
 FIRST, analyze the photo carefully:
-1. What is the main subject? (person, animal, landscape, object)
-2. If person: what gender? (male/female)
+1. What is the main subject? (person, animal, flower, bird, landscape, object)
+2. Are there people in the photo? (yes/no)
 3. If animal: what type? (dog, cat, bird, etc.)
-4. How many subjects are there?
+4. If person: what gender? (male/female)
 
-CRITICAL RULES:
-- If photo has ANIMALS (dogs, cats, birds): Draw the animal as the MAIN SUBJECT in ukiyo-e style with bold outlines
-- If photo has PEOPLE: Preserve their gender and draw in traditional Japanese attire
-- NEVER replace animals with people or vice versa
-- PRESERVE the exact subject from the original photo
+STYLE SELECTION RULES:
+- If ONLY flowers, birds, or animals (NO people): Use RINPA style (琳派)
+- If people present (even with animals): Use UKIYO-E style (浮世絵)
+- If landscape or other: Use UKIYO-E style
+
+RINPA STYLE (for flowers/birds/animals only):
+- Gold leaf background, decorative patterns
+- Tarashikomi technique (wet-on-wet bleeding)
+- Stylized natural motifs: irises, plum blossoms, cranes
+- Bold asymmetrical composition
+
+UKIYO-E STYLE (for people/landscape/other):
+- Flat bold colors, strong black outlines
+- Woodblock print aesthetic
+- Traditional Japanese attire (kimono/hakama)
+- Mt Fuji or cherry blossom background
 
 CALLIGRAPHY TEXT (POSITIVE MEANING ONLY):
-- Choose appropriate positive text (1-4 characters)
-- Single characters: "福" (blessing), "壽" (longevity), "喜" (joy), "美" (beauty), "和" (harmony)
-- Japanese style: "粋" (iki/stylish), "雅" (miyabi/elegant), "桜" (sakura), "波" (wave), "富士" (Fuji)
+- Single characters: "福" (blessing), "壽" (longevity), "喜" (joy), "美" (beauty)
 
-Return ONLY valid JSON (no markdown):
+Return ONLY valid JSON:
 {
   "analysis": "brief photo description",
-  "subject_type": "person" or "animal" or "landscape" or "object",
-  "gender": "male" or "female" or null,
+  "subject_type": "person" or "animal" or "flower" or "bird" or "landscape",
+  "has_people": true or false,
   "animal_type": "dog" or "cat" or "bird" or null,
-  "subject_count": 1,
-  "selected_artist": "Japanese Ukiyo-e",
-  "calligraphy_text": "positive text you chose",
-  "prompt": "Japanese Ukiyo-e woodblock print, [DESCRIBE THE EXACT SUBJECT: if dog then 'adorable dog drawn in ukiyo-e style', if person then 'person in elegant kimono'], flat bold colors, strong black outlines, stylized ukiyo-e aesthetic, Mt Fuji or cherry blossom background, calligraphy text '[your calligraphy_text]'"
+  "gender": "male" or "female" or null,
+  "selected_style": "rinpa" or "ukiyoe",
+  "selected_artist": "Japanese Rinpa" or "Japanese Ukiyo-e",
+  "calligraphy_text": "positive text",
+  "prompt": "[If rinpa: describe with gold leaf, decorative patterns] [If ukiyoe: describe with bold outlines, flat colors]"
 }`;
       }
       
@@ -2618,6 +2629,8 @@ export default async function handler(req, res) {
     // v74: 일본 전통화 - 린파/우키요에 분기
     // 린파: 꽃, 새, 동물 → 장식적 금박 스타일
     // 우키요에: 인물, 풍경, 기타 모두 → 목판화 스타일
+    console.log('🔍 Debug - selectedStyle.category:', selectedStyle.category);
+    console.log('🔍 Debug - selectedStyle.id:', selectedStyle.id);
     if (selectedStyle.category === 'oriental' && selectedStyle.id === 'japanese') {
       console.log('🇯🇵 Japanese Art - Rinpa/Ukiyo-e Branch');
       
@@ -3679,7 +3692,7 @@ export default async function handler(req, res) {
     
     console.log('');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('📍 FLUX Transfer v66');
+    console.log('📍 FLUX Transfer v74');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('');
     console.log('1️⃣ Vision 분석');
