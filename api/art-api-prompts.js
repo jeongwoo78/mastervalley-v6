@@ -26,50 +26,44 @@ export const ANCIENT_MEDIEVAL_PROMPTS = {
   },
 
   // ─────────────────────────────────────────
-  // 로마 모자이크 공통
-  // ─────────────────────────────────────────
-  'mosaic-common': {
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds.`
-  },
-
-  // ─────────────────────────────────────────
-  // 로마 모자이크 대표작
+  // 로마 모자이크 대표작 (공통 + 개별)
+  // 공통: Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette.
   // ─────────────────────────────────────────
   
   'mosaic-alexander': {
     name: '알렉산더 모자이크',
     nameEn: 'Alexander Mosaic',
-    prompt: `Roman "Alexander Mosaic" (c.100 BCE), Pompeii battle scene, dramatic diagonal movement, warrior armor and horses, earth tones terracotta ochre umber ivory.`
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds. Roman "Alexander Mosaic" (c.100 BCE), Pompeii battle scene, dramatic diagonal movement, warrior armor and horses, earth tones terracotta ochre umber ivory.`
   },
 
   'mosaic-cave-canem': {
     name: '카베 카넴',
     nameEn: 'Cave Canem',
-    prompt: `Roman "Cave Canem" (1st century), bold black dog silhouette on light background, strong graphic contrast, terracotta black white palette.`
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Roman "Cave Canem" (1st century), bold black dog silhouette on light background, strong graphic contrast, terracotta black white palette.`
   },
 
   'mosaic-dionysus': {
     name: '디오니소스 모자이크',
     nameEn: 'Dionysus Mosaic',
-    prompt: `Roman "Dionysus Mosaic" (2nd century), grape vines and wine imagery, banquet atmosphere, rich purple green gold on terracotta.`
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds. Roman "Dionysus Mosaic" (2nd century), grape vines and wine imagery, banquet atmosphere, rich purple green gold on terracotta.`
   },
 
   'mosaic-oceanus': {
     name: '오케아노스와 테티스',
     nameEn: 'Oceanus and Tethys',
-    prompt: `Roman "Oceanus and Tethys" (2nd century), sea god portrait bust, dominant ocean blue and turquoise, flowing water with fish.`
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds. Roman "Oceanus and Tethys" (2nd century), sea god portrait bust, dominant ocean blue and turquoise, flowing water with fish.`
   },
 
   'mosaic-seasons': {
     name: '사계절 모자이크',
     nameEn: 'Four Seasons Mosaic',
-    prompt: `Roman "Four Seasons Mosaic" (2nd century), portrait bust in circular medallion, seasonal attributes flowers wheat grapes, warm earth tones.`
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds. Roman "Four Seasons Mosaic" (2nd century), portrait bust in circular medallion, seasonal attributes flowers wheat grapes, warm earth tones.`
   },
 
   'mosaic-nile': {
     name: '나일 모자이크',
     nameEn: 'Nile Mosaic',
-    prompt: `Roman "Nile Mosaic" (c.100 BCE), panoramic landscape with river, exotic wildlife hippos crocodiles ibis, ochre terracotta blue-green.`
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Roman "Nile Mosaic" (c.100 BCE), panoramic landscape with river, exotic wildlife hippos crocodiles ibis, ochre terracotta blue-green.`
   },
 
   // ─────────────────────────────────────────
@@ -1117,7 +1111,7 @@ export const ORIENTAL_PROMPTS = {
   'pungsokdo': {
     name: '풍속도',
     nameEn: 'Korean Genre Painting (Pungsokdo)',
-    prompt: `Korean genre painting (Pungsokdo) style by masters Kim Hongdo and Shin Yun-bok. LIGHT BLACK INK BRUSHWORK as base with highly DILUTED PALE BLUE AND BROWN color washes on hanji paper. Graceful elegant figures with refined beautiful features. DELICATE CONFIDENT BRUSH LINES for figures with minimal strokes. GENEROUS EMPTY NEGATIVE SPACE as key compositional element. Very limited muted color palette with soft pastel accents. Light watercolor quality. Traditional Joseon hanbok clothing in elegant soft colors.`
+    prompt: `Korean genre painting (Pungsokdo) style by masters Kim Hongdo and Shin Yun-bok. LIGHT BLACK INK BRUSHWORK as base with highly DILUTED PALE BLUE AND BROWN color washes on hanji paper. DELICATE CONFIDENT BRUSH LINES for figures with minimal strokes. GENEROUS EMPTY NEGATIVE SPACE as key compositional element. Very limited muted color palette with soft pastel accents. Light watercolor quality. Traditional Joseon hanbok clothing in elegant soft colors.`
   },
 
   'jingyeong': {
