@@ -45,14 +45,14 @@
 // v64: 사조별 대표작 매칭 시스템
 // ========================================
 import {
-  getMovementMasterwork,
-  getMasterworkGuideForAI,
+  ALL_PROMPTS,
+  getPrompt,
+  masterworkNameMapping,
   getArtistMasterworkList,
   getMovementMasterworkGuide,
   getArtistMasterworkGuide,
-  allMovementMasterworks,
-  masterworkNameMapping
-} from './masterworks.js';
+  getMasterworkGuideForAI
+} from './art-api-prompts.js';
 
 // ========================================
 // v72: Anthropic 클라이언트 (일본 우키요에 Vision용)
@@ -67,54 +67,67 @@ const anthropicClient = process.env.ANTHROPIC_API_KEY
 // v66: 통합 화풍 프롬프트
 // ========================================
 import {
-  ARTIST_STYLES,
+  ARTIST_CONFIG,
+  MOVEMENT_DEFAULTS,
   PAINT_TEXTURE,
   VINTAGE_TEXTURE,
   EXCLUDE_VINTAGE,
-  getArtistStyle,
-  getArtistStyleByName
-} from './artistStyles.js';
+  getArtistConfig,
+  getBrushSize,
+  getControlStrength
+} from './art-api-config.js';
 
 // ========================================
-// v65: 리히텐슈타인 말풍선 텍스트 (50개)
+// v73: 리히텐슈타인 말풍선 텍스트 (80개)
 // 짧은 감탄사 + 대화체 + 독백체 + 긴 문장 혼합
 // ========================================
 const LICHTENSTEIN_SPEECH_BUBBLES = {
-  // 감탄/기쁨 (12개) - 그룹/밝은 분위기
+  // 감탄/기쁨 (16개) - 그룹/밝은 분위기
   excited: [
     "WOW!", "AMAZING!", "INCREDIBLE!", "PERFECT!", "YES!",
     "THIS IS THE BEST DAY EVER!", "I CAN'T BELIEVE THIS IS HAPPENING!",
     "EVERYTHING IS GOING TO BE ALRIGHT!", "WE DID IT!", "THIS IS SO EXCITING!",
-    "I KNEW WE COULD DO IT!", "NOTHING CAN STOP US NOW!"
+    "I KNEW WE COULD DO IT!", "NOTHING CAN STOP US NOW!",
+    "FANTASTIC!", "BRILLIANT!", "THIS IS IT!", "ABSOLUTELY PERFECT!"
   ],
-  // 로맨틱 (10개) - 커플
+  // 로맨틱 (16개) - 커플
   romantic: [
     "I LOVE YOU!", "KISS ME!", "MY DARLING!", "YOU'RE THE ONE!",
     "I'VE BEEN WAITING FOR THIS MOMENT!", "MY HEART BEATS ONLY FOR YOU!",
     "I NEVER WANT THIS TO END!", "YOU MAKE EVERYTHING BETTER!",
-    "STAY WITH ME FOREVER!", "THIS FEELS LIKE A DREAM!"
+    "STAY WITH ME FOREVER!", "THIS FEELS LIKE A DREAM!",
+    "HOLD ME CLOSE!", "YOU'RE ALL I EVER WANTED!", "DON'T LET GO!",
+    "I'VE LOVED YOU FROM THE START!", "TOGETHER FOREVER!", "YOU COMPLETE ME!"
   ],
-  // 드라마틱 (10개) - 강렬한 감정/여성
+  // 드라마틱 (16개) - 강렬한 감정/여성
   dramatic: [
     "I CAN'T BELIEVE IT!", "HOW COULD THIS HAPPEN?!", "IT'S OVER!",
     "I DON'T CARE ANYMORE!", "WHY DIDN'T ANYONE TELL ME?!",
     "I SHOULD HAVE KNOWN!", "EVERYTHING HAS CHANGED NOW!",
     "I NEVER THOUGHT IT WOULD END LIKE THIS!", "THIS CAN'T BE REAL!",
-    "I WON'T LET THIS STOP ME!"
+    "I WON'T LET THIS STOP ME!", "HOW DARE YOU!", "I'LL NEVER FORGIVE THIS!",
+    "NOTHING WILL EVER BE THE SAME!", "I REFUSE TO GIVE UP!",
+    "THIS WASN'T SUPPOSED TO HAPPEN!", "I'VE HAD ENOUGH!"
   ],
-  // 대화체/독백 (10개) - 원작 스타일
+  // 대화체/독백 (16개) - 원작 스타일
   dialogue: [
     "MAYBE HE'LL CALL ME TOMORROW...", "I WONDER WHAT HAPPENS NEXT...",
     "THEY SAID IT COULDN'T BE DONE!", "SHE TOLD ME TO WAIT HERE!",
     "HE PROMISED HE WOULD COME BACK!", "I THOUGHT I SAW SOMETHING!",
     "SOMEONE HAS TO DO SOMETHING!", "THAT'S EXACTLY WHAT I NEEDED!",
-    "I KNEW SOMETHING WAS DIFFERENT TODAY!", "THIS CHANGES EVERYTHING!"
+    "I KNEW SOMETHING WAS DIFFERENT TODAY!", "THIS CHANGES EVERYTHING!",
+    "PERHAPS IT WAS MEANT TO BE...", "IF ONLY THINGS WERE DIFFERENT...",
+    "THERE MUST BE ANOTHER WAY!", "I SHOULD HAVE SAID SOMETHING!",
+    "MAYBE NEXT TIME...", "I ALWAYS KNEW IT WOULD COME TO THIS!"
   ],
-  // 놀람/생각 (8개) - 중립
+  // 놀람/생각 (16개) - 중립
   surprised: [
     "WHAT?!", "OH MY!", "REALLY?!", "WAIT... WHAT?!",
     "I NEVER EXPECTED THIS!", "COULD IT BE TRUE?!",
-    "SOMETHING DOESN'T FEEL RIGHT...", "WHAT JUST HAPPENED?!"
+    "SOMETHING DOESN'T FEEL RIGHT...", "WHAT JUST HAPPENED?!",
+    "NO WAY!", "ARE YOU SERIOUS?!", "I DON'T BELIEVE IT!",
+    "HOW IS THIS POSSIBLE?!", "SERIOUSLY?!", "YOU'RE KIDDING!",
+    "THIS CAN'T BE HAPPENING!", "IS THIS FOR REAL?!"
   ]
 };
 
@@ -156,289 +169,12 @@ function selectSpeechBubbleText(visionData) {
   return texts[Math.floor(Math.random() * texts.length)];
 }
 
+
 // ========================================
-// v70: 화가별 설정 통합 관리
-// 🎯 수정 위치: 여기서 화가별 control_strength, 붓터치 크기 조정!
-// 
-// [control] 낮을수록 화풍 강하게, 높을수록 원본 유지
-//   - 0.10~0.30: 매우 강함 (피카소, 모네, 르누아르)
-//   - 0.40~0.50: 강함 (반 고흐, 카라바조, 마티스)
-//   - 0.55~0.65: 중간 (클림트, 세잔, 마그리트)
-//   - 0.70~0.80: 약함 (프리다, 동양화, 보티첼리)
-//
-// [brush] 붓터치 크기 (null = 붓터치 없음)
-//   - null: 조각, 스테인드글라스, 동양화, 팝아트
-//   - '8mm': 점묘법 (시냑)
-//   - '15mm': 세밀화 (이슬람 미니어처)
-//   - '20mm': 섬세 (르네상스, 바로크, 로코코)
-//   - '25mm': 중간 (신고전, 낭만, 사실, 클림트)
-//   - '30mm': 굵음 (인상주의, 후기인상, 모더니즘)
-//   - '35mm': 더 굵음 (야수파, 표현주의)
-//   - '50mm': 임파스토 (반 고흐, 모자이크)
-//
-// [2025.01 기준값 예시]
-//   피카소:   { control: 0.10, brush: '30mm' }  ← 화풍 매우 강함
-//   반 고흐:  { control: 0.45, brush: '50mm' }  ← 두꺼운 임파스토
-//   레오나르도: { control: 0.40, brush: '20mm' }  ← 섬세한 스푸마토
-//   시냑:     { control: 0.55, brush: '8mm' }   ← 점묘법
-//   워홀:     { control: 0.45, brush: null }    ← 실크스크린 (붓터치 없음)
-//   한국화:   { control: 0.75, brush: null }    ← 먹선 (붓터치 없음)
+// v70: 화가별 설정 - art-api-config.js로 이동
+// ARTIST_CONFIG, MOVEMENT_DEFAULTS, 관련 함수들은
+// art-api-config.js에서 import됨
 // ========================================
-const ARTIST_CONFIG = {
-  // === 고대/중세 ===
-  'classical-sculpture': { control: 0.55, brush: null },      // 조각
-  'sculpture':           { control: 0.55, brush: null },
-  'roman-mosaic':        { control: 0.60, brush: '75mm' },    // 모자이크 타일
-  'mosaic':              { control: 0.60, brush: '75mm' },
-  'byzantine':           { control: 0.60, brush: null },      // 모자이크/아이콘
-  'gothic':              { control: 0.50, brush: null },      // 스테인드글라스
-  'islamic-miniature':   { control: 0.80, brush: '25mm' },    // 세밀화
-  
-  // === 르네상스 ===
-  'botticelli':          { control: 0.70, brush: '75mm' },
-  'leonardo':            { control: 0.65, brush: '75mm' },
-  'titian':              { control: 0.70, brush: '75mm' },
-  'michelangelo':        { control: 0.70, brush: '75mm' },
-  'raphael':             { control: 0.70, brush: '75mm' },
-  
-  // === 바로크 ===
-  'caravaggio':          { control: 0.50, brush: '75mm' },
-  'rubens':              { control: 0.50, brush: '75mm' },
-  'rembrandt':           { control: 0.50, brush: '75mm' },
-  'velazquez':           { control: 0.50, brush: '75mm' },
-  
-  // === 로코코 ===
-  'watteau':             { control: 0.45, brush: '75mm' },
-  'boucher':             { control: 0.45, brush: '75mm' },
-  
-  // === 신고전/낭만/사실 ===
-  'david':               { control: 0.50, brush: '75mm' },
-  'ingres':              { control: 0.45, brush: '75mm' },
-  'turner':              { control: 0.45, brush: '75mm' },
-  'delacroix':           { control: 0.50, brush: '75mm' },
-  'courbet':             { control: 0.50, brush: '75mm' },
-  'manet':               { control: 0.50, brush: '75mm' },
-  
-  // === 인상주의 ===
-  'renoir':              { control: 0.30, brush: '75mm' },
-  'monet':               { control: 0.30, brush: '75mm' },
-  'degas':               { control: 0.50, brush: '75mm' },
-  'caillebotte':         { control: 0.50, brush: '75mm' },
-  
-  // === 후기인상주의 ===
-  'vangogh':             { control: 0.45, brush: '75mm' },
-  'gauguin':             { control: 0.60, brush: '75mm' },
-  'cezanne':             { control: 0.65, brush: '75mm' },
-  
-  // === 야수파 ===
-  'matisse':             { control: 0.45, brush: '75mm' },
-  'derain':              { control: 0.45, brush: '75mm' },
-  'vlaminck':            { control: 0.45, brush: '75mm' },
-  
-  // === 표현주의 ===
-  'munch':               { control: 0.40, brush: '75mm' },
-  'kirchner':            { control: 0.1, brush: '75mm' },
-  'kokoschka':           { control: 0.1, brush: '75mm' },
-  
-  // === 모더니즘/팝아트 ===
-  'picasso':             { control: 0.10, brush: '75mm' },
-  'magritte':            { control: 0.40, brush: '75mm' },
-  'miro':                { control: 0.40, brush: '75mm' },
-  'chagall':             { control: 0.40, brush: '75mm' },
-  'lichtenstein':        { control: 0.30, brush: null },      // 벤데이 점, 스타일 강화
-  
-  // === 거장 ===
-  'klimt':               { control: 0.65, brush: '25mm' },    // 세밀 금박
-  'frida':               { control: 0.80, brush: '25mm' },    // 세밀 상징
-  
-  // === 동양화 ===
-  'korean':              { control: 0.75, brush: null },      // 먹선 별도
-  'chinese':             { control: 0.75, brush: null },
-  'japanese':            { control: 0.75, brush: null },      // 판화 별도
-};
-
-// 사조별 기본값 (화가 매칭 안 될 때 fallback)
-const MOVEMENT_DEFAULTS = {
-  'ancient-greek-sculpture':              { control: 0.55, brush: null },
-  'roman-mosaic':                         { control: 0.60, brush: '75mm' },
-  'byzantine':                            { control: 0.55, brush: null },      // 모자이크/아이콘
-  'islamic-miniature':                    { control: 0.80, brush: '25mm' },    // 세밀화
-  'gothic':                               { control: 0.50, brush: null },
-  'renaissance':                          { control: 0.80, brush: '75mm' },
-  'baroque':                              { control: 0.70, brush: '75mm' },
-  'rococo':                               { control: 0.70, brush: '75mm' },
-  'neoclassicism':                        { control: 0.80, brush: '75mm' },
-  'neoclassicism_vs_romanticism_vs_realism': { control: 0.80, brush: '75mm' },
-  'romanticism':                          { control: 0.80, brush: '75mm' },
-  'impressionism':                        { control: 0.60, brush: '75mm' },
-  'post-impressionism':                   { control: 0.55, brush: '75mm' },
-  'pointillism':                          { control: 0.55, brush: '25mm' },    // 점
-  'fauvism':                              { control: 0.45, brush: '75mm' },
-  'expressionism':                        { control: 0.45, brush: '75mm' },
-  'modernism':                            { control: 0.50, brush: '75mm' },
-  'korean':                               { control: 0.75, brush: null },
-  'chinese':                              { control: 0.75, brush: null },
-  'japanese':                             { control: 0.75, brush: null },
-};
-
-// 화가명 정규화 매핑
-const ARTIST_NAME_MAPPING = {
-  'leonardodavinci': 'leonardo',
-  'davinci': 'leonardo',
-  '레오나르도': 'leonardo',
-  '다빈치': 'leonardo',
-  '레오나르도다빈치': 'leonardo',
-  'vincentvangogh': 'vangogh',
-  'vincent': 'vangogh',
-  'gogh': 'vangogh',
-  '반고흐': 'vangogh',
-  '고흐': 'vangogh',
-  '빈센트': 'vangogh',
-  '빈센트반고흐': 'vangogh',
-  'pierreaugusterenoir': 'renoir',
-  '르누아르': 'renoir',
-  '피에르오귀스트르누아르': 'renoir',
-  'claudemonet': 'monet',
-  '모네': 'monet',
-  '클로드모네': 'monet',
-  'edgardegas': 'degas',
-  '드가': 'degas',
-  '에드가드가': 'degas',
-  'gustavecaillebotte': 'caillebotte',
-  '카유보트': 'caillebotte',
-  '귀스타브카유보트': 'caillebotte',
-  'paulcezanne': 'cezanne',
-  '세잔': 'cezanne',
-  '폴세잔': 'cezanne',
-  'henrimatisse': 'matisse',
-  '마티스': 'matisse',
-  '앙리마티스': 'matisse',
-  'andrederain': 'derain',
-  '드랭': 'derain',
-  'mauricedevlaminck': 'vlaminck',
-  '블라맹크': 'vlaminck',
-  'edvardmunch': 'munch',
-  '뭉크': 'munch',
-  '에드바르뭉크': 'munch',
-  'ernstludwigkirchner': 'kirchner',
-  '키르히너': 'kirchner',
-  'oskarkokoschka': 'kokoschka',
-  '코코슈카': 'kokoschka',
-  'pablopicasso': 'picasso',
-  '피카소': 'picasso',
-  '파블로피카소': 'picasso',
-  'renemagritte': 'magritte',
-  '마그리트': 'magritte',
-  '르네마그리트': 'magritte',
-  'joanmiro': 'miro',
-  '미로': 'miro',
-  '호안미로': 'miro',
-  'marcchagall': 'chagall',
-  '샤갈': 'chagall',
-  '마르크샤갈': 'chagall',
-  'roylichtenstein': 'lichtenstein',
-  '리히텐슈타인': 'lichtenstein',
-  '로이리히텐슈타인': 'lichtenstein',
-  'gustavklimt': 'klimt',
-  '클림트': 'klimt',
-  '구스타프클림트': 'klimt',
-  'fridakahlo': 'frida',
-  '프리다': 'frida',
-  '프리다칼로': 'frida',
-  'antoinewatteau': 'watteau',
-  '와토': 'watteau',
-  'francoisboucher': 'boucher',
-  '부셰': 'boucher',
-  'jacqueslouisdavid': 'david',
-  '다비드': 'david',
-  'jeanaugustdominiqueingres': 'ingres',
-  'jeanaugustedominiqueingres': 'ingres',
-  '앵그르': 'ingres',
-  'jmwturner': 'turner',
-  '터너': 'turner',
-  'eugenedelacroix': 'delacroix',
-  '들라크루아': 'delacroix',
-  'gustavecourbet': 'courbet',
-  '쿠르베': 'courbet',
-  'edouardmanet': 'manet',
-  '마네': 'manet',
-  'caravaggio': 'caravaggio',
-  '카라바조': 'caravaggio',
-  'peterpaulrubens': 'rubens',
-  '루벤스': 'rubens',
-  'rembrandt': 'rembrandt',
-  '렘브란트': 'rembrandt',
-  'diegovelazquez': 'velazquez',
-  '벨라스케스': 'velazquez',
-  'sandrobotticelli': 'botticelli',
-  '보티첼리': 'botticelli',
-  'titian': 'titian',
-  '티치아노': 'titian',
-  'michelangelo': 'michelangelo',
-  '미켈란젤로': 'michelangelo',
-  'raphael': 'raphael',
-  '라파엘로': 'raphael',
-  'paulgauguin': 'gauguin',
-  '고갱': 'gauguin',
-  '폴고갱': 'gauguin',
-  'classicalsculpture': 'classical-sculpture',
-  'sculpture': 'sculpture',
-  'romanmosaic': 'roman-mosaic',
-  'mosaic': 'mosaic',
-  'byzantine': 'byzantine',
-  '비잔틴': 'byzantine',
-  'gothic': 'gothic',
-  '고딕': 'gothic',
-};
-
-// 화가명 정규화 함수
-function normalizeArtistKey(artist) {
-  if (!artist) return '';
-  const normalized = artist.toLowerCase()
-    .replace(/\s+/g, '')
-    .replace(/-/g, '')
-    .replace(/[^a-z가-힣]/g, '');
-  
-  return ARTIST_NAME_MAPPING[normalized] || normalized;
-}
-
-// 화가 설정 가져오기 (통합)
-function getArtistConfig(artist, styleId, category) {
-  const artistKey = normalizeArtistKey(artist);
-  
-  // 1. 화가별 설정 확인
-  if (artistKey && ARTIST_CONFIG[artistKey]) {
-    return ARTIST_CONFIG[artistKey];
-  }
-  
-  // 2. 사조별 기본값 확인
-  if (styleId && MOVEMENT_DEFAULTS[styleId]) {
-    return MOVEMENT_DEFAULTS[styleId];
-  }
-  
-  // 3. 카테고리별 기본값
-  if (category === 'oriental') {
-    return { control: 0.75, brush: null };
-  } else if (category === 'modernism') {
-    return { control: 0.50, brush: '75mm' };
-  } else if (category === 'masters') {
-    // 거장 모드: 화가별 설정이 없으면 중간값
-    return { control: 0.55, brush: '75mm' };
-  }
-  
-  // 4. 최종 기본값
-  return { control: 0.80, brush: '75mm' };
-}
-
-// control_strength 결정 함수
-function getControlStrength(artist, styleId, category) {
-  return getArtistConfig(artist, styleId, category).control;
-}
-
-// 붓터치 크기 결정 함수
-function getBrushstrokeSize(artist, styleId, category) {
-  return getArtistConfig(artist, styleId, category).brush;
-}
 
 // ========================================
 // v67: 대표작 키 변환 함수 (간소화)
@@ -1696,8 +1432,8 @@ function getModernismHints(photoAnalysis) {
 
 
 // ========================================
-// v66: 화풍 프롬프트는 artistStyles.js로 통합됨
-// getArtistStyle(artistKey) 또는 getArtistStyleByName(artistName) 사용
+// v73: 화풍 프롬프트는 art-api-prompts.js로 통합됨
+// getPrompt(workKey) 사용 (화가+대표작 통합 프롬프트)
 // ========================================
 
 // ========================================
@@ -1934,9 +1670,12 @@ Return ONLY valid JSON (no markdown):
 }`;
         
       } else {
-        // ========== 대표작 가이드가 없는 화가: 화풍 프롬프트 방식 ==========
-        // v68: masterworks.js에 가이드가 없으면 artistStyles.js 사용
-        const masterStylePrompt = getArtistStyleByName(masterId);
+        // ========== 대표작 가이드가 없는 화가: 첫 번째 대표작 프롬프트 사용 ==========
+        // v73: art-api-prompts.js에서 첫 번째 대표작 프롬프트 가져오기
+        const masterworkList = getArtistMasterworkList(masterId);
+        const firstWorkKey = masterworkList && masterworkList.length > 0 ? masterworkList[0] : null;
+        const firstPromptData = firstWorkKey ? getPrompt(firstWorkKey) : null;
+        const masterStylePrompt = firstPromptData ? firstPromptData.prompt.substring(0, 300) : `painting by ${categoryName}`;
         
         // AI에게는 단순 사진 분석만 요청
         promptText = `Analyze this photo for ${categoryName}'s painting style transformation.
@@ -2628,8 +2367,8 @@ export default async function handler(req, res) {
     const startTime = Date.now();
     const { image, selectedStyle, correctionPrompt } = req.body;
     
-    // v68.3: 변수 초기화 (스코프 문제 해결) - v68: 긍정 명령어로 통일
-    let coreRulesPrefix = 'Female nipples MUST be covered by clothing. Preserve identity, gender, ethnicity exactly. Keep only original elements from photo. Clean artwork, text-free, signature-free, watermark-free. ';
+    // v73: 변수 초기화 - 부정어 제거, 유두 조항 삭제
+    let coreRulesPrefix = 'Preserve identity, gender, ethnicity exactly. Keep only original elements from photo. Clean pure painting, unblemished artwork surface, pristine canvas. ';
     let genderPrefixCommon = '';
     
     // v72.1: photoAnalysis 초기화 (인종 보존용)
@@ -2906,12 +2645,14 @@ export default async function handler(req, res) {
       
       console.log('   📝 subjectInfo:', subjectInfo || '(empty)');
       
-      // 2. 고정 프롬프트 + 피사체 정보 결합
-      const basePrompt = fallbackPrompts.japanese.prompt;
+      // 2. v73: 통합 프롬프트 사용
+      const ukiyoePromptData = getPrompt('ukiyoe');
+      const basePrompt = ukiyoePromptData ? ukiyoePromptData.prompt : fallbackPrompts.japanese.prompt;
       finalPrompt = subjectInfo + basePrompt;
-      selectedArtist = '일본 우키요에';
+      selectedArtist = ukiyoePromptData ? ukiyoePromptData.nameEn : '일본 우키요에';
       selectionMethod = 'oriental_fixed_with_vision';
       selectionDetails = { style: 'japanese_ukiyoe' };
+      console.log('   🎨 우키요에 통합 프롬프트 적용');
       
     } else if (process.env.ANTHROPIC_API_KEY) {
       // console.log(`Trying AI artist selection for ${selectedStyle.name}...`);
@@ -2979,8 +2720,50 @@ export default async function handler(req, res) {
       
       if (aiResult.success) {
         // AI 성공!
-        finalPrompt = aiResult.prompt;
-        selectedArtist = aiResult.artist;
+        
+        // v73: 동양화는 통합 프롬프트 사용
+        if (selectedStyle.category === 'oriental') {
+          const styleKey = aiResult.selected_style || '';
+          // 키 매핑 (AI 선택값 → art-api-prompts.js 키)
+          const orientalKeyMap = {
+            'landscape': 'jingyeong',
+            'ink_wash': 'shuimohua',
+            'minhwa': 'minhwa',
+            'pungsokdo': 'pungsokdo',
+            'gongbi': 'gongbi',
+            'ukiyoe': 'ukiyoe',
+            'rinpa': 'rinpa',
+            'jingyeong': 'jingyeong',
+            'shuimohua': 'shuimohua'
+          };
+          const mappedKey = orientalKeyMap[styleKey] || styleKey;
+          const orientalPromptData = getPrompt(mappedKey);
+          
+          if (orientalPromptData) {
+            console.log('🎨🎨🎨 동양화 스타일 매칭 🎨🎨🎨');
+            console.log('   🎯 AI 선택:', styleKey, '→', mappedKey);
+            console.log('   🖼️ 스타일:', orientalPromptData.name, `(${orientalPromptData.nameEn})`);
+            
+            finalPrompt = orientalPromptData.prompt;
+            selectedArtist = orientalPromptData.nameEn || aiResult.artist;
+            
+            // calligraphy_text 추가
+            if (aiResult.calligraphy_text) {
+              finalPrompt += ` Calligraphy text "${aiResult.calligraphy_text}" in traditional characters.`;
+              console.log('   ✍️ 낙관:', aiResult.calligraphy_text);
+            }
+            console.log('');
+          } else {
+            // fallback: AI 생성 프롬프트 사용
+            console.log('⚠️ 동양화 프롬프트 매칭 실패, AI 프롬프트 사용:', styleKey);
+            finalPrompt = aiResult.prompt;
+            selectedArtist = aiResult.artist;
+          }
+        } else {
+          finalPrompt = aiResult.prompt;
+          selectedArtist = aiResult.artist;
+        }
+        
         selectedWork = aiResult.work;  // 거장 모드: 선택된 대표작
         selectionMethod = 'ai_auto';
         selectionDetails = {
@@ -3088,8 +2871,12 @@ export default async function handler(req, res) {
               photoType: detectPhotoType(photoAnalysisFromAI)
             };
             
-            // v66: 모든 사조 - artistStyles.js에서 통합 관리
-            const artistStyle = getArtistStyleByName(weightSelectedArtist);
+            // v73: art-api-prompts.js에서 첫 번째 대표작 프롬프트 가져오기
+            const weightArtistKey = weightSelectedArtist.toLowerCase().trim();
+            const weightMasterworkList = getArtistMasterworkList(weightArtistKey);
+            const weightFirstWorkKey = weightMasterworkList && weightMasterworkList.length > 0 ? weightMasterworkList[0] : null;
+            const weightPromptData = weightFirstWorkKey ? getPrompt(weightFirstWorkKey) : null;
+            const artistStyle = weightPromptData ? weightPromptData.prompt : null;
             
             if (artistStyle) {
               // subjectType 전달 (풍경/정물/동물일 때 인물 관련 프롬프트 제거)
@@ -3288,23 +3075,20 @@ export default async function handler(req, res) {
         const allowExtraImagery = artistLower.includes('chagall') || artistLower.includes('샤갈');
         
         // ========================================
-        // v68 대전제 (긍정 명령어로 통일)
+        // v73 대전제 (긍정 명령어로 통일, 유두 조항 삭제)
         // FLUX는 부정어 미지원 → 긍정형으로 변환
         // ========================================
         let CORE_RULES_BASE;
         if (skipEthnicityPreserve) {
           // 고갱/마티스/드랭/블라맹크: 피부색 변환이 화풍이라 ethnicity 제외
-          CORE_RULES_BASE = 'Female nipples MUST be covered by clothing. ' +
-            'Preserve identity, gender exactly. ' +
+          CORE_RULES_BASE = 'Preserve identity, gender exactly. ' +
             'Keep only original elements from photo.';
         } else if (allowExtraImagery) {
           // 샤갈: 환영/꿈 이미지 허용 (원본만 규칙 제외)
-          CORE_RULES_BASE = 'Female nipples MUST be covered by clothing. ' +
-            'Preserve identity, gender, ethnicity exactly.';
+          CORE_RULES_BASE = 'Preserve identity, gender, ethnicity exactly.';
         } else {
           // 기본값
-          CORE_RULES_BASE = 'Female nipples MUST be covered by clothing. ' +
-            'Preserve identity, gender, ethnicity exactly. ' +
+          CORE_RULES_BASE = 'Preserve identity, gender, ethnicity exactly. ' +
             'Keep only original elements from photo.';
         }
         
@@ -3312,8 +3096,8 @@ export default async function handler(req, res) {
           // 동양화 - 낙관/시문 허용
           coreRulesPrefix = CORE_RULES_BASE + ' ';
         } else {
-          // 서양화 - 텍스트 없는 깨끗한 화면
-          coreRulesPrefix = CORE_RULES_BASE + ' Clean artwork, text-free, signature-free, watermark-free. ';
+          // 서양화 - 텍스트 없는 깨끗한 화면 (긍정문)
+          coreRulesPrefix = CORE_RULES_BASE + ' Clean pure painting, unblemished artwork surface, pristine canvas. ';
         }
         
         // v68: 성별 보존 프롬프트 (간소화) - 나중에 적용
@@ -3355,35 +3139,20 @@ export default async function handler(req, res) {
           if (workKey) {
             const artistKey = workKey.split('-')[0];
             
-            // v70: 거장 7명 모두 masterworks에서 가져오기
+            // v70: 거장 7명 모두 통합 프롬프트에서 가져오기
             if (['vangogh', 'munch', 'klimt', 'matisse', 'chagall', 'frida', 'lichtenstein'].includes(artistKey)) {
-              const movementMasterwork = getMovementMasterwork(workKey);
-              if (movementMasterwork) {
+              const promptData = getPrompt(workKey);
+              if (promptData) {
                 console.log('');
                 console.log('🎨🎨🎨 거장 대표작 매칭 🎨🎨🎨');
                 console.log('   👤 화가:', selectedArtist);
-                console.log('   🖼️ 대표작:', movementMasterwork.name, `(${movementMasterwork.nameEn})`);
-                console.log('   📝 특징:', movementMasterwork.feature);
+                console.log('   🖼️ 대표작:', promptData.name, `(${promptData.nameEn})`);
                 console.log('');
                 
-                // v66: 화가 프롬프트 먼저 (artistStyles.js)
-                const artistStylePrompt1 = getArtistStyle(artistKey);
-                if (artistStylePrompt1) {
-                  finalPrompt = finalPrompt + ', ' + artistStylePrompt1;
-                  logData.prompt.applied.artist = true;
-                  // console.log('🎨 [v66] 화가 프롬프트 적용:', artistKey);
-                }
-                
-                // 대표작 프롬프트 (우선)
-                finalPrompt = finalPrompt + ', ' + movementMasterwork.prompt;
+                // v73: 통합 프롬프트 적용 (화가+대표작 이미 합쳐짐)
+                finalPrompt = finalPrompt + ', ' + promptData.prompt;
+                logData.prompt.applied.artist = true;
                 logData.prompt.applied.masterwork = true;
-                // console.log('🖼️ [v65] 대표작 프롬프트 적용:', movementMasterwork.nameEn);
-                
-                // expressionRule 적용 (뭉크 등)
-                if (movementMasterwork.expressionRule) {
-                  finalPrompt = finalPrompt + ', ' + movementMasterwork.expressionRule;
-                  // console.log('🎭 [v65] Applied expressionRule:', movementMasterwork.expressionRule);
-                }
               } else {
                 console.log('⚠️ 대표작 매칭 실패:', workKey);
               }
@@ -3460,64 +3229,38 @@ export default async function handler(req, res) {
             if (masterworkList && masterworkList.length > 0) {
               // v67: AI가 선택한 대표작 사용 (랜덤 대신)
               let selectedMasterworkKey = null;
-              let masterwork = null;
+              let promptData = null;
               
               // AI가 대표작을 선택했으면 그것 사용
               if (selectedWork) {
                 selectedMasterworkKey = convertToWorkKey(selectedArtist, selectedWork);
                 if (selectedMasterworkKey) {
-                  masterwork = getMovementMasterwork(selectedMasterworkKey);
+                  promptData = getPrompt(selectedMasterworkKey);
                 }
               }
               
               // AI 선택이 없거나 찾을 수 없으면 fallback으로 랜덤 선택
-              if (!masterwork) {
+              if (!promptData) {
                 const randomIndex = Math.floor(Math.random() * masterworkList.length);
                 selectedMasterworkKey = masterworkList[randomIndex];
-                masterwork = getMovementMasterwork(selectedMasterworkKey);
+                promptData = getPrompt(selectedMasterworkKey);
                 console.log('⚠️ AI 대표작 선택 없음, 랜덤 fallback:', selectedMasterworkKey);
               }
               
-              if (masterwork) {
+              if (promptData) {
                 console.log('');
                 console.log('🎨🎨🎨 사조 대표작 매칭 🎨🎨🎨');
                 console.log('   👤 화가:', selectedArtist);
                 console.log('   🤖 AI 선택:', selectedWork || '(없음 - 랜덤)');
-                console.log('   🖼️ 적용 대표작:', masterwork.name, `(${masterwork.nameEn})`);
-                console.log('   📝 특징:', masterwork.feature);
+                console.log('   🖼️ 적용 대표작:', promptData.name, `(${promptData.nameEn})`);
                 console.log('');
                 
-                // v66: 화가 프롬프트 먼저 (artistStyles.js)
-                const artistStylePrompt2 = getArtistStyle(artistKey);
-                if (artistStylePrompt2) {
-                  finalPrompt = finalPrompt + ', ' + artistStylePrompt2;
-                  logData.prompt.applied.artist = true;
-                  // console.log('🎨 [v66] 화가 프롬프트 적용:', artistKey);
-                }
-                
-                // 대표작 프롬프트 (우선)
-                finalPrompt = finalPrompt + ', ' + masterwork.prompt;
+                // v73: 통합 프롬프트 적용 (화가+대표작 이미 합쳐짐)
+                finalPrompt = finalPrompt + ', ' + promptData.prompt;
+                logData.prompt.applied.artist = true;
                 logData.prompt.applied.masterwork = true;
-                // console.log('🖼️ [v67] 대표작 프롬프트 적용:', masterwork.nameEn);
               }
             }
-          }
-        }
-        
-        // ========================================
-        // v65: 리히텐슈타인 말풍선 추가
-        // ========================================
-        if (selectedArtist.toUpperCase().trim().includes('LICHTENSTEIN') || 
-            selectedArtist.includes('리히텐슈타인')) {
-          console.log('🎯 Lichtenstein detected - adding speech bubble...');
-          
-          // 말풍선 텍스트 선택 (사진 분석 결과 기반)
-          const speechText = selectSpeechBubbleText(visionAnalysis);
-          console.log(`💬 Speech bubble text: "${speechText}"`);
-          
-          // 프롬프트에 말풍선 + 스타일 강화 추가
-          if (!finalPrompt.includes('speech bubble')) {
-            finalPrompt = finalPrompt + `, WHITE SPEECH BUBBLE with THICK BLACK OUTLINE containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+, COMIC PANEL FRAME with THICK BLACK BORDER around entire image`;
           }
         }
         
@@ -3644,6 +3387,33 @@ export default async function handler(req, res) {
       }
     }
 
+    // ========================================
+    // v73: 리히텐슈타인 말풍선 추가 (공통 처리)
+    // - 인물일 때만 (풍경/동물 제외)
+    // - 1-2명일 때만 (화면 꽉 차면 제외)
+    // ========================================
+    if (selectedArtist && (selectedArtist.toUpperCase().includes('LICHTENSTEIN') || 
+        selectedArtist.includes('리히텐슈타인'))) {
+      
+      const isPerson = visionAnalysis && visionAnalysis.subject_type === 'person';
+      const personCount = visionAnalysis?.person_count || 1;
+      const hasRoomForBubble = personCount <= 2;  // 3명 이상이면 화면 꽉 참
+      
+      if (isPerson && hasRoomForBubble) {
+        console.log('🎯 Lichtenstein detected - adding speech bubble...');
+        
+        const speechText = selectSpeechBubbleText(visionAnalysis);
+        console.log(`💬 Speech bubble text: "${speechText}"`);
+        
+        if (!finalPrompt.includes('speech bubble')) {
+          // 위치 명시 + 테두리 중복 제거
+          finalPrompt = finalPrompt + `, WHITE SPEECH BUBBLE near the figure's head, clearly visible, not obscured by borders, containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+`;
+        }
+      } else {
+        console.log(`🎯 Lichtenstein - no speech bubble (isPerson: ${isPerson}, personCount: ${personCount})`);
+      }
+    }
+
     // console.log('Final prompt:', finalPrompt);
     
     // ========================================
@@ -3692,7 +3462,7 @@ export default async function handler(req, res) {
     // v71: 붓터치 크기 적용 (화풍 바로 다음, 대전제 앞)
     // 순서: [화풍 + 대표작] + [붓터치] + [대전제] + [성별] + [매력]
     // ========================================
-    const brushSize = getBrushstrokeSize(selectedArtist, selectedStyle.id, categoryType);
+    const brushSize = getBrushSize(selectedArtist, selectedStyle.id, categoryType);
     if (brushSize) {
       // 기존 붓터치 명령어 모두 제거 후 새로 추가
       finalPrompt = finalPrompt
