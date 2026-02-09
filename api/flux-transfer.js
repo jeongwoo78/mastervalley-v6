@@ -3883,7 +3883,7 @@ export default async function handler(req, res) {
       selection_details: selectionDetails,
       // v66: 프론트엔드 로그용 데이터
       _debug: {
-        version: 'v66',
+        version: 'v74',
         elapsed: elapsedTime,
         vision: logData.vision,
         selection: logData.selection,
