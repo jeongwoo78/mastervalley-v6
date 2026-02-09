@@ -2368,7 +2368,7 @@ export default async function handler(req, res) {
     const { image, selectedStyle, correctionPrompt } = req.body;
     
     // v73: 변수 초기화 - 부정어 제거, 유두 조항 삭제
-    let coreRulesPrefix = 'Preserve identity, gender, ethnicity exactly. Keep only original elements from photo. Clean pure painting, unblemished artwork surface, pristine canvas. ';
+    let coreRulesPrefix = 'Preserve identity, gender, ethnicity exactly. Keep ONLY elements from original photo. NEVER add objects, decorations, flowers, furniture, or backgrounds not in photo. Clean pure painting surface. ';
     let genderPrefixCommon = '';
     
     // v72.1: photoAnalysis 초기화 (인종 보존용)

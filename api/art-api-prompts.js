@@ -22,56 +22,54 @@ export const ANCIENT_MEDIEVAL_PROMPTS = {
   'marble': {
     name: '대리석 조각',
     nameEn: 'Marble Sculpture',
-    prompt: `Pure white Carrara marble figure sculpture of the subject. The surface is smoothly polished with fine chisel marks visible in hair and folds. Clothing is transformed into classical draped garments carved in stone with deep relief. Monochrome white covers 95% with faint grey settling in crevices. A neutral grey background sits behind the figure. The skin is poreless cold marble with a soft stone sheen on the forehead and cheeks. Soft light from the upper left casts gentle shadows. Faint grey defines the deepest crevices and undersides of forms. Edges are gently worn and rounded with seamless transitions between forms.`
+    prompt: `Ancient Greek-Roman marble sculpture style. Pure white Carrara marble with smooth polished surface, carved stone texture. Classical draped clothing covering the body. Preserve original gender and body proportions.`
   },
 
   // ─────────────────────────────────────────
-  // 로마 모자이크 공통 — 46w
+  // 로마 모자이크 공통
   // ─────────────────────────────────────────
   'mosaic-common': {
-    prompt: `Ancient Roman mosaic of the subject. Square stone and glass tesserae of 50mm form every surface including face, skin, hair, and clothing. Thick dark grout lines are visible between each tile. The surface is rough-cut stone with uneven height and sheen per tile. Clothing is transformed into classical Roman draped garments with angular tile folds.`
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds.`
   },
 
-  // ★ 디오니소스 — 공통 + 82w = 128w
-  'mosaic-dionysus': {
-    name: '디오니소스 모자이크',
-    nameEn: 'Dionysus Mosaic',
-    prompt: `Ancient Roman mosaic of the subject. Square stone and glass tesserae of 50mm form every surface including face, skin, hair, and clothing. Thick dark grout lines are visible between each tile. The surface is rough-cut stone with uneven height and sheen per tile. Clothing is transformed into classical Roman draped garments with angular tile folds. Rich warm purple and gold tiles glow across the scene. Purple 30%, olive green 25%, gold 25%, terracotta 20%. Grapevines and leaves cover the background. Grapevines, grape clusters, and garlands decorate the scene. Skin is rendered in warm gold and terracotta tiles. Gold tiles gleam on raised tile surfaces. Tiles curve along the vine directions. Even warm light spreads throughout. Olive green tiles create gentle shadows. Four colors are mixed abundantly across the surface.`
-  },
-
-  // ★ 오케아노스 — 공통 + 83w = 129w
-  'mosaic-oceanus': {
-    name: '오케아노스와 테티스',
-    nameEn: 'Oceanus and Tethys',
-    prompt: `Ancient Roman mosaic of the subject. Square stone and glass tesserae of 50mm form every surface including face, skin, hair, and clothing. Thick dark grout lines are visible between each tile. The surface is rough-cut stone with uneven height and sheen per tile. Clothing is transformed into classical Roman draped garments with angular tile folds. Cool sea green and turquoise tiles spread across the scene. Sea green 35%, turquoise 25%, ivory 20%, earthy ochre 20%. Flowing waves fill the background. Dolphins, fish, shells, and seaweed appear as decoration. Skin is rendered in ivory and pale turquoise tiles with a cool feel. Bright turquoise tiles catch the light on wave crests. Tiles curve along the wave direction. Diffused light spreads downward from above. Deep sea green tiles define the shadow areas. Green tonal shifts are expressed through tile color variation.`
-  },
-
-  // ★ 나일 — 공통 + 80w = 126w
-  'mosaic-nile': {
-    name: '나일 모자이크',
-    nameEn: 'Nile Mosaic',
-    prompt: `Ancient Roman mosaic of the subject. Square stone and glass tesserae of 50mm form every surface including face, skin, hair, and clothing. Thick dark grout lines are visible between each tile. The surface is rough-cut stone with uneven height and sheen per tile. Clothing is transformed into classical Roman draped garments with angular tile folds. Warm ochre and teal tiles stretch across a wide panorama. Ochre 30%, teal 25%, terracotta 25%, olive green 20%. A wide panoramic landscape with flowing water stretches across the background. The subject surface is rendered in ochre tiles. Bright teal tiles sparkle on the water surface. Tiles are arranged horizontally following the water flow. High sun shines evenly bright throughout. Olive green tiles shade the ground and landscape areas. Four colors are zoned by area with teal for water and ochre for land.`
-  },
-
-  // ★ 알렉산더 — 공통 + 77w = 123w
+  // ─────────────────────────────────────────
+  // 로마 모자이크 대표작
+  // ─────────────────────────────────────────
+  
   'mosaic-alexander': {
     name: '알렉산더 모자이크',
     nameEn: 'Alexander Mosaic',
-    prompt: `Ancient Roman mosaic of the subject. Square stone and glass tesserae of 50mm form every surface including face, skin, hair, and clothing. Thick dark grout lines are visible between each tile. The surface is rough-cut stone with uneven height and sheen per tile. Clothing is transformed into classical Roman draped garments with angular tile folds. A warm earth tone with dry dusty atmosphere fills the scene. Terracotta 40%, ochre 30%, umber 20%, ivory 10%. A flat dusty surface stretches across the background. Skin is rendered in ochre and terracotta tiles. Ivory tiles catch the light on the highest surfaces. Tile rows follow diagonal lines of movement. Warm light falls from the upper left. Dark umber tiles define the shadow areas. Warm earth colors are placed unmixed across the surface.`
+    prompt: `Roman "Alexander Mosaic" (c.100 BCE), Pompeii battle scene, dramatic diagonal movement, warrior armor and horses, earth tones terracotta ochre umber ivory.`
   },
 
-  // ★ 카베카넴 (동물 전용) — 110w
   'mosaic-cave-canem': {
     name: '카베 카넴',
     nameEn: 'Cave Canem',
-    prompt: `Ancient Roman mosaic of the subject. Square stone and glass tesserae of 50mm form every surface. Thick dark grout lines are visible between each tile. The surface is rough-cut stone with uneven height and sheen per tile. High contrast with a dark silhouette on bright ground. Black 50%, ivory 30%, terracotta 20%. A plain bright ivory background creates a simple flat surface. A geometric border frames the scene. The subject is rendered as a solid black tile mass. Ivory tiles highlight only the eyes and teeth. Tiles follow the subject contour outline. Even flat lighting with minimal shadow throughout. Shape is defined by black-white contrast alone. Three colors only are placed in graphic arrangement.`
+    prompt: `Roman "Cave Canem" (1st century), bold black dog silhouette on light background, strong graphic contrast, terracotta black white palette.`
   },
 
-  // ★ 사계절 — 공통 + 85w = 131w
+  'mosaic-dionysus': {
+    name: '디오니소스 모자이크',
+    nameEn: 'Dionysus Mosaic',
+    prompt: `Roman "Dionysus Mosaic" (2nd century), grape vines and wine imagery, banquet atmosphere, rich purple green gold on terracotta.`
+  },
+
+  'mosaic-oceanus': {
+    name: '오케아노스와 테티스',
+    nameEn: 'Oceanus and Tethys',
+    prompt: `Roman "Oceanus and Tethys" (2nd century), sea god portrait bust, dominant ocean blue and turquoise, flowing water with fish.`
+  },
+
   'mosaic-seasons': {
     name: '사계절 모자이크',
     nameEn: 'Four Seasons Mosaic',
-    prompt: `Ancient Roman mosaic of the subject. Square stone and glass tesserae of 50mm form every surface including face, skin, hair, and clothing. Thick dark grout lines are visible between each tile. The surface is rough-cut stone with uneven height and sheen per tile. Clothing is transformed into classical Roman draped garments with angular tile folds. A warm earth tone with seasonal natural colors fills the scene. Ochre 30%, terracotta 25%, olive green 25%, ivory 20%. A circular medallion with a geometric border frames the scene. Flowers, wheat ears, grapes, and leaves appear as seasonal decoration. Skin is rendered in warm ochre and ivory tiles. Ivory tiles glow on the forehead and nose. Tiles are arranged in concentric circles following the medallion shape. Even frontal light falls with soft shadows. Terracotta tiles shade the cheeks and under the jaw. Four colors are distributed by seasonal motif.`
+    prompt: `Roman "Four Seasons Mosaic" (2nd century), portrait bust in circular medallion, seasonal attributes flowers wheat grapes, warm earth tones.`
+  },
+
+  'mosaic-nile': {
+    name: '나일 모자이크',
+    nameEn: 'Nile Mosaic',
+    prompt: `Roman "Nile Mosaic" (c.100 BCE), panoramic landscape with river, exotic wildlife hippos crocodiles ibis, ochre terracotta blue-green.`
   },
 
   // ─────────────────────────────────────────
@@ -991,12 +989,6 @@ export const MODERNISM_PROMPTS = {
   },
 
   // ★ 가시 목걸이 자화상 — ~153w
-  'frida-thornnecklace': {
-    name: '가시 목걸이 자화상',
-    nameEn: 'Self-Portrait with Thorn Necklace',
-    prompt: `Old oil painting of the subject by Frida Kahlo. Face and skin are painted smooth with warm olive tones, intense direct gaze forward. Vibrant Mexican folk colors fill symbolic elements. Lush tropical foliage surrounds the figure. Thorns and animals create sharp tension across the surface. Deep green 35%, olive skin 25%, black 20%, vermilion red 20%. Dense tropical foliage fills the entire background thickly. Thorn necklace wraps the neck, black cat and monkey on shoulders. Eyes gaze directly forward, thorns pierce neck skin with red droplets, skin painted smooth in warm olive tones. Soft light rests gently on face and red droplets on neck. Delicate brushstrokes flow densely along thorn vines and leaves. Soft light illuminates the face gently from the front. Deep green sinks into foliage and animal fur. Green dominates background foliage, olive on skin, red on blood and flowers, black remains on cat and hair.`
-  },
-
   // ★ 원숭이 자화상 — ~135w
   'frida-monkeys': {
     name: '원숭이 자화상',
@@ -1259,7 +1251,6 @@ export const masterworkNameMapping = {
   
   // 프리다 칼로
   'me and my parrots': 'frida-parrots', '나와 앵무새들': 'frida-parrots',
-  'self-portrait with thorn necklace': 'frida-thornnecklace', '가시 목걸이': 'frida-thornnecklace',
   'self-portrait with monkeys': 'frida-monkeys', '원숭이와 자화상': 'frida-monkeys',
   
   // 샤갈
@@ -1410,7 +1401,7 @@ export function getArtistMasterworkList(artistKey) {
     // kirchner-oldwomen 삭제됨
     'kirchner': ['kirchner-berlin', 'kirchner-soldier'],
     'picasso': ['picasso-doramaar'],
-    'frida': ['frida-parrots', 'frida-thornnecklace', 'frida-monkeys'],
+    'frida': ['frida-parrots', 'frida-monkeys'],
     'magritte': ['magritte-golconda'],
     'miro': ['miro-catalan', 'miro-constellation', 'miro-bluestar'],
     'chagall': ['chagall-lovers', 'chagall-labranche', 'chagall-lamariee'],
