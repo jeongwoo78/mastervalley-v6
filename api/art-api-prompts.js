@@ -22,48 +22,16 @@ export const ANCIENT_MEDIEVAL_PROMPTS = {
   'marble': {
     name: '대리석 조각',
     nameEn: 'Marble Sculpture',
-    prompt: `Ancient Greek-Roman marble sculpture style. Pure white Carrara marble with smooth polished surface, carved stone texture. Classical draped clothing covering the body. Preserve original gender and body proportions.`
+    prompt: `Ancient Greek-Roman marble sculpture style. Pure white Carrara marble with smooth polished surface, carved stone texture. Subject wears classical draped toga or stola. Style reference sculptures: Nike of Samothrace, Augustus of Prima Porta, Eirene, Pietà. Preserve original gender and body proportions.`
   },
 
   // ─────────────────────────────────────────
-  // 로마 모자이크 대표작 (공통 + 개별)
-  // 공통: Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette.
+  // 로마 모자이크 (통합) — 노출 없는 안전한 참조작품만
   // ─────────────────────────────────────────
-  
-  'mosaic-alexander': {
-    name: '알렉산더 모자이크',
-    nameEn: 'Alexander Mosaic',
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds. Roman "Alexander Mosaic" (c.100 BCE), Pompeii battle scene, dramatic diagonal movement, warrior armor and horses, earth tones terracotta ochre umber ivory.`
-  },
-
-  'mosaic-cave-canem': {
-    name: '카베 카넴',
-    nameEn: 'Cave Canem',
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Roman "Cave Canem" (1st century), bold black dog silhouette on light background, strong graphic contrast, terracotta black white palette.`
-  },
-
-  'mosaic-dionysus': {
-    name: '디오니소스 모자이크',
-    nameEn: 'Dionysus Mosaic',
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds. Roman "Dionysus Mosaic" (2nd century), grape vines and wine imagery, banquet atmosphere, rich purple green gold on terracotta.`
-  },
-
-  'mosaic-oceanus': {
-    name: '오케아노스와 테티스',
-    nameEn: 'Oceanus and Tethys',
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds. Roman "Oceanus and Tethys" (2nd century), sea god portrait bust, dominant ocean blue and turquoise, flowing water with fish.`
-  },
-
-  'mosaic-seasons': {
-    name: '사계절 모자이크',
-    nameEn: 'Four Seasons Mosaic',
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds. Roman "Four Seasons Mosaic" (2nd century), portrait bust in circular medallion, seasonal attributes flowers wheat grapes, warm earth tones.`
-  },
-
-  'mosaic-nile': {
-    name: '나일 모자이크',
-    nameEn: 'Nile Mosaic',
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Roman "Nile Mosaic" (c.100 BCE), panoramic landscape with river, exotic wildlife hippos crocodiles ibis, ochre terracotta blue-green.`
+  'mosaic': {
+    name: '로마 모자이크',
+    nameEn: 'Roman Mosaic',
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette terracotta ochre umber ivory. Subject wears classical draped toga or stola. Style reference mosaics: Alexander Mosaic, Oceanus and Tethys, Nile Mosaic, Medusa Mosaic.`
   },
 
   // ─────────────────────────────────────────

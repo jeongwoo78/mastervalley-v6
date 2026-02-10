@@ -83,96 +83,10 @@ import {
 } from './art-api-config.js';
 
 // ========================================
-// v73: 리히텐슈타인 말풍선 텍스트 (80개)
-// 짧은 감탄사 + 대화체 + 독백체 + 긴 문장 혼합
 // ========================================
-const LICHTENSTEIN_SPEECH_BUBBLES = {
-  // 감탄/기쁨 (16개) - 그룹/밝은 분위기
-  excited: [
-    "WOW!", "AMAZING!", "INCREDIBLE!", "PERFECT!", "YES!",
-    "THIS IS THE BEST DAY EVER!", "I CAN'T BELIEVE THIS IS HAPPENING!",
-    "EVERYTHING IS GOING TO BE ALRIGHT!", "WE DID IT!", "THIS IS SO EXCITING!",
-    "I KNEW WE COULD DO IT!", "NOTHING CAN STOP US NOW!",
-    "FANTASTIC!", "BRILLIANT!", "THIS IS IT!", "ABSOLUTELY PERFECT!"
-  ],
-  // 로맨틱 (16개) - 커플
-  romantic: [
-    "I LOVE YOU!", "KISS ME!", "MY DARLING!", "YOU'RE THE ONE!",
-    "I'VE BEEN WAITING FOR THIS MOMENT!", "MY HEART BEATS ONLY FOR YOU!",
-    "I NEVER WANT THIS TO END!", "YOU MAKE EVERYTHING BETTER!",
-    "STAY WITH ME FOREVER!", "THIS FEELS LIKE A DREAM!",
-    "HOLD ME CLOSE!", "YOU'RE ALL I EVER WANTED!", "DON'T LET GO!",
-    "I'VE LOVED YOU FROM THE START!", "TOGETHER FOREVER!", "YOU COMPLETE ME!"
-  ],
-  // 드라마틱 (16개) - 강렬한 감정/여성
-  dramatic: [
-    "I CAN'T BELIEVE IT!", "HOW COULD THIS HAPPEN?!", "IT'S OVER!",
-    "I DON'T CARE ANYMORE!", "WHY DIDN'T ANYONE TELL ME?!",
-    "I SHOULD HAVE KNOWN!", "EVERYTHING HAS CHANGED NOW!",
-    "I NEVER THOUGHT IT WOULD END LIKE THIS!", "THIS CAN'T BE REAL!",
-    "I WON'T LET THIS STOP ME!", "HOW DARE YOU!", "I'LL NEVER FORGIVE THIS!",
-    "NOTHING WILL EVER BE THE SAME!", "I REFUSE TO GIVE UP!",
-    "THIS WASN'T SUPPOSED TO HAPPEN!", "I'VE HAD ENOUGH!"
-  ],
-  // 대화체/독백 (16개) - 원작 스타일
-  dialogue: [
-    "MAYBE HE'LL CALL ME TOMORROW...", "I WONDER WHAT HAPPENS NEXT...",
-    "THEY SAID IT COULDN'T BE DONE!", "SHE TOLD ME TO WAIT HERE!",
-    "HE PROMISED HE WOULD COME BACK!", "I THOUGHT I SAW SOMETHING!",
-    "SOMEONE HAS TO DO SOMETHING!", "THAT'S EXACTLY WHAT I NEEDED!",
-    "I KNEW SOMETHING WAS DIFFERENT TODAY!", "THIS CHANGES EVERYTHING!",
-    "PERHAPS IT WAS MEANT TO BE...", "IF ONLY THINGS WERE DIFFERENT...",
-    "THERE MUST BE ANOTHER WAY!", "I SHOULD HAVE SAID SOMETHING!",
-    "MAYBE NEXT TIME...", "I ALWAYS KNEW IT WOULD COME TO THIS!"
-  ],
-  // 놀람/생각 (16개) - 중립
-  surprised: [
-    "WHAT?!", "OH MY!", "REALLY?!", "WAIT... WHAT?!",
-    "I NEVER EXPECTED THIS!", "COULD IT BE TRUE?!",
-    "SOMETHING DOESN'T FEEL RIGHT...", "WHAT JUST HAPPENED?!",
-    "NO WAY!", "ARE YOU SERIOUS?!", "I DON'T BELIEVE IT!",
-    "HOW IS THIS POSSIBLE?!", "SERIOUSLY?!", "YOU'RE KIDDING!",
-    "THIS CAN'T BE HAPPENING!", "IS THIS FOR REAL?!"
-  ]
-};
-
-// 말풍선 텍스트 선택 함수
-function selectSpeechBubbleText(visionData) {
-  let category = 'excited'; // 기본값
-  
-  if (visionData) {
-    const personCount = visionData.person_count || 1;
-    const gender = visionData.gender;
-    
-    // 3명 이상 그룹이면 감탄
-    if (personCount >= 3) {
-      category = 'excited';
-    }
-    // 2명 커플이면 로맨틱
-    else if (personCount === 2) {
-      category = 'romantic';
-    }
-    // 여성 단독이면 드라마틱/대화체/로맨틱 랜덤
-    else if (gender === 'female') {
-      const rand = Math.random();
-      if (rand < 0.4) category = 'dramatic';
-      else if (rand < 0.7) category = 'dialogue';
-      else category = 'romantic';
-    }
-    // 남성 단독이면 감탄/대화체 랜덤
-    else if (gender === 'male') {
-      category = Math.random() > 0.5 ? 'excited' : 'dialogue';
-    }
-    // 기본은 랜덤
-    else {
-      const categories = ['excited', 'dialogue', 'surprised'];
-      category = categories[Math.floor(Math.random() * categories.length)];
-    }
-  }
-  
-  const texts = LICHTENSTEIN_SPEECH_BUBBLES[category];
-  return texts[Math.floor(Math.random() * texts.length)];
-}
+// v77: 리히텐슈타인 말풍선 - Vision AI가 직접 선택
+// (기존 80개 문구 배열 삭제 - AI 판단에 맡김)
+// ========================================
 
 
 // ========================================
@@ -1429,6 +1343,20 @@ Available 20th Century Modernism Artists (6명):
 === POP ART 팝아트 ===
 5. LICHTENSTEIN (리히텐슈타인) - Ben-Day dots, comic book style
    - Masterworks: "Drowning Girl", "Whaam!", "Hopeless" ← SELECT ONE ONLY!
+   
+🎤 LICHTENSTEIN SPEECH BUBBLE RULE:
+If you select LICHTENSTEIN, select a SHORT speech bubble text (1-5 words MAX) in 1960s romance comic style.
+
+REAL LICHTENSTEIN EXAMPLES (use similar style):
+- "I Don't Care!" (Drowning Girl)
+- "Oh, Brad..." (Masterpiece)
+- "M-Maybe..." (M-Maybe)
+- "Oh, Jeff..." (Oh, Jeff)
+- "Why, Darling..."
+- "What?!", "Wow!", "Kiss Me!"
+
+⚠️ CRITICAL: Keep text SHORT (1-5 words) to prevent cropping!
+⚠️ If landscape/animal/object → speech_bubble = null
 
 ⚠️ CRITICAL: You MUST select a masterwork from the exact list above! Do NOT invent new titles!
 
@@ -2119,6 +2047,7 @@ Return JSON only:
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "Artist Full Name",
   "selected_work": "EXACT masterwork title from the list above",
+  "speech_bubble": "If LICHTENSTEIN selected: short 1-4 word phrase matching photo mood (e.g. 'WOW!', 'I LOVE YOU!', 'WHAT?!'). If other artist: null",
   "reason": "why this artist AND this masterwork fit (1 sentence)",
   "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by [Artist] in the style of [selected_work], [that work's distinctive techniques and colors]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background, keep background CLEAN'"
 }`;
@@ -2424,7 +2353,7 @@ export default async function handler(req, res) {
 
     // v66: 구조화된 로그 수집 객체
     const logData = {
-      vision: { count: 0, gender: '', age: '', subjectType: '' },
+      vision: { count: 0, gender: '', age: '', subjectType: '', speechBubble: null },
       selection: { category: '', movement: '', artist: '', masterwork: '', reason: '' },
       prompt: { 
         wordCount: 0, 
@@ -2723,6 +2652,8 @@ export default async function handler(req, res) {
         logData.vision.gender = visionAnalysis.gender || '';
         logData.vision.age = visionAnalysis.age_range || '';
         logData.vision.subjectType = visionAnalysis.subject_type || '';
+        // v77: 리히텐슈타인 말풍선 텍스트 저장
+        logData.vision.speechBubble = visionAnalysis.speech_bubble || null;
       }
       
       // ========================================
@@ -3407,24 +3338,16 @@ export default async function handler(req, res) {
     }
 
     // ========================================
-    // v73: 리히텐슈타인 말풍선 추가 (공통 처리)
-    // - 인물일 때만 (풍경/동물 제외)
-    // - 1-2명일 때만 (화면 꽉 차면 제외)
+    // v77: 리히텐슈타인 말풍선 (Vision AI 선택)
+    // - 격자 유지, 말풍선 3% 안쪽 배치
     // ========================================
     if (selectedArtist && (selectedArtist.toUpperCase().includes('LICHTENSTEIN') || 
         selectedArtist.includes('리히텐슈타인'))) {
       
-      const isPerson = visionAnalysis && visionAnalysis.subject_type === 'person';
-      const personCount = visionAnalysis?.person_count || 1;
-      const hasRoomForBubble = personCount <= 2;  // 3명 이상이면 화면 꽉 참
+      const speechText = logData.vision?.speechBubble;
       
-      if (isPerson && hasRoomForBubble) {
-        const speechText = selectSpeechBubbleText(visionAnalysis);
-        
-        if (!finalPrompt.includes('speech bubble')) {
-          // 위치 명시 + 테두리 중복 제거
-          finalPrompt = finalPrompt + `, SINGLE WHITE SPEECH BUBBLE ABOVE the figure's head, fully visible within frame, complete uncut bubble, containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+`;
-        }
+      if (speechText && !finalPrompt.includes('speech bubble')) {
+        finalPrompt = finalPrompt + `, white comic speech bubble with text "${speechText}" in bold font, position bubble at least 3% away from image edges`;
       }
     }
 
@@ -3645,8 +3568,20 @@ export default async function handler(req, res) {
       .map(([key, val]) => val ? `${key}✓` : `${key}✗`)
       .join(' ');
     
-    // v77: 간결한 로그 (한 줄)
+    // v77: 간결한 로그 (한 줄) + Vision 분석 결과
     console.log(`📍 FLUX v77 | ${logData.selection.category} | ${logData.selection.artist} | ${logData.selection.masterwork || '-'} | ${logData.prompt.wordCount}w | ctrl:${logData.flux.control}`);
+    
+    // Vision 분석 결과 (있을 때만)
+    if (logData.vision.gender || logData.vision.subjectType) {
+      const visionInfo = [
+        logData.vision.subjectType || 'unknown',
+        logData.vision.gender || '-',
+        logData.vision.age || '-',
+        logData.vision.count ? `${logData.vision.count}명` : '-',
+        logData.vision.speechBubble ? `💬"${logData.vision.speechBubble}"` : ''
+      ].filter(Boolean).join(', ');
+      console.log(`👤 Vision: ${visionInfo}`);
+    }
     
     // ========================================
     // v77: 비동기 폴링 방식 (504 타임아웃 해결)
