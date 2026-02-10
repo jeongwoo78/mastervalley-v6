@@ -2,7 +2,7 @@
 import { MODEL_CONFIG } from './modelConfig';
 
 // API 기본 URL (앱에서는 절대 경로 필요)
-const API_BASE_URL = 'https://mastervalley-v5.vercel.app';
+const API_BASE_URL = 'https://mastervalley-v6.vercel.app';
 
 const fileToBase64 = async (file) => {
   return new Promise((resolve, reject) => {
@@ -209,49 +209,12 @@ export const processStyleTransfer = async (photoFile, selectedStyle, correctionP
     }
 
     // ========== v30: 첫 응답에서 AI 선택 정보 저장 ==========
-    // v66: 서버 디버그 로그 출력
+    // v77: 간소화된 로그
     if (prediction._debug) {
       const d = prediction._debug;
-      console.log('');
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(`📍 FLUX Transfer ${d.version}`);
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('');
-      console.log('1️⃣ Vision 분석');
-      console.log(`   👤 인물: ${d.vision.count}명 (${d.vision.gender || '?'}, ${d.vision.age || '?'})`);
-      console.log(`   📷 피사체: ${d.vision.subjectType || 'unknown'}`);
-      console.log('');
-      console.log('2️⃣ AI 화가 선택');
-      console.log(`   📂 카테고리: ${d.selection.category}`);
-      if (d.selection.movement) console.log(`   🎨 사조: ${d.selection.movement}`);
-      console.log(`   👨‍🎨 화가: ${d.selection.artist}`);
-      if (d.selection.masterwork) console.log(`   🖼️ 대표작: ${d.selection.masterwork}`);
-      if (d.selection.reason) console.log(`   💬 선택 이유: ${d.selection.reason}`);
-      console.log('');
-      console.log('3️⃣ 프롬프트 조립');
-      console.log(`   📝 최종 길이: ${d.prompt.wordCount} 단어`);
-      console.log(`   ${d.prompt.applied}`);
-      console.log('');
-      console.log('4️⃣ FLUX API 호출');
-      console.log(`   🔄 모델: ${d.flux.model}`);
-      if (d.flux.mapping) console.log(`   🎯 매핑: ${d.flux.mapping}`);
-      console.log(`   ⚙️ Control: ${d.flux.control}${d.flux.boost ? ' (풍경 +0.15 boost)' : ''}`);
-      if (d.flux.brush) console.log(`   🖌️ Brush: ${d.flux.brush}`);
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(`✅ 완료 (${d.elapsed}초)`);
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('');
+      console.log(`📍 FLUX ${d.version} | ${d.selection.category} | ${d.selection.artist} | ${d.selection.masterwork || '-'} | ${d.prompt.wordCount}w | ctrl:${d.flux.control} | ${d.elapsed}초`);
     } else {
-      // _debug가 없으면 기본 정보라도 출력
-      console.log('');
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('📍 FLUX Transfer 응답');
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('   👨‍🎨 화가:', prediction.selected_artist || '?');
-      console.log('   🖼️ 대표작:', prediction.selected_work || '?');
-      console.log('   📊 방식:', prediction.selection_method || '?');
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('');
+      console.log(`📍 FLUX | ${prediction.selected_artist || '?'} | ${prediction.selected_work || '?'}`);
     }
 
     const aiSelectionInfo = {
