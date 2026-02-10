@@ -3428,6 +3428,19 @@ export default async function handler(req, res) {
       }
     }
 
+    // ========================================
+    // v77: 고대/중세 + 여성 의상 강조 (노출 방지)
+    // ========================================
+    const isAncientMedieval = categoryType === 'ancient' || categoryType === 'medieval' || 
+                              finalPrompt.toLowerCase().includes('mosaic') || 
+                              finalPrompt.toLowerCase().includes('marble') ||
+                              finalPrompt.toLowerCase().includes('byzantine');
+    const isFemale = logData.vision?.gender === 'female';
+    
+    if (isAncientMedieval && isFemale) {
+      finalPrompt = finalPrompt + `. CRITICAL FOR FEMALE SUBJECT: Entire chest and torso MUST be FULLY COVERED with draped fabric, toga, stola, or robes. NO exposed skin on chest area. Modest dignified classical attire.`;
+    }
+
     // console.log('Final prompt:', finalPrompt);
     
     // ========================================
