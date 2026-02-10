@@ -405,6 +405,13 @@ export const ORIENTAL = {
         description: '대담한 윤곽선과 평면적 색채의 목판화',
         descriptionEn: 'Floating world pressed in woodblock',
         aliases: ['japanese ukiyo-e', 'japanese-ukiyoe', 'ukiyo-e', '일본 우키요에', '우키요에']
+      },
+      'rinpa': { 
+        ko: '린파', 
+        en: 'Rinpa',
+        description: '금박과 화려한 장식의 일본 전통 장식화',
+        descriptionEn: 'Decorative splendor with gold leaf and bold design',
+        aliases: ['japanese rinpa', 'japanese-rinpa', 'rinpa school', '일본 린파', '린파']
       }
     }
   }

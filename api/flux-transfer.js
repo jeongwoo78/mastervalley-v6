@@ -1,4 +1,8 @@
-// PicoArt v74 - Kontext 프롬프트 최소화
+// PicoArt v77 - 콘솔 로그 정리 + 린파 버그 수정
+// v77: 콘솔 로그 간소화 (한 줄 요약)
+//      - 불필요한 디버그 로그 제거
+//      - 핵심 정보만 간결하게 출력
+//
 // v76: Kontext 프롬프트 공식 권장 구조 적용
 // "ONLY ${correctionPrompt} while keeping the same painting style"
 //      - 불필요한 보존 명령어 제거
@@ -2476,15 +2480,6 @@ export default async function handler(req, res) {
     // artistStyles.js 화풍 연동 + MODIFY 먼저 순서
     // ========================================
     if (correctionPrompt) {
-      console.log('');
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('🔄 재변환 모드 (FLUX Kontext Pro) v75');
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(`📝 수정 요청: ${correctionPrompt}`);
-      console.log(`🖼️ 입력 이미지: ${typeof image === 'string' ? image.substring(0, 100) + '...' : 'base64 data'}`);
-      console.log(`📐 이미지 타입: ${typeof image}, 길이: ${image?.length || 'N/A'}`);
-      
-      
       // v70: 거장 키 → artistStyles 키 매핑
       const MASTER_TO_ARTIST_KEY = {
         'VAN GOGH': 'vangogh',
@@ -2518,7 +2513,6 @@ export default async function handler(req, res) {
       keepUnchanged.push('composition');
       
       const keepUnchangedStr = keepUnchanged.join(', ');
-      console.log(`🔒 보존 항목: ${keepUnchangedStr}`);
       
       // v76: FLUX Kontext 프롬프트 - 화가 이름 포함
       // "ONLY" + 수정 요청 + "while keeping the same [화가] painting style"
@@ -2540,8 +2534,8 @@ export default async function handler(req, res) {
       const sanitizedPrompt = correctionPrompt.replace(/pants/gi, 'lower garment');
       const kontextPrompt = `ONLY ${sanitizedPrompt} while keeping the same facial features, composition, background, pose, and ${artistDisplayName} painting style`;
       
-      console.log(`👨‍🎨 거장: ${masterKey} → ${artistDisplayName}`);
-      console.log(`📜 Kontext 프롬프트: ${kontextPrompt}`);
+      // v77: 간결한 로그
+      console.log(`🔄 Kontext v77 | ${artistDisplayName} | "${correctionPrompt.substring(0, 50)}..."`);
       
       // FLUX Kontext Pro API 호출 (스타일 유지하며 부분 수정) - 재시도 로직 포함
       const MAX_RETRIES = 3;
@@ -2603,10 +2597,7 @@ export default async function handler(req, res) {
       const endTime = Date.now();
       const duration = ((endTime - startTime) / 1000).toFixed(1);
       
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(`✅ 재변환 완료 (${duration}초)`);
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('');
+      console.log(`✅ Kontext 완료 (${duration}초)`);
       
       // 클라이언트가 기대하는 형식으로 응답 (1차 변환과 동일)
       return res.status(200).json({
@@ -2629,16 +2620,11 @@ export default async function handler(req, res) {
     // v74: 일본 전통화 - 린파/우키요에 분기
     // 린파: 꽃, 새, 동물 → 장식적 금박 스타일
     // 우키요에: 인물, 풍경, 기타 모두 → 목판화 스타일
-    console.log('🔍 Debug - selectedStyle.category:', selectedStyle.category);
-    console.log('🔍 Debug - selectedStyle.id:', selectedStyle.id);
     if (selectedStyle.category === 'oriental' && selectedStyle.id === 'japanese') {
-      console.log('🇯🇵 Japanese Art - Rinpa/Ukiyo-e Branch');
-      
       let subjectInfo = '';
       let useRinpa = false;
       
       if (anthropicClient) {
-        console.log('   🔑 anthropicClient ready, attempting Vision...');
         try {
           const cleanBase64 = image.replace(/^data:image\/\w+;base64,/, '');
           
@@ -2663,49 +2649,34 @@ export default async function handler(req, res) {
           });
           
           const visionText = visionResponse.content[0]?.text || '{}';
-          console.log('   📝 Vision raw response:', visionText);
-          
           const visionData = JSON.parse(visionText.replace(/```json\n?|\n?```/g, '').trim());
-          console.log('   📊 Vision parsed:', JSON.stringify(visionData));
           
           // v74: 린파/우키요에 분기
-          // 사람 있으면 무조건 우키요에
-          // 꽃/새/동물만 있을 때만 린파
           if (visionData.person_count > 0 || visionData.subject_type === 'person') {
-            // 사람 있음 → 우키요에 (사람+동물 같이 있어도)
             useRinpa = false;
             const genderInfo = visionData.gender === 'male' ? 'male person in hakama' : 
                               visionData.gender === 'female' ? 'female person in elegant kimono' : 
                               'person in traditional Japanese attire';
             subjectInfo = `CRITICAL: Draw the ${genderInfo} as shown in the photo. `;
-            console.log('   👤 Person detected → UKIYO-E');
           } else if (visionData.subject_type === 'flower') {
             useRinpa = true;
-            console.log('   🌸 Flower only → RINPA');
           } else if (visionData.subject_type === 'bird' || visionData.animal_type === 'bird') {
             useRinpa = true;
             subjectInfo = `CRITICAL: The main subject is a bird. Draw the bird as the central subject in Rinpa decorative style. `;
-            console.log('   🐦 Bird only → RINPA');
           } else if (visionData.subject_type === 'animal' && visionData.animal_type) {
             useRinpa = true;
             subjectInfo = `CRITICAL: The main subject is a ${visionData.animal_type}. Draw the ${visionData.animal_type} as the central subject in Rinpa decorative style. `;
-            console.log('   🐕 Animal only:', visionData.animal_type, '→ RINPA');
           } else {
-            // 풍경, 기타 → 우키요에
             useRinpa = false;
-            console.log('   🗻 Landscape/Other:', visionData.subject_type, '→ UKIYO-E');
           }
           
         } catch (e) {
-          console.log('   ⚠️ Vision analysis error:', e.message);
-          useRinpa = false; // 에러 시 기본값 우키요에
+          console.log('⚠️ Japan Vision error:', e.message);
+          useRinpa = false;
         }
       } else {
-        console.log('   ❌ ANTHROPIC_API_KEY not found, defaulting to Ukiyo-e');
         useRinpa = false;
       }
-      
-      console.log('   📝 subjectInfo:', subjectInfo || '(empty)');
       
       // v74: 린파 또는 우키요에 프롬프트 선택
       if (useRinpa) {
@@ -2715,7 +2686,6 @@ export default async function handler(req, res) {
         selectedArtist = rinpaPromptData ? rinpaPromptData.nameEn : '린파';
         selectionMethod = 'oriental_rinpa';
         selectionDetails = { style: 'japanese_rinpa' };
-        console.log('   🎨 린파 프롬프트 적용');
       } else {
         const ukiyoePromptData = getPrompt('ukiyoe');
         const basePrompt = ukiyoePromptData ? ukiyoePromptData.prompt : fallbackPrompts.japanese.prompt;
@@ -2723,7 +2693,6 @@ export default async function handler(req, res) {
         selectedArtist = ukiyoePromptData ? ukiyoePromptData.nameEn : '일본 우키요에';
         selectionMethod = 'oriental_ukiyoe';
         selectionDetails = { style: 'japanese_ukiyoe' };
-        console.log('   🎨 우키요에 프롬프트 적용');
       }
       
     } else if (process.env.ANTHROPIC_API_KEY) {
@@ -2812,22 +2781,15 @@ export default async function handler(req, res) {
           const orientalPromptData = getPrompt(mappedKey);
           
           if (orientalPromptData) {
-            console.log('🎨🎨🎨 동양화 스타일 매칭 🎨🎨🎨');
-            console.log('   🎯 AI 선택:', styleKey, '→', mappedKey);
-            console.log('   🖼️ 스타일:', orientalPromptData.name, `(${orientalPromptData.nameEn})`);
-            
             finalPrompt = orientalPromptData.prompt;
             selectedArtist = orientalPromptData.nameEn || aiResult.artist;
             
             // calligraphy_text 추가
             if (aiResult.calligraphy_text) {
               finalPrompt += ` Calligraphy text "${aiResult.calligraphy_text}" in traditional characters.`;
-              console.log('   ✍️ 낙관:', aiResult.calligraphy_text);
             }
-            console.log('');
           } else {
             // fallback: AI 생성 프롬프트 사용
-            console.log('⚠️ 동양화 프롬프트 매칭 실패, AI 프롬프트 사용:', styleKey);
             finalPrompt = aiResult.prompt;
             selectedArtist = aiResult.artist;
           }
@@ -3215,18 +3177,10 @@ export default async function handler(req, res) {
             if (['vangogh', 'munch', 'klimt', 'matisse', 'chagall', 'frida', 'lichtenstein'].includes(artistKey)) {
               const promptData = getPrompt(workKey);
               if (promptData) {
-                console.log('');
-                console.log('🎨🎨🎨 거장 대표작 매칭 🎨🎨🎨');
-                console.log('   👤 화가:', selectedArtist);
-                console.log('   🖼️ 대표작:', promptData.name, `(${promptData.nameEn})`);
-                console.log('');
-                
                 // v73: 통합 프롬프트 적용 (화가+대표작 이미 합쳐짐)
                 finalPrompt = finalPrompt + ', ' + promptData.prompt;
                 logData.prompt.applied.artist = true;
                 logData.prompt.applied.masterwork = true;
-              } else {
-                console.log('⚠️ 대표작 매칭 실패:', workKey);
               }
             }
             
@@ -3316,17 +3270,9 @@ export default async function handler(req, res) {
                 const randomIndex = Math.floor(Math.random() * masterworkList.length);
                 selectedMasterworkKey = masterworkList[randomIndex];
                 promptData = getPrompt(selectedMasterworkKey);
-                console.log('⚠️ AI 대표작 선택 없음, 랜덤 fallback:', selectedMasterworkKey);
               }
               
               if (promptData) {
-                console.log('');
-                console.log('🎨🎨🎨 사조 대표작 매칭 🎨🎨🎨');
-                console.log('   👤 화가:', selectedArtist);
-                console.log('   🤖 AI 선택:', selectedWork || '(없음 - 랜덤)');
-                console.log('   🖼️ 적용 대표작:', promptData.name, `(${promptData.nameEn})`);
-                console.log('');
-                
                 // v73: 통합 프롬프트 적용 (화가+대표작 이미 합쳐짐)
                 finalPrompt = finalPrompt + ', ' + promptData.prompt;
                 logData.prompt.applied.artist = true;
@@ -3472,17 +3418,12 @@ export default async function handler(req, res) {
       const hasRoomForBubble = personCount <= 2;  // 3명 이상이면 화면 꽉 참
       
       if (isPerson && hasRoomForBubble) {
-        console.log('🎯 Lichtenstein detected - adding speech bubble...');
-        
         const speechText = selectSpeechBubbleText(visionAnalysis);
-        console.log(`💬 Speech bubble text: "${speechText}"`);
         
         if (!finalPrompt.includes('speech bubble')) {
           // 위치 명시 + 테두리 중복 제거
           finalPrompt = finalPrompt + `, SINGLE WHITE SPEECH BUBBLE ABOVE the figure's head, fully visible within frame, complete uncut bubble, containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+`;
         }
-      } else {
-        console.log(`🎯 Lichtenstein - no speech bubble (isPerson: ${isPerson}, personCount: ${personCount})`);
       }
     }
 
@@ -3690,39 +3631,8 @@ export default async function handler(req, res) {
       .map(([key, val]) => val ? `${key}✓` : `${key}✗`)
       .join(' ');
     
-    console.log('');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('📍 FLUX Transfer v74');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('');
-    console.log('1️⃣ Vision 분석');
-    console.log(`   👤 인물: ${logData.vision.count}명 (${logData.vision.gender || '?'}, ${logData.vision.age || '?'})`);
-    console.log(`   📷 피사체: ${logData.vision.subjectType || 'unknown'}`);
-    console.log('');
-    console.log('2️⃣ AI 화가 선택');
-    console.log(`   📂 카테고리: ${logData.selection.category}`);
-    if (logData.selection.movement) console.log(`   🎨 사조: ${logData.selection.movement}`);
-    console.log(`   👨‍🎨 화가: ${logData.selection.artist}`);
-    if (logData.selection.masterwork) console.log(`   🖼️ 대표작: ${logData.selection.masterwork}`);
-    if (logData.selection.calligraphy) console.log(`   ✍️ 서예: ${logData.selection.calligraphy}`);
-    if (logData.selection.reason) console.log(`   💬 선택 이유: ${logData.selection.reason}`);
-    console.log('');
-    console.log('3️⃣ 프롬프트 조립');
-    console.log(`   📝 최종 길이: ${logData.prompt.wordCount} 단어`);
-    console.log(`   ${appliedList}`);
-    console.log('');
-    console.log('4️⃣ FLUX API 호출');
-    console.log(`   🔄 모델: ${logData.flux.model}`);
-    console.log(`   🎯 매핑: ${logData.flux.mapping}`);
-    console.log(`   ⚙️ Control: ${logData.flux.control}${landscapeStrengthBoost ? ' (풍경 +0.15 boost)' : ''}`);
-    console.log(`   🖌️ Brush: ${brushSize || 'none'}`);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('');
-    
-    // v70: FLUX에 전달되는 실제 프롬프트 로그
-    console.log('📜 FLUX 프롬프트 (처음 500자):');
-    console.log(`   ${finalPrompt.substring(0, 500)}...`);
-    console.log('');
+    // v77: 간결한 로그 (한 줄)
+    console.log(`📍 FLUX v77 | ${logData.selection.category} | ${logData.selection.artist} | ${logData.selection.masterwork || '-'} | ${logData.prompt.wordCount}w | ctrl:${logData.flux.control}`);
     
     // ========================================
     // v77: 비동기 폴링 방식 (504 타임아웃 해결)
@@ -3867,12 +3777,9 @@ export default async function handler(req, res) {
     
     const data = pollResult.data;
     
-    // v66: 완료 로그
+    // v77: 완료 로그
     const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(1);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`✅ 완료 (${elapsedTime}초)`);
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('');
     
     // 결과에 선택 정보 포함
     res.status(200).json({
@@ -3881,9 +3788,9 @@ export default async function handler(req, res) {
       selected_work: selectedWork,  // 거장 모드: 선택된 대표작
       selection_method: selectionMethod,
       selection_details: selectionDetails,
-      // v66: 프론트엔드 로그용 데이터
+      // v77: 프론트엔드 로그용 데이터
       _debug: {
-        version: 'v74',
+        version: 'v77',
         elapsed: elapsedTime,
         vision: logData.vision,
         selection: logData.selection,
