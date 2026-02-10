@@ -78,7 +78,8 @@ import {
   EXCLUDE_VINTAGE,
   getArtistConfig,
   getBrushSize,
-  getControlStrength
+  getControlStrength,
+  normalizeArtistKey
 } from './art-api-config.js';
 
 // ========================================
