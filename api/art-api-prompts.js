@@ -1191,28 +1191,6 @@ export function getPrompt(key) {
 console.log('🎨 Master Valley API Prompts loaded:', Object.keys(ALL_PROMPTS).length, 'prompts');
 
 
-export default {
-  ANCIENT_MEDIEVAL_PROMPTS,
-  RENAISSANCE_PROMPTS,
-  BAROQUE_PROMPTS,
-  ROCOCO_PROMPTS,
-  NEO_ROMAN_REAL_PROMPTS,
-  IMPRESSIONISM_PROMPTS,
-  POST_IMPRESSIONISM_PROMPTS,
-  FAUVISM_PROMPTS,
-  EXPRESSIONISM_PROMPTS,
-  MODERNISM_PROMPTS,
-  ORIENTAL_PROMPTS,
-  ALL_PROMPTS,
-  getPrompt,
-  masterworkNameMapping,
-  getArtistMasterworkList,
-  getMovementMasterworkGuide,
-  getArtistMasterworkGuide,
-  getMasterworkGuideForAI
-};
-
-
 // ═══════════════════════════════════════════════════════════════════
 // 🗺️ 대표작 이름 매핑 (한글/영문 → 키)
 // ═══════════════════════════════════════════════════════════════════
@@ -1561,3 +1539,28 @@ export function getMasterworkGuideForAI(workKey) {
   if (!prompt) return '';
   return prompt.prompt || '';
 }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// 📦 Default Export (파일 끝에 위치해야 모든 변수 초기화 후 export됨)
+// ═══════════════════════════════════════════════════════════════════
+export default {
+  ANCIENT_MEDIEVAL_PROMPTS,
+  RENAISSANCE_PROMPTS,
+  BAROQUE_PROMPTS,
+  ROCOCO_PROMPTS,
+  NEO_ROMAN_REAL_PROMPTS,
+  IMPRESSIONISM_PROMPTS,
+  POST_IMPRESSIONISM_PROMPTS,
+  FAUVISM_PROMPTS,
+  EXPRESSIONISM_PROMPTS,
+  MODERNISM_PROMPTS,
+  ORIENTAL_PROMPTS,
+  ALL_PROMPTS,
+  getPrompt,
+  masterworkNameMapping,
+  getArtistMasterworkList,
+  getMovementMasterworkGuide,
+  getArtistMasterworkGuide,
+  getMasterworkGuideForAI
+};
