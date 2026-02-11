@@ -838,7 +838,7 @@ const ResultScreen = ({
     // Fallback: 1차 교육 사용
     if (movementsOverview && movementsOverview[category]) {
       // console.log('📚 Using 1st education as fallback for category:', category);
-      return movementsOverview[category].desc;
+      return movementsOverview[category].description || movementsOverview[category].desc;
     }
     
     return null;
@@ -870,9 +870,9 @@ const ResultScreen = ({
     if (masterId && mastersEducation[masterId]) {
       const education = mastersEducation[masterId];
       // console.log('✅ Found 2nd education (화풍 설명)!');
-      // console.log('   - title:', education.title);
-      // console.log('   - desc length:', education.desc?.length);
-      return education.desc;
+      // console.log('   - title:', education.title || education.name);
+      // console.log('   - desc length:', education.description?.length || education.desc?.length);
+      return education.description || education.desc;
     }
     
     // ========== 2차 교육자료 (개별 작품) - 레거시 지원 ==========
@@ -985,9 +985,9 @@ const ResultScreen = ({
       if (workKey && mastersEducation[workKey]) {
         const education = mastersEducation[workKey];
         // console.log('✅ Found 2nd education (개별 작품)!');
-        // console.log('   - title:', education.title);
-        // console.log('   - desc length:', education.desc?.length);
-        return education.desc;
+        // console.log('   - title:', education.title || education.name);
+        // console.log('   - desc length:', education.description?.length || education.desc?.length);
+        return education.description || education.desc;
       }
       
       // console.log('⚠️ 2nd education not found, falling back to 1st');
@@ -1049,9 +1049,9 @@ const ResultScreen = ({
     if (masterKey && mastersEducation[masterKey]) {
       const education = mastersEducation[masterKey];
       // console.log('✅ Found 1st education (거장 개요)!');
-      // console.log('   - title:', education.title);
-      // console.log('   - desc length:', education.desc?.length);
-      return education.desc;
+      // console.log('   - title:', education.title || education.name);
+      // console.log('   - desc length:', education.description?.length || education.desc?.length);
+      return education.description || education.desc;
     }
     
     // console.log('⚠️ Masters education not found for:', artist);
@@ -2040,10 +2040,10 @@ const ResultScreen = ({
                 </span>
                 <div className="preview-text">
                   <div className="preview-style">
-                    {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name)}
+                    {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}
                   </div>
                   <div className="preview-subtitle">
-                    {getStyleSubtitle(selectedStyle?.category, selectedStyle?.id, 'loading', null, selectedStyle?.name)}
+                    {getStyleSubtitle(selectedStyle?.category, selectedStyle?.id, 'loading', null, selectedStyle?.name, lang)}
                   </div>
                 </div>
               </div>
@@ -2072,11 +2072,11 @@ const ResultScreen = ({
                 </span>
                 <div className="preview-text">
                   <div className="preview-style">
-                    {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name)}
+                    {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}
                   </div>
                   {/* v74: 단독 Original 화면 3줄 표기 (result-original) */}
                   {(() => {
-                    const [sub1, sub2] = getStyleSubtitles(selectedStyle?.category, selectedStyle?.id, 'result-original', null, null, selectedStyle?.name);
+                    const [sub1, sub2] = getStyleSubtitles(selectedStyle?.category, selectedStyle?.id, 'result-original', null, null, selectedStyle?.name, lang);
                     return (
                       <>
                         {sub1 && <div className="preview-subtitle">{sub1}</div>}
@@ -2160,7 +2160,7 @@ const ResultScreen = ({
                     const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
                     const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
                     const artistName = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
-                    return getStyleTitle(category, styleId, artistName);
+                    return getStyleTitle(category, styleId, artistName, lang);
                   })()}
                 </h2>
                 {/* v74: 결과 3줄 표기 */}
@@ -2169,7 +2169,7 @@ const ResultScreen = ({
                   const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
                   const artistName = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
                   // v74: 결과-결과 모드 (result-transformed)
-                  const [sub1, sub2] = getStyleSubtitles(category, styleId, 'result-transformed', displayArtist, displayWork, artistName);
+                  const [sub1, sub2] = getStyleSubtitles(category, styleId, 'result-transformed', displayArtist, displayWork, artistName, lang);
                   return (
                     <>
                       {sub1 && <p className="technique-subtitle"><span className="artist-name">{sub1}</span></p>}

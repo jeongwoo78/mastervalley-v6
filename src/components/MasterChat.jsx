@@ -227,13 +227,13 @@ const MasterChat = ({
 
   return (
     <div className="master-chat-section" style={{ '--master-color': theme.primary }}>
-      {/* 헤더 */}
+      {/* 헤더 (목업 준수: 이름 + AI 태그) */}
       <div className="master-chat-header">
         <div className="master-avatar" style={{ background: theme.gradient }}>
           🎨
         </div>
         <div className="master-info">
-          <h3>{chatText.common.chatWith.replace('{masterName}', masterName)}</h3>
+          <h3>{masterName}<span className="ai-tag">(AI)</span></h3>
         </div>
       </div>
 
@@ -346,47 +346,55 @@ const MasterChat = ({
       </button>
 
       <style>{`
+        /* ===== 마스터 챗 컨테이너 (목업 06-result-single.html 준수) ===== */
         .master-chat-section {
-          background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-          border: 1px solid rgba(102, 126, 234, 0.3);
+          background: rgba(245, 166, 35, 0.08);
+          border: 1px solid rgba(245, 166, 35, 0.25);
           border-radius: 16px;
-          padding: 16px;
-          margin-bottom: 1.5rem;
+          padding: 14px;
+          margin-bottom: 16px;
         }
 
         .master-chat-header {
           display: flex;
           align-items: center;
-          gap: 12px;
-          margin-bottom: 16px;
+          gap: 10px;
+          margin-bottom: 12px;
         }
 
         .master-avatar {
-          width: 44px;
-          height: 44px;
+          width: 36px;
+          height: 36px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 20px;
+          font-size: 18px;
         }
 
         .master-info h3 {
-          color: #333;
-          font-size: 15px;
+          color: #fff;
+          font-size: 14px;
           font-weight: 600;
           margin: 0;
         }
 
+        .master-info h3 .ai-tag {
+          font-size: 10px;
+          color: rgba(255,255,255,0.5);
+          font-weight: 400;
+          margin-left: 4px;
+        }
+
         .chat-area {
-          max-height: 200px;
+          max-height: 180px;
           overflow-y: auto;
           margin-bottom: 12px;
           padding-right: 4px;
         }
 
         .chat-message {
-          margin-bottom: 12px;
+          margin-bottom: 8px;
           animation: fadeIn 0.3s ease;
         }
 
@@ -401,19 +409,19 @@ const MasterChat = ({
         }
 
         .chat-message.master .avatar {
-          width: 28px;
-          height: 28px;
+          width: 24px;
+          height: 24px;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 12px;
+          font-size: 10px;
           flex-shrink: 0;
         }
 
         .chat-message .sender {
-          font-size: 11px;
-          color: #666;
+          font-size: 10px;
+          color: rgba(255,255,255,0.5);
           margin-bottom: 4px;
         }
 
@@ -424,38 +432,39 @@ const MasterChat = ({
         .chat-message.system {
           display: flex;
           justify-content: center;
-          margin: 16px 0;
+          margin: 12px 0;
         }
 
         .system-message {
-          background: rgba(0, 0, 0, 0.05);
-          color: #666;
-          font-size: 13px;
-          padding: 8px 16px;
+          background: rgba(255, 255, 255, 0.05);
+          color: rgba(255,255,255,0.5);
+          font-size: 12px;
+          padding: 6px 14px;
           border-radius: 20px;
           text-align: center;
         }
 
+        /* 빠른 질문 버튼 (목업 준수: 황금색 테마) */
         .suggested-questions {
           display: flex;
           flex-wrap: wrap;
           gap: 8px;
-          justify-content: center;
-          margin-top: 12px;
+          margin-bottom: 10px;
         }
 
         .question-chip {
-          background: white;
-          border: 1px solid rgba(0, 0, 0, 0.2);
-          border-radius: 16px;
-          padding: 6px 12px;
-          font-size: 12px;
+          background: rgba(245, 166, 35, 0.15);
+          border: 1px solid rgba(245, 166, 35, 0.3);
+          color: #F5A623;
+          border-radius: 20px;
+          padding: 8px 10px;
+          font-size: 11px;
           cursor: pointer;
           transition: all 0.2s;
         }
 
         .question-chip:hover {
-          background: rgba(0, 0, 0, 0.05);
+          background: rgba(245, 166, 35, 0.25);
           transform: translateY(-1px);
         }
 
@@ -463,16 +472,16 @@ const MasterChat = ({
           transform: translateY(0);
         }
 
+        /* 메시지 버블 (다크 테마) */
         .chat-message.master .bubble {
-          background: rgba(102, 126, 234, 0.15);
-          border: 1px solid rgba(102, 126, 234, 0.3);
-          border-radius: 12px;
-          border-top-left-radius: 4px;
+          background: rgba(255,255,255,0.08);
+          border-radius: 14px;
           padding: 10px 12px;
-          color: #333;
-          font-size: 14px;
+          color: rgba(255,255,255,0.85);
+          font-size: 13px;
           line-height: 1.5;
           max-width: 85%;
+          text-align: left;
         }
 
         .chat-message.user {
@@ -482,12 +491,11 @@ const MasterChat = ({
         }
 
         .chat-message.user .bubble {
-          background: #667eea;
-          border-radius: 12px;
-          border-top-right-radius: 4px;
+          background: rgba(102, 126, 234, 0.3);
+          border-radius: 14px;
           padding: 10px 12px;
-          color: white;
-          font-size: 14px;
+          color: rgba(255,255,255,0.9);
+          font-size: 13px;
           line-height: 1.5;
           max-width: 85%;
         }
@@ -501,7 +509,7 @@ const MasterChat = ({
         .chat-message .bubble.typing span {
           width: 6px;
           height: 6px;
-          background: var(--master-color, #667eea);
+          background: var(--master-color, #F5A623);
           border-radius: 50%;
           animation: typing 1.4s infinite;
         }
@@ -514,41 +522,47 @@ const MasterChat = ({
           30% { transform: translateY(-6px); }
         }
 
+        /* 입력 영역 (목업 준수) */
         .chat-input-area {
           display: flex;
           gap: 8px;
-          margin-bottom: 12px;
+          padding-top: 10px;
+          border-top: 1px solid rgba(255,255,255,0.1);
         }
 
         .chat-input {
           flex: 1;
-          background: white;
-          border: 2px solid #e0e0e0;
+          background: rgba(255,255,255,0.08);
+          border: 1px solid rgba(255,255,255,0.15);
           border-radius: 20px;
-          padding: 10px 16px;
-          color: #333;
-          font-size: 14px;
+          padding: 10px 14px;
+          color: #fff;
+          font-size: 13px;
           outline: none;
           transition: border-color 0.2s;
         }
 
+        .chat-input::placeholder {
+          color: rgba(255,255,255,0.4);
+        }
+
         .chat-input:focus {
-          border-color: var(--master-color, #667eea);
+          border-color: rgba(245, 166, 35, 0.5);
         }
 
         .chat-input:disabled {
-          background: #f5f5f5;
+          background: rgba(255,255,255,0.05);
           cursor: not-allowed;
         }
 
         .send-btn {
-          width: 40px;
-          height: 40px;
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: linear-gradient(135deg, #F5A623, #e8941a);
           border: none;
-          border-radius: 50%;
-          color: white;
-          font-size: 16px;
+          border-radius: 20px;
+          padding: 10px 16px;
+          color: #fff;
+          font-size: 13px;
+          font-weight: 600;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -557,7 +571,7 @@ const MasterChat = ({
         }
 
         .send-btn:hover:not(:disabled) {
-          transform: scale(1.05);
+          transform: scale(1.02);
         }
 
         .send-btn:disabled {
@@ -565,26 +579,28 @@ const MasterChat = ({
           cursor: not-allowed;
         }
 
+        /* 수정 요청 버튼 (목업 준수: 보라색 그라데이션) */
         .retransform-btn {
           width: 100%;
           background: linear-gradient(135deg, #667eea, #764ba2);
           border: none;
           border-radius: 12px;
-          padding: 14px;
+          padding: 12px;
           color: white;
-          font-size: 15px;
+          font-size: 13px;
           font-weight: 600;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
+          gap: 6px;
+          margin-bottom: 10px;
           transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .retransform-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
         }
 
         .retransform-btn:disabled {
@@ -593,8 +609,8 @@ const MasterChat = ({
         }
 
         .spinner-small {
-          width: 18px;
-          height: 18px;
+          width: 16px;
+          height: 16px;
           border: 2px solid rgba(255,255,255,0.3);
           border-top-color: white;
           border-radius: 50%;

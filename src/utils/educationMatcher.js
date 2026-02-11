@@ -36,14 +36,15 @@ export function getEducationContent(category, key, educationData) {
   // 직접 매칭 시도
   if (targetData[key]) {
     console.log(`✅ getEducationContent: direct match for ${key}`);
-    return targetData[key].content || targetData[key].desc || null;
+    // v78: content → description → desc 순서로 fallback
+    return targetData[key].content || targetData[key].description || targetData[key].desc || null;
   }
   
   // ALIASES를 통한 정규화 후 재시도
   const normalizedKey = normalizeKey(key);
   if (normalizedKey !== key && targetData[normalizedKey]) {
     console.log(`✅ getEducationContent: alias match ${key} → ${normalizedKey}`);
-    return targetData[normalizedKey].content || targetData[normalizedKey].desc || null;
+    return targetData[normalizedKey].content || targetData[normalizedKey].description || targetData[normalizedKey].desc || null;
   }
   
   console.log(`❌ getEducationContent: no match found for key: ${key} in category: ${category}`);

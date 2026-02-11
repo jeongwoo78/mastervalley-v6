@@ -152,7 +152,10 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
       </header>
 
       {/* Photo Section */}
-      <div className="photo-section" onClick={handlePhotoClick}>
+      <div 
+        className={`photo-section ${selectedStyle && !photo ? 'awaiting-photo' : ''}`} 
+        onClick={handlePhotoClick}
+      >
         <input
           type="file"
           ref={fileInputRef}
@@ -246,6 +249,12 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
           justify-content: center;
           cursor: pointer;
           overflow: hidden;
+          transition: all 0.3s;
+        }
+
+        /* 스타일 선택 후 사진 대기 상태 - 테두리만 */
+        .photo-section.awaiting-photo {
+          border: 2px solid #667eea;
         }
 
         .photo-placeholder {
@@ -271,37 +280,42 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
           object-fit: cover;
         }
 
-        /* Full Transform Button */
+        /* Full Transform Button - 목업 준수: 더 눈에 띄는 디자인 */
         .full-transform-btn {
           margin: 0 20px 16px;
-          padding: 16px;
-          background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(167,139,250,0.15));
-          border: 1px solid rgba(124,58,237,0.3);
-          border-radius: 12px;
+          padding: 16px 20px;
+          background: linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25));
+          border: 2px solid rgba(102,126,234,0.5);
+          border-radius: 14px;
           text-align: center;
           cursor: pointer;
           transition: all 0.2s;
+          box-shadow: 0 2px 8px rgba(102,126,234,0.2);
         }
 
         .full-transform-btn:hover {
-          background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(167,139,250,0.25));
+          background: linear-gradient(135deg, rgba(102,126,234,0.35), rgba(118,75,162,0.35));
+          border-color: rgba(102,126,234,0.7);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(102,126,234,0.3);
         }
 
         .full-transform-btn.selected {
-          border-color: #7c3aed;
-          background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(167,139,250,0.3));
+          border-color: #667eea;
+          background: linear-gradient(135deg, rgba(102,126,234,0.4), rgba(118,75,162,0.4));
+          box-shadow: 0 4px 16px rgba(102,126,234,0.4);
         }
 
         .ft-title {
           color: #fff;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 600;
           margin-bottom: 4px;
         }
 
         .ft-desc {
-          color: rgba(255,255,255,0.5);
-          font-size: 12px;
+          color: rgba(255,255,255,0.7);
+          font-size: 13px;
         }
 
         /* Style Grid */

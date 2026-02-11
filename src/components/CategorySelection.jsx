@@ -1,5 +1,5 @@
 // CategorySelection.jsx - Main Screen (Dark Theme)
-// Based on mockup: 02-main.html
+// Based on mockup: 02-main(썸네일).jpg
 import React from 'react';
 
 // Thumbnail imports
@@ -15,7 +15,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
       tagline: '당신의 사진이 명작이 됩니다',
       movements: { name: '서양 미술사', desc: '2500년 서양 미술의 여정' },
       masters: { name: '거장 컬렉션', desc: '시대를 초월한 7인의 거장' },
-      oriental: { name: '동양화', desc: '천 년 동양 미술의 향기' }
+      oriental: { name: '동양화', desc: '천 년 동양 미학의 향기' }
     },
     en: {
       tagline: 'Your photo becomes a masterpiece',
@@ -96,7 +96,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           flex-direction: column;
         }
 
-        /* Header */
+        /* Header - 목업: 투명 배경 스타일 */
         .main-header {
           display: flex;
           justify-content: space-between;
@@ -105,12 +105,12 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
         }
 
         .menu-btn {
-          background: #1a1a1a;
+          background: linear-gradient(135deg, #667eea, #764ba2);
           border: none;
-          width: 44px;
-          height: 44px;
+          width: 40px;
+          height: 40px;
           border-radius: 50%;
-          font-size: 20px;
+          font-size: 18px;
           cursor: pointer;
           display: flex;
           align-items: center;
@@ -118,88 +118,26 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
         }
 
         .credits {
-          background: #1a1a1a;
-          padding: 10px 18px;
-          border-radius: 22px;
+          background: transparent;
+          padding: 8px 0;
           color: #fff;
           font-size: 15px;
           font-weight: 600;
         }
 
-        /* Menu Dropdown */
-        .menu-dropdown {
-          position: absolute;
-          top: 70px;
-          left: 16px;
-          background: #1a1a1a;
-          border-radius: 16px;
-          padding: 8px;
-          min-width: 200px;
-          z-index: 100;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-        }
-
-        .menu-item {
-          display: flex;
-          align-items: center;
-          padding: 12px 14px;
-          border-radius: 10px;
-          cursor: pointer;
-          transition: background 0.2s;
-        }
-
-        .menu-item:hover {
-          background: #2a2a2a;
-        }
-
-        .menu-icon {
-          font-size: 18px;
-          width: 28px;
-        }
-
-        .menu-label {
-          flex: 1;
-          color: #fff;
-          font-size: 14px;
-        }
-
-        .menu-arrow {
-          color: #666;
-          font-size: 16px;
-        }
-
-        .menu-divider {
-          height: 1px;
-          background: #2a2a2a;
-          margin: 8px 0;
-        }
-
-        .menu-item.danger .menu-label {
-          color: #ef4444;
-        }
-
-        .menu-backdrop {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 99;
-        }
-
         /* Branding */
         .branding {
           text-align: center;
-          padding: 32px 20px 24px;
+          padding: 28px 20px 20px;
         }
 
         .brand-icon {
-          font-size: 48px;
-          margin-bottom: 12px;
+          font-size: 42px;
+          margin-bottom: 10px;
         }
 
         .brand-title {
-          font-size: 28px;
+          font-size: 26px;
           color: #fff;
           font-weight: 700;
           margin: 0 0 8px;
@@ -212,38 +150,42 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           margin: 0;
         }
 
-        /* Category Grid */
+        /* Category Grid - 목업: 투명 카드 */
         .category-grid {
           flex: 1;
-          padding: 8px 20px 32px;
+          padding: 16px 20px 32px;
           display: flex;
           flex-direction: column;
           justify-content: center;
-          gap: 25px;
+          gap: 12px;
         }
 
         .category-card {
-          background: #1a1a1a;
+          background: transparent;
           border: none;
-          border-radius: 16px;
-          padding: 16px;
+          border-radius: 12px;
+          padding: 0;
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 14px;
           cursor: pointer;
           transition: all 0.2s;
           text-align: left;
         }
 
         .category-card:hover {
-          background: #222;
-          transform: translateX(4px);
+          background: rgba(255,255,255,0.05);
         }
 
+        .category-card:active {
+          transform: scale(0.98);
+        }
+
+        /* 썸네일 - 목업: 세로로 긴 비율 (약 3:4) */
         .card-thumbnail {
-          width: 72px;
+          width: 56px;
           height: 72px;
-          border-radius: 12px;
+          border-radius: 8px;
           overflow: hidden;
           flex-shrink: 0;
         }
@@ -258,12 +200,12 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 6px;
+          gap: 4px;
         }
 
         .card-name {
           color: #fff;
-          font-size: 17px;
+          font-size: 16px;
           font-weight: 600;
         }
 
@@ -273,9 +215,10 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
         }
 
         .card-arrow {
-          color: rgba(255,255,255,0.25);
-          font-size: 24px;
+          color: rgba(255,255,255,0.3);
+          font-size: 20px;
           font-weight: 300;
+          padding-right: 4px;
         }
 
         /* Mobile Responsive */
@@ -285,7 +228,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           }
 
           .branding {
-            padding: 24px 16px 20px;
+            padding: 20px 16px 16px;
           }
 
           .brand-title {
@@ -293,17 +236,13 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           }
 
           .category-grid {
-            padding: 8px 16px 24px;
-            gap: 20px;
-          }
-
-          .category-card {
-            padding: 14px;
+            padding: 12px 16px 24px;
+            gap: 10px;
           }
 
           .card-thumbnail {
-            width: 64px;
-            height: 64px;
+            width: 52px;
+            height: 66px;
           }
         }
       `}</style>

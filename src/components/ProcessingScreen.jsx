@@ -646,80 +646,75 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {/* 헤더 - 원클릭만 표시 (목업 준수: 단독 변환은 헤더 없음) */}
-        {isFullTransform && (
-          <div className="header">
-            <h2>{t.fullTransform}</h2>
-          </div>
-        )}
-
-        {/* 상태 */}
-        <div className="status">
-          <div className="spinner"></div>
-          <p>{statusText}</p>
-        </div>
-
-        {/* ===== 원클릭 모드 ===== */}
+        {/* ===== 원클릭 모드 (목업 05-loading-oneclick.html 준수) ===== */}
         {isFullTransform && (
           <>
+            {/* 상태 - 상단 우측 정렬 (목업 준수) */}
+            <div className="status oneclick">
+              <div className="spinner"></div>
+              <p>{statusText}</p>
+            </div>
+
             {/* 1차 교육 + Original */}
             {viewIndex === -1 && showEducation && getPrimaryEducation() && (
-              <div className="preview">
-                <img src={URL.createObjectURL(photo)} alt="Original" />
-                <div className="preview-info">
-                  <div className="preview-header">
-                    <span className="preview-icon">
-                      {getCategoryIcon(selectedStyle?.category)}
-                    </span>
-                    <div className="preview-text">
-                      <div className="preview-style">{selectedStyle?.name || (lang === 'ko' ? '전체 변환' : 'Full Transform')}</div>
-                    </div>
+              <div className="oneclick-preview">
+                <div className="img-placeholder">
+                  <img src={URL.createObjectURL(photo)} alt="Original" />
+                </div>
+                
+                {/* 스타일 정보 - 가운데 정렬 (목업 준수) */}
+                <div className="oneclick-style-info">
+                  <h3>{getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}</h3>
+                  <div className="subtitle1">
+                    {category === 'movements' ? (lang === 'ko' ? `${totalCount}개 사조 · 2,500년 미술사` : `${totalCount} movements from 2,500 years`) :
+                     category === 'masters' ? (lang === 'ko' ? `${totalCount}인의 거장` : `${totalCount} legendary artists`) :
+                     (lang === 'ko' ? `${totalCount}개국 동양화` : `${totalCount} nations of Eastern art`)}
+                  </div>
+                  <div className="subtitle2">
+                    {category === 'movements' ? (lang === 'ko' ? '미술사 여행' : 'Journey through art history') :
+                     category === 'masters' ? (lang === 'ko' ? '거장과의 대화' : 'Conversation with masters') :
+                     (lang === 'ko' ? '동양의 미학' : 'Spirit through empty space and ink')}
                   </div>
                 </div>
-                <div className="edu-card primary">
-                  <p>{getPrimaryEducation().content}</p>
-                  {completedCount > 0 && <p className="hint">{t.tapToView}</p>}
+                
+                {/* 교육 콘텐츠 - 왼쪽 정렬 (목업 준수) */}
+                <div className="oneclick-edu-content">
+                  {getPrimaryEducation().content}
                 </div>
               </div>
             )}
 
             {/* 결과 미리보기 */}
             {viewIndex >= 0 && previewResult && (
-              <div className="preview">
-                <img src={previewResult.resultUrl} alt="" />
-                <div className="preview-info">
-                  <div className="preview-header">
-                    <span className="preview-icon">
-                      {getStyleIcon(previewResult?.style?.category, previewResult?.style?.id, previewResult?.aiSelectedArtist)}
-                    </span>
-                    <div className="preview-text">
-                      <div className="preview-style">
-                        {getTitle(previewResult)}
-                      </div>
-                      {/* v74: 원클릭 결과 미리보기 3줄 표기 (result-transformed) */}
-                      {(() => {
-                        const result = previewResult;
-                        const [sub1, sub2] = getStyleSubtitles(
-                          result?.style?.category,
-                          result?.style?.id,
-                          'result-transformed',
-                          result?.aiSelectedArtist,
-                          result?.selected_work,
-                          result?.style?.name
-                        );
-                        return (
-                          <>
-                            {sub1 && <div className="preview-subtitle">{sub1}</div>}
-                            {sub2 && <div className="preview-subtitle sub2">{sub2}</div>}
-                          </>
-                        );
-                      })()}
-                    </div>
-                  </div>
+              <div className="oneclick-preview">
+                <div className="img-placeholder">
+                  <img src={previewResult.resultUrl} alt="" />
                 </div>
+                
+                <div className="oneclick-style-info">
+                  <h3>{getTitle(previewResult)}</h3>
+                  {(() => {
+                    const result = previewResult;
+                    const [sub1, sub2] = getStyleSubtitles(
+                      result?.style?.category,
+                      result?.style?.id,
+                      'result-transformed',
+                      result?.aiSelectedArtist,
+                      result?.selected_work,
+                      result?.style?.name
+                    );
+                    return (
+                      <>
+                        {sub1 && <div className="subtitle1">{sub1}</div>}
+                        {sub2 && <div className="subtitle2">{sub2}</div>}
+                      </>
+                    );
+                  })()}
+                </div>
+                
                 {previewEdu && (
-                  <div className="edu-card secondary">
-                    <p>{previewEdu.content}</p>
+                  <div className="oneclick-edu-content">
+                    {previewEdu.content}
                   </div>
                 )}
               </div>
@@ -770,7 +765,23 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                 Next ▶
               </button>
             </div>
+
+            {/* 프로그레스 섹션 - 하단 (목업 준수) */}
+            <div className="progress-section">
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: `${(completedCount / totalCount) * 100}%` }}></div>
+              </div>
+              <div className="progress-text">{statusText}</div>
+            </div>
           </>
+        )}
+
+        {/* ===== 단일 변환 모드 - 상태 표시 (가운데) ===== */}
+        {!isFullTransform && (
+          <div className="status">
+            <div className="spinner"></div>
+            <p>{statusText}</p>
+          </div>
         )}
 
         {/* ===== 단일 변환 모드 (목업 준수: 이모지 + 교육자료, 원본 이미지 없음) ===== */}
@@ -783,10 +794,10 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
             
             {/* 제목 + 부제 (가운데 정렬) */}
             <div className="single-loading-title">
-              {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name)}
+              {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}
             </div>
             {(() => {
-              const [sub1, sub2] = getStyleSubtitles(selectedStyle?.category, selectedStyle?.id, 'loading-single', null, null, selectedStyle?.name);
+              const [sub1, sub2] = getStyleSubtitles(selectedStyle?.category, selectedStyle?.id, 'loading-single', null, null, selectedStyle?.name, lang);
               return (
                 <>
                   {sub1 && <div className="single-loading-subtitle">{sub1}</div>}
@@ -815,29 +826,106 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           background: #121212;
         }
         .processing-content {
-          background: #1a1a1a;
-          padding: 24px;
+          background: #121212;
+          padding: 20px;
           border-radius: 16px;
           max-width: 500px;
           width: 100%;
-          max-height: 85vh;
+          max-height: 90vh;
           overflow-y: auto;
         }
-        .header {
+        
+        /* ===== 원클릭 로딩 스타일 (목업 05-loading-oneclick.html 준수) ===== */
+        .status.oneclick {
           display: flex;
-          justify-content: space-between;
           align-items: center;
+          justify-content: flex-end;
+          gap: 8px;
           margin-bottom: 16px;
         }
-        .header h2 { margin: 0; font-size: 18px; color: #fff; }
-        .back-btn {
-          padding: 6px 12px;
-          background: #2a2a2a;
-          border: none;
-          border-radius: 6px;
-          font-size: 13px;
-          cursor: pointer;
+        .status.oneclick p {
+          margin: 0;
+          color: rgba(255,255,255,0.5);
+          font-size: 12px;
         }
+        .status.oneclick .spinner {
+          width: 12px;
+          height: 12px;
+          border-width: 2px;
+        }
+        
+        .oneclick-preview {
+          margin-bottom: 16px;
+        }
+        .oneclick-preview .img-placeholder {
+          width: 100%;
+          aspect-ratio: 4/3;
+          background: #1a1a1a;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          margin-bottom: 16px;
+        }
+        .oneclick-preview .img-placeholder img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        
+        .oneclick-style-info {
+          text-align: center;
+          margin-bottom: 12px;
+        }
+        .oneclick-style-info h3 {
+          font-size: 17px;
+          font-weight: 700;
+          color: #fff;
+          margin: 0 0 6px;
+        }
+        .oneclick-style-info .subtitle1 {
+          font-size: 14px;
+          color: rgba(255,255,255,0.8);
+          margin-bottom: 4px;
+        }
+        .oneclick-style-info .subtitle2 {
+          font-size: 12px;
+          color: rgba(255,255,255,0.5);
+          margin-bottom: 12px;
+        }
+        
+        .oneclick-edu-content {
+          font-size: 13px;
+          color: rgba(255,255,255,0.65);
+          line-height: 1.8;
+          text-align: left;
+          white-space: pre-line;
+        }
+        
+        .progress-section {
+          margin-top: 16px;
+        }
+        .progress-bar {
+          width: 100%;
+          height: 3px;
+          background: rgba(255,255,255,0.1);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #667eea, #764ba2);
+          transition: width 0.3s;
+        }
+        .progress-text {
+          text-align: center;
+          margin-top: 8px;
+          font-size: 11px;
+          color: rgba(255,255,255,0.4);
+        }
+        
+        /* ===== 단일 변환 상태 (가운데 정렬) ===== */
         .status {
           display: flex;
           align-items: center;
@@ -848,7 +936,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .status p { margin: 0; color: rgba(255,255,255,0.6); font-size: 14px; }
         .spinner {
           width: 20px; height: 20px;
-          border: 2px solid #f3f3f3;
+          border: 2px solid rgba(255,255,255,0.2);
           border-top: 2px solid #667eea;
           border-radius: 50%;
           animation: spin 1s linear infinite;
