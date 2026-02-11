@@ -181,11 +181,11 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           transform: scale(0.98);
         }
 
-        /* 썸네일 - 목업: 세로로 긴 비율 (약 3:4) */
+        /* 썸네일 - 목업: 왼쪽만 둥글게, 오른쪽은 직각 */
         .card-thumbnail {
           width: 56px;
           height: 72px;
-          border-radius: 8px;
+          border-radius: 8px 0 0 8px;
           overflow: hidden;
           flex-shrink: 0;
         }
