@@ -2027,9 +2027,8 @@ const ResultScreen = ({
           </p>
         </div>
 
-        {/* 원클릭: viewIndex에 따라 Original/결과 표시 */}
-        {/* v72: Original 화면 - ProcessingScreen 카드형 레이아웃 */}
-        {/* v73: 통합 함수 사용 */}
+        {/* ===== 원클릭 결과 화면 (목업 07-result-oneclick.html 준수) ===== */}
+        {/* 원클릭: viewIndex === -1 → 1차 교육 + Original */}
         {isFullTransform && viewIndex === -1 && getPrimaryEducation() && (
           <div className="preview-card">
             <img src={originalPhotoUrl} alt="Original 사진" className="preview-image" />
@@ -2053,9 +2052,75 @@ const ResultScreen = ({
             </div>
           </div>
         )}
+
+        {/* 원클릭: viewIndex >= 0 → Before/After + 스타일 정보 + 교육 (목업 준수) */}
         {isFullTransform && viewIndex >= 0 && results[viewIndex] && (
-          <div className="result-image-wrapper">
-            <img src={masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl} alt="Result" className="result-image" />
+          <div className="oneclick-result-section">
+            {/* Before/After 이미지 (목업: ba-section) */}
+            <div className="ba-section">
+              <div className="ba-image">
+                <img src={originalPhotoUrl} alt="Before" />
+              </div>
+              <div className="ba-image">
+                <img src={masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl} alt="After" />
+              </div>
+            </div>
+            
+            {/* 스타일 정보 - 가운데 정렬 (목업: style-info) */}
+            <div className="oneclick-style-info">
+              <h3>
+                {(() => {
+                  const result = results[viewIndex];
+                  const category = result?.style?.category;
+                  const styleId = result?.style?.id;
+                  const artistName = result?.aiSelectedArtist || result?.style?.name;
+                  return getStyleTitle(category, styleId, artistName, lang);
+                })()}
+              </h3>
+              {(() => {
+                const result = results[viewIndex];
+                const [sub1, sub2] = getStyleSubtitles(
+                  result?.style?.category,
+                  result?.style?.id,
+                  'result-transformed',
+                  result?.aiSelectedArtist,
+                  result?.selected_work,
+                  result?.style?.name,
+                  lang
+                );
+                return (
+                  <>
+                    {sub1 && <div className="subtitle1">{sub1}</div>}
+                    {sub2 && <div className="subtitle2">{sub2}</div>}
+                  </>
+                );
+              })()}
+            </div>
+            
+            {/* 교육 섹션 (목업: edu-section) - 거장만 토글 */}
+            {displayCategory === 'masters' ? (
+              <div className="oneclick-edu-section">
+                <div className="edu-header">
+                  <button className="toggle-btn" onClick={() => setShowInfo(!showInfo)}>
+                    {showInfo ? '▼' : '▶'} {lang === 'ko' ? '숨기기' : 'Hide'}
+                  </button>
+                </div>
+                {showInfo && educationText && (
+                  <div className="edu-content">
+                    {educationText}
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* 사조/동양화는 항상 표시 */
+              educationText && (
+                <div className="oneclick-edu-section">
+                  <div className="edu-content">
+                    {educationText}
+                  </div>
+                </div>
+              )
+            )}
           </div>
         )}
 
@@ -2122,8 +2187,9 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* Toggle Button - 거장(masters)만 표시 (목업 준수) */}
-        {viewIndex >= 0 && displayCategory === 'masters' && (
+        {/* Toggle Button - 단독 변환 거장(masters)만 표시 (목업 준수) */}
+        {/* 원클릭은 oneclick-edu-section에서 자체 토글 사용 */}
+        {!isFullTransform && viewIndex >= 0 && displayCategory === 'masters' && (
           <div className="info-toggle">
             <button 
               className="toggle-button"
@@ -2137,9 +2203,10 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* v72: 결과 화면 - 2차 교육자료 */}
+        {/* v72: 결과 화면 - 2차 교육자료 (단독 변환만) */}
         {/* 목업 준수: masters는 showInfo로 토글, 사조/동양화는 항상 표시 */}
-        {viewIndex >= 0 && (displayCategory !== 'masters' || showInfo) && (
+        {/* 원클릭은 oneclick-result-section에서 교육 표시 */}
+        {!isFullTransform && viewIndex >= 0 && (displayCategory !== 'masters' || showInfo) && (
           <div className="technique-card">
             
             {/* Card Header */}
@@ -2416,6 +2483,86 @@ const ResultScreen = ({
           font-size: 1.1rem;
           opacity: 0.95;
           margin: 0;
+        }
+
+        /* ===== 원클릭 결과 화면 (목업 07-result-oneclick.html 준수) ===== */
+        .oneclick-result-section {
+          margin-bottom: 16px;
+        }
+
+        .ba-section {
+          margin-bottom: 16px;
+        }
+
+        .ba-section .ba-image {
+          width: 100%;
+          aspect-ratio: 4/3;
+          background: #1a1a1a;
+          border-radius: 12px;
+          margin-bottom: 10px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .ba-section .ba-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .oneclick-style-info {
+          text-align: center;
+          margin-bottom: 12px;
+        }
+
+        .oneclick-style-info h3 {
+          font-size: 17px;
+          font-weight: 700;
+          color: #fff;
+          margin: 0 0 6px;
+        }
+
+        .oneclick-style-info .subtitle1 {
+          font-size: 14px;
+          color: rgba(255,255,255,0.8);
+          margin-bottom: 4px;
+        }
+
+        .oneclick-style-info .subtitle2 {
+          font-size: 12px;
+          color: rgba(255,255,255,0.5);
+          margin-bottom: 10px;
+        }
+
+        .oneclick-edu-section {
+          margin-top: 12px;
+        }
+
+        .oneclick-edu-section .edu-header {
+          display: flex;
+          justify-content: flex-end;
+          margin-bottom: 8px;
+        }
+
+        .oneclick-edu-section .toggle-btn {
+          background: none;
+          border: none;
+          color: rgba(255,255,255,0.4);
+          font-size: 11px;
+          cursor: pointer;
+          padding: 4px 8px;
+        }
+
+        .oneclick-edu-section .toggle-btn:hover {
+          color: rgba(255,255,255,0.6);
+        }
+
+        .oneclick-edu-section .edu-content {
+          font-size: 13px;
+          color: rgba(255,255,255,0.65);
+          line-height: 1.75;
+          text-align: left;
+          white-space: pre-line;
         }
 
         .comparison-wrapper {
