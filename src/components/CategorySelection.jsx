@@ -157,7 +157,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           display: flex;
           flex-direction: column;
           justify-content: center;
-          gap: 12px;
+          gap: 25px;
         }
 
         .category-card {
@@ -181,11 +181,11 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           transform: scale(0.98);
         }
 
-        /* 썸네일 - 목업: 왼쪽만 둥글게, 오른쪽은 직각 */
+        /* 썸네일 - 목업: 왼쪽만 둥글게, 거의 정사각형 */
         .card-thumbnail {
-          width: 56px;
+          width: 72px;
           height: 72px;
-          border-radius: 8px 0 0 8px;
+          border-radius: 10px 0 0 10px;
           overflow: hidden;
           flex-shrink: 0;
         }
@@ -241,8 +241,8 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           }
 
           .card-thumbnail {
-            width: 52px;
-            height: 66px;
+            width: 64px;
+            height: 64px;
           }
         }
       `}</style>
