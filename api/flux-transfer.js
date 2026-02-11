@@ -779,26 +779,13 @@ ONLY "CLASSICAL SCULPTURE" or "ROMAN MOSAIC" are allowed!
 Available Ancient Greek-Roman Styles (2가지):
 
 ⭐ STYLE 1: CLASSICAL SCULPTURE (고대 그리스-로마 조각)
-   - For: INDOOR PORTRAITS or SPORTS/ACTION PHOTOS ONLY
-   - PRIORITY: Sports/athletic action OR indoor portrait settings
-   - Examples: Sports action shots (running, jumping, throwing)
-              Indoor portraits (studio, home, office settings)
-              Athletic poses, gym photos
-              Indoor group photos
-   - NOT for: Outdoor portraits, casual outdoor photos, landscapes with people
+   - ONLY FOR: SHOULDERS-UP CLOSEUP (indoor) or SPORTS/ATHLETIC photos
    - Material: Pure white marble only (classical aesthetic)
-   - Technique: Dynamic poses for sports, classical poses for indoor portraits
    - Background: Simple plain neutral background (museum-like)
    - Aesthetic: Classical Greek/Roman white marble sculpture
 
 ⭐ STYLE 2: ROMAN MOSAIC (로마 모자이크)
-   - For: ALL OTHER PHOTOS (outdoor portraits, landscapes, nature, etc.)
-   - Examples: Outdoor portraits (any setting)
-              All landscape shots (with or without people)
-              Nature scenes, flowers, plants
-              City scenes, buildings
-              Beach photos, mountain photos
-              ANY outdoor photos with people
+   - DEFAULT STYLE for most photos
    - Technique: LARGE VISIBLE tesserae tiles 50mm, THICK DARK GROUT LINES between tiles
    - CRITICAL: Each tile must be CLEARLY DISTINGUISHABLE as individual square/rectangular pieces
    - Aesthetic: Roman floor/wall mosaic with chunky stone tiles, jewel-tone colors
@@ -810,23 +797,22 @@ Available Ancient Greek-Roman Styles (2가지):
    • Four Seasons (사계절 모자이크) → Portrait busts, seasonal themes, elegant female
    • Nile Mosaic (닐 모자이크) → Landscape panorama, exotic wildlife, river scenes
 
-🎯 KEY DECISION RULE - SIMPLIFIED:
-1. SPORTS/ATHLETIC ACTION? → SCULPTURE (highest priority!)
-2. INDOOR PORTRAIT/GROUP? → SCULPTURE
-3. OUTDOOR PORTRAIT? → MOSAIC
-4. LANDSCAPE/NATURE? → MOSAIC
-5. ANY OTHER OUTDOOR SCENE? → MOSAIC
+🎯 KEY DECISION RULE - PRIORITY ORDER:
+1. OUTDOOR photo (any)? → MOSAIC 100% (no exception)
+2. SHOULDERS-UP CLOSEUP (indoor, face/head only, no torso visible)? → Choose SCULPTURE or MOSAIC based on which fits better
+3. SPORTS/ATHLETIC photo (indoor or outdoor)? → Choose SCULPTURE or MOSAIC based on which fits better
+4. ALL OTHER photos? → MOSAIC 100%
 
 Examples:
-- Volleyball game = SCULPTURE (sports action)
-- Indoor portrait at home = SCULPTURE (indoor setting)
-- Gym workout = SCULPTURE (athletic/indoor)
-- Office team photo = SCULPTURE (indoor group)
-- Couple at beach = MOSAIC (outdoor portrait)
-- Person in garden = MOSAIC (outdoor setting)
-- Mountain hiking = MOSAIC (outdoor landscape)
-- Street portrait = MOSAIC (outdoor)
-- Sunflower = MOSAIC (nature)
+- Beach portrait = MOSAIC (outdoor = always mosaic)
+- Park selfie = MOSAIC (outdoor = always mosaic)
+- Mountain hiking = MOSAIC (outdoor = always mosaic)
+- Indoor face closeup = SCULPTURE or MOSAIC (AI decides which fits better)
+- Studio headshot = SCULPTURE or MOSAIC (AI decides which fits better)
+- Volleyball game = SCULPTURE or MOSAIC (AI decides which fits better)
+- Gym workout = SCULPTURE or MOSAIC (AI decides which fits better)
+- Indoor full body = MOSAIC (not closeup, not sports)
+- Office team photo = MOSAIC (not closeup, not sports)
 `;
 }
 
@@ -1408,7 +1394,7 @@ function getModernismHints(photoAnalysis) {
 const fallbackPrompts = {
   ancient: {
     name: '그리스·로마',
-    prompt: 'Transform this image into ancient Greek-Roman art. STRICT RULES: 1) ANY SPORTS/ATHLETIC ACTION (soccer, football, running, jumping, throwing, catching ball, ANY physical activity) → ALWAYS Greek/Roman MARBLE SCULPTURE in style of Discobolus or ancient Olympic athletes, pure white Carrara marble with visible carved muscles and dynamic frozen movement, classical athletic proportions, museum display style. CRITICAL: Ball games = SCULPTURE, NOT mosaic. 2) INDOOR PORTRAITS (no sports) → Greek/Roman marble sculpture with classical poses, ENTIRE FIGURE INCLUDING ALL CLOTHING must be PURE WHITE MARBLE, NO colored clothing, convert ALL fabric to carved white marble drapery folds. 3) OUTDOOR SCENES WITHOUT SPORTS → Roman mosaic with LARGE CHUNKY TESSERAE TILES 50mm, THICK BLACK GROUT LINES clearly visible between EVERY tile, LIMITED COLORS (terracotta, ochre, umber, ivory, slate blue), Pompeii villa floor style. PRIORITY: Sports/athletic = ALWAYS SCULPTURE regardless of indoor/outdoor. CRITICAL FOR ALL SCULPTURES: Convert ALL clothing colors to pure white marble, no original clothing colors preserved, entire figure is carved from single block of white Carrara marble. MANDATORY: ALL nipples and private areas must be covered with carved marble fabric draping or strategic arm positioning. Ancient masterpiece quality'
+    prompt: 'Transform this image into ancient Greek-Roman art. RULES: 1) OUTDOOR photos (any outdoor setting) → ALWAYS Roman mosaic with LARGE CHUNKY TESSERAE TILES 50mm, THICK BLACK GROUT LINES clearly visible between EVERY tile, LIMITED COLORS (terracotta, ochre, umber, ivory, slate blue), Pompeii villa floor style. 2) SHOULDERS-UP CLOSEUP (indoor, face only, no torso) → Greek/Roman MARBLE SCULPTURE OR Roman mosaic (choose which fits better), pure white Carrara marble with classical proportions, museum display style. 3) SPORTS/ATHLETIC activity → MARBLE SCULPTURE OR Roman mosaic (choose which fits better). 4) ALL OTHER photos → Roman mosaic. CRITICAL FOR SCULPTURES: ENTIRE FIGURE INCLUDING ALL CLOTHING must be PURE WHITE MARBLE, convert ALL fabric to carved white marble drapery folds. MANDATORY: ALL nipples and private areas must be covered with carved marble fabric draping. Ancient masterpiece quality'
   },
   
   medieval: {
@@ -1632,7 +1618,14 @@ Return ONLY valid JSON (no markdown):
   "selected_artist": "${categoryName}",
   "selected_work": "exact title of the masterwork you selected",
   "reason": "why this masterwork matches this photo (mention gender/count compatibility)",
-  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by ${categoryName} in the style of [selected work title], [that work's distinctive techniques]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background'"
+  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by ${categoryName} in the style of [selected work title], [that work's distinctive techniques]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background'",
+  "speech_bubble": "If LICHTENSTEIN: select ONE phrase from list below based on selected_work and photo mood. First option is ORIGINAL artwork text (preferred). STILLLIFE has no speech bubble.
+INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
+MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
+FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'
+OHHHALRIGHT: 'OH, ALRIGHT...' | 'FINE, IF YOU INSIST...' | 'I GUESS SO...' | 'OKAY, YOU WIN...' | 'WHATEVER YOU SAY...' | 'IF THATS WHAT YOU WANT...' | 'ALRIGHT, ALRIGHT...' | 'I SUPPOSE SO...' | 'HAVE IT YOUR WAY...' | 'SIGH... OKAY...' | 'VERY WELL THEN...' | 'AS YOU WISH...' | 'ILL DO IT...' | 'YOU ALWAYS GET YOUR WAY...' | 'FINE BY ME...'
+STILLLIFE: null
+Otherwise: null"
 }`;
         
       } else {
@@ -1952,19 +1945,17 @@ ${ancientMasterworkGuide}
 ${hints}
 
 Instructions - PRIORITY ORDER:
-1. FIRST check: Are there ANIMALS in this photo?
-   - Dogs, cats, horses, birds, fish, any animals → ROMAN MOSAIC
-   - Historical accuracy: Romans excelled at animal mosaics (Pompeii Cave Canem)
-   - Animals = MOSAIC priority!
-2. SECOND check: Is there DYNAMIC MOVEMENT/ACTION/SPORTS in this photo?
-   - If YES → CLASSICAL SCULPTURE (even if landscape/stadium visible!)
-   - Sports, jumping, running, athletic action = SCULPTURE priority!
-3. THIRD check: Is it a STATIC photo WITH landscape/nature elements?
-   - If YES → ROMAN MOSAIC
-4. FOURTH: Portrait without landscape → CLASSICAL SCULPTURE
+1. FIRST check: Is this an OUTDOOR photo (any outdoor setting)?
+   - If YES → ROMAN MOSAIC 100% (no exception!)
+   - Beach, park, street, mountain, garden = MOSAIC
+2. SECOND check: Is this a SHOULDERS-UP CLOSEUP (indoor, face/head only, no torso visible)?
+   - If YES → Choose SCULPTURE or MOSAIC based on which fits the photo better
+3. THIRD check: Is there SPORTS/ATHLETIC activity?
+   - If YES → Choose SCULPTURE or MOSAIC based on which fits the photo better
+4. FOURTH: ALL OTHER photos (indoor full body, groups, etc.)
+   - → ROMAN MOSAIC 100%
 5. If ROMAN MOSAIC selected, also choose the BEST MASTERWORK from the list above
-6. Follow RECOMMENDATIONS (80% weight)
-7. Preserve subject identity
+6. Preserve subject identity
 
 Return JSON only:
 {
@@ -2047,7 +2038,13 @@ Return JSON only:
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "Artist Full Name",
   "selected_work": "EXACT masterwork title from the list above",
-  "speech_bubble": "If LICHTENSTEIN selected: short 1-4 word phrase matching photo mood (e.g. 'WOW!', 'I LOVE YOU!', 'WHAT?!'). If other artist: null",
+  "speech_bubble": "If LICHTENSTEIN selected: select ONE phrase from list below based on selected_work and photo mood. First option is ORIGINAL artwork text (preferred). STILLLIFE has no speech bubble.
+INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
+MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
+FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'
+OHHHALRIGHT: 'OH, ALRIGHT...' | 'FINE, IF YOU INSIST...' | 'I GUESS SO...' | 'OKAY, YOU WIN...' | 'WHATEVER YOU SAY...' | 'IF THATS WHAT YOU WANT...' | 'ALRIGHT, ALRIGHT...' | 'I SUPPOSE SO...' | 'HAVE IT YOUR WAY...' | 'SIGH... OKAY...' | 'VERY WELL THEN...' | 'AS YOU WISH...' | 'ILL DO IT...' | 'YOU ALWAYS GET YOUR WAY...' | 'FINE BY ME...'
+STILLLIFE: null
+If other artist: null",
   "reason": "why this artist AND this masterwork fit (1 sentence)",
   "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by [Artist] in the style of [selected_work], [that work's distinctive techniques and colors]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background, keep background CLEAN'"
 }`;
@@ -2120,7 +2117,8 @@ Return JSON only:
         age_range: result.age_range || null,
         physical_description: result.physical_description || null,
         person_count: result.person_count || null,
-        background_type: result.background_type || null
+        background_type: result.background_type || null,
+        speech_bubble: result.speech_bubble || null  // v77: 리히텐슈타인 말풍선
       }
     };
     
@@ -2140,6 +2138,9 @@ function buildIdentityPrompt(visionAnalysis) {
   }
   
   const parts = [];
+  
+  // 환각 방지 (최우선 - 맨 앞)
+  parts.push('Paint only what exists in the original photo');
   
   // 성별 강조 (가장 중요)
   if (visionAnalysis.gender === 'male') {
@@ -2169,6 +2170,21 @@ function buildIdentityPrompt(visionAnalysis) {
     parts.push('MALES MUST STAY MASCULINE, FEMALES MUST STAY FEMININE, PRESERVE EACH GENDER EXACTLY');
   }
   
+  // 민족성 (매우 중요! - 성별 다음 우선)
+  if (visionAnalysis.ethnicity) {
+    const ethnicityMap = {
+      'asian': 'ASIAN PERSON with East Asian facial features, warm skin tone, dark eyes',
+      'caucasian': 'CAUCASIAN PERSON with European facial features, light skin tone',
+      'african': 'AFRICAN PERSON with African facial features, dark skin tone, dark eyes',
+      'hispanic': 'HISPANIC/LATINO PERSON with Latin American features, tan to brown skin tone, dark eyes',
+      'middle_eastern': 'MIDDLE EASTERN PERSON with Middle Eastern facial features, olive to tan skin tone, dark eyes',
+      'mixed': 'MIXED ETHNICITY PERSON preserving original features and skin tone'
+    };
+    const ethnicDesc = ethnicityMap[visionAnalysis.ethnicity] || `${visionAnalysis.ethnicity} ethnicity`;
+    parts.push(ethnicDesc);
+    parts.push('MUST KEEP EXACT SAME SKIN COLOR AND TONE, MUST PRESERVE ALL RACIAL FEATURES');
+  }
+  
   // 나이
   if (visionAnalysis.age_range) {
     const ageMap = {
@@ -2188,20 +2204,8 @@ function buildIdentityPrompt(visionAnalysis) {
     parts.push(visionAnalysis.hair);
   }
   
-  // 민족성 (매우 중요!)
-  if (visionAnalysis.ethnicity) {
-    const ethnicityMap = {
-      'asian': 'ASIAN PERSON with East Asian facial features, warm skin tone, dark eyes',
-      'caucasian': 'CAUCASIAN PERSON with European facial features, light skin tone',
-      'african': 'AFRICAN PERSON with African facial features, dark skin tone, dark eyes',
-      'hispanic': 'HISPANIC/LATINO PERSON with Latin American features, tan to brown skin tone, dark eyes',
-      'middle_eastern': 'MIDDLE EASTERN PERSON with Middle Eastern facial features, olive to tan skin tone, dark eyes',
-      'mixed': 'MIXED ETHNICITY PERSON preserving original features and skin tone'
-    };
-    const ethnicDesc = ethnicityMap[visionAnalysis.ethnicity] || `${visionAnalysis.ethnicity} ethnicity`;
-    parts.push(ethnicDesc);
-    parts.push('MUST KEEP EXACT SAME SKIN COLOR AND TONE, MUST PRESERVE ALL RACIAL FEATURES');
-  }
+  // 노출 방지 (공통, 남녀 모두)
+  parts.push('Attire fully covering chest');
   
   return parts.join(', ');
 }
@@ -3352,17 +3356,8 @@ export default async function handler(req, res) {
     }
 
     // ========================================
-    // v77: 고대/중세 + 여성 의상 강조 (노출 방지)
+    // v78: 노출 방지 → ① buildIdentityPrompt로 이동 (전체 적용)
     // ========================================
-    const isAncientMedieval = categoryType === 'ancient' || categoryType === 'medieval' || 
-                              finalPrompt.toLowerCase().includes('mosaic') || 
-                              finalPrompt.toLowerCase().includes('marble') ||
-                              finalPrompt.toLowerCase().includes('byzantine');
-    const isFemale = logData.vision?.gender === 'female';
-    
-    if (isAncientMedieval && isFemale) {
-      finalPrompt = finalPrompt + `. CRITICAL FOR FEMALE SUBJECT: Entire chest and torso MUST be FULLY COVERED with draped fabric, toga, stola, or robes. NO exposed skin on chest area. Modest dignified classical attire.`;
-    }
 
     // console.log('Final prompt:', finalPrompt);
     
@@ -3395,10 +3390,7 @@ export default async function handler(req, res) {
     // 고통/왜곡이 핵심인 작품은 제외
     // ========================================
     const excludeAttractive = [
-      'munch-scream',      // 절규 - 공포/불안 왜곡
-      'picasso-guernica',  // 게르니카 - 전쟁 참상
-      'picasso-weepingwoman', // 우는 여인 - 슬픔 왜곡
-      'frida-brokencolumn' // 부러진 기둥 - 고통 시각화
+      'munch-scream'      // 절규 - 공포/불안 왜곡
     ];
     
     // v66: artistEnhancements.js 삭제됨 - excludeAttractive 리스트만 사용

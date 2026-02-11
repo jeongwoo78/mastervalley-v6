@@ -94,7 +94,11 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
       const results = [];
       for (let i = 0; i < styles.length; i++) {
         const style = styles[i];
-        setStatusText(`${style.name} ${t.inProgress} [${i + 1}/${totalCount}]`);
+        // 목업 기준 진행 메시지: "X master in progress..." / "Van Gogh in progress..."
+        const progressName = category === 'masters' 
+          ? style.name  // 거장: "Van Gogh in progress..."
+          : `${style.name} master`;  // 사조/동양화: "Impressionism master in progress..."
+        setStatusText(`${progressName} ${t.inProgress} [${i + 1}/${totalCount}]`);
         
         const result = await processSingleStyle(style, i, totalCount);
         results.push(result);
@@ -642,10 +646,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {/* 헤더 */}
-        <div className="header">
-          <h2>{isFullTransform ? t.fullTransform : t.processing}</h2>
-        </div>
+        {/* 헤더 - 원클릭만 표시 (목업 준수: 단독 변환은 헤더 없음) */}
+        {isFullTransform && (
+          <div className="header">
+            <h2>{t.fullTransform}</h2>
+          </div>
+        )}
 
         {/* 상태 */}
         <div className="status">
@@ -767,34 +773,31 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           </>
         )}
 
-        {/* ===== 단일 변환 모드 ===== */}
+        {/* ===== 단일 변환 모드 (목업 준수: 이모지 + 교육자료, 원본 이미지 없음) ===== */}
         {!isFullTransform && showEducation && (
-          <div className="preview">
-            <img src={URL.createObjectURL(photo)} alt="Original" />
-            <div className="preview-info">
-              <div className="preview-header">
-                <span className="preview-icon">
-                  {getStyleIcon(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name)}
-                </span>
-                <div className="preview-text">
-                  <div className="preview-style">
-                    {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name)}
-                  </div>
-                  {/* v74: 단독 변환중 3줄 표기 */}
-                  {(() => {
-                    const [sub1, sub2] = getStyleSubtitles(selectedStyle?.category, selectedStyle?.id, 'loading-single', null, null, selectedStyle?.name);
-                    return (
-                      <>
-                        {sub1 && <div className="preview-subtitle">{sub1}</div>}
-                        {sub2 && <div className="preview-subtitle sub2">{sub2}</div>}
-                      </>
-                    );
-                  })()}
-                </div>
-              </div>
+          <div className="single-loading-container">
+            {/* 큰 이모지 아이콘 */}
+            <div className="single-loading-icon">
+              {getStyleIcon(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name)}
             </div>
+            
+            {/* 제목 + 부제 (가운데 정렬) */}
+            <div className="single-loading-title">
+              {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name)}
+            </div>
+            {(() => {
+              const [sub1, sub2] = getStyleSubtitles(selectedStyle?.category, selectedStyle?.id, 'loading-single', null, null, selectedStyle?.name);
+              return (
+                <>
+                  {sub1 && <div className="single-loading-subtitle">{sub1}</div>}
+                  {sub2 && <div className="single-loading-subtitle sub2">{sub2}</div>}
+                </>
+              );
+            })()}
+            
+            {/* 교육 콘텐츠 (투명 배경, 왼쪽 정렬) */}
             {getSingleEducationContent(selectedStyle) && (
-              <div className="edu-card primary">
+              <div className="single-loading-edu">
                 <p>{getSingleEducationContent(selectedStyle).desc}</p>
               </div>
             )}
@@ -858,17 +861,58 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           margin: 16px 0;
         }
         .edu-card.primary {
-          background: rgba(102,126,234,0.1);
-          border-left: 3px solid #667eea;
+          background: transparent;
         }
         .edu-card.secondary {
-          background: rgba(76,175,80,0.1);
-          border-left: 3px solid #4CAF50;
+          background: transparent;
         }
         .edu-card h3 { color: #667eea; margin: 0 0 10px; font-size: 15px; }
         .edu-card h4 { color: #4CAF50; margin: 0 0 8px; font-size: 14px; }
-        .edu-card p { color: #fff; line-height: 1.6; font-size: 13px; margin: 0; white-space: pre-line; }
+        .edu-card p { color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 13px; margin: 0; white-space: pre-line; }
         .hint { color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 12px !important; }
+        
+        /* 단독 로딩 화면 (목업 준수: 이모지 중심) */
+        .single-loading-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px 0;
+        }
+        .single-loading-icon {
+          font-size: 4rem;
+          margin-bottom: 16px;
+        }
+        .single-loading-title {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: #fff;
+          margin-bottom: 8px;
+          text-align: center;
+        }
+        .single-loading-subtitle {
+          font-size: 0.95rem;
+          color: rgba(255,255,255,0.7);
+          margin-bottom: 4px;
+          text-align: center;
+        }
+        .single-loading-subtitle.sub2 {
+          font-size: 0.85rem;
+          color: rgba(255,255,255,0.5);
+          margin-bottom: 16px;
+        }
+        .single-loading-edu {
+          width: 100%;
+          padding: 16px;
+          margin-top: 16px;
+          text-align: left;
+        }
+        .single-loading-edu p {
+          color: rgba(255,255,255,0.65);
+          line-height: 1.8;
+          font-size: 13px;
+          margin: 0;
+          white-space: pre-line;
+        }
         
         .preview { background: #1a1a1a; border-radius: 12px; overflow: hidden; margin: 16px 0; }
         .preview img { width: 100%; display: block; }

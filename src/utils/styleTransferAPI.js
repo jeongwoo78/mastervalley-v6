@@ -43,42 +43,42 @@ const resizeImage = async (file, maxWidth = 1024) => {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// 리히텐슈타인용 검은 프레임 추가
-const addBlackFrame = async (imageUrl, frameWidth = 20) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      
-      // 캔버스 크기 = 원본 + 프레임 (양쪽)
-      canvas.width = img.width + (frameWidth * 2);
-      canvas.height = img.height + (frameWidth * 2);
-      
-      // 검은 배경으로 채우기
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      // 중앙에 원본 이미지 배치
-      ctx.drawImage(img, frameWidth, frameWidth);
-      
-      // Blob으로 변환
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const framedUrl = URL.createObjectURL(blob);
-          resolve({ url: framedUrl, blob });
-        } else {
-          reject(new Error('Failed to create framed image'));
-        }
-      }, 'image/png');
-    };
-    
-    img.onerror = () => reject(new Error('Failed to load image for framing'));
-    img.src = imageUrl;
-  });
-};
+// v78: 리히텐슈타인 프레임은 프롬프트로만 처리 (후처리 함수 비활성화)
+// const addBlackFrame = async (imageUrl, frameWidth = 20) => {
+//   return new Promise((resolve, reject) => {
+//     const img = new Image();
+//     img.crossOrigin = 'anonymous';
+//     
+//     img.onload = () => {
+//       const canvas = document.createElement('canvas');
+//       const ctx = canvas.getContext('2d');
+//       
+//       // 캔버스 크기 = 원본 + 프레임 (양쪽)
+//       canvas.width = img.width + (frameWidth * 2);
+//       canvas.height = img.height + (frameWidth * 2);
+//       
+//       // 검은 배경으로 채우기
+//       ctx.fillStyle = '#000000';
+//       ctx.fillRect(0, 0, canvas.width, canvas.height);
+//       
+//       // 중앙에 원본 이미지 배치
+//       ctx.drawImage(img, frameWidth, frameWidth);
+//       
+//       // Blob으로 변환
+//       canvas.toBlob((blob) => {
+//         if (blob) {
+//           const framedUrl = URL.createObjectURL(blob);
+//           resolve({ url: framedUrl, blob });
+//         } else {
+//           reject(new Error('Failed to create framed image'));
+//         }
+//       }, 'image/png');
+//     };
+//     
+//     img.onerror = () => reject(new Error('Failed to load image for framing'));
+//     img.src = imageUrl;
+//   });
+// };
 
 const getModelForStyle = (style) => {
   const model = style.model || 'SDXL';
@@ -263,20 +263,8 @@ export const processStyleTransfer = async (photoFile, selectedStyle, correctionP
     let localUrl = URL.createObjectURL(blob);
     let finalBlob = blob;
 
-    // 리히텐슈타인이면 검은 프레임 추가
-    const artistLower = (aiSelectionInfo.artist || '').toLowerCase();
-    if (artistLower.includes('lichtenstein') || artistLower.includes('리히텐슈타인')) {
-      try {
-        if (onProgress) onProgress('Adding frame...');
-        const framed = await addBlackFrame(localUrl, 20);
-        URL.revokeObjectURL(localUrl); // 이전 URL 해제
-        localUrl = framed.url;
-        finalBlob = framed.blob;
-        console.log('🖼️ 리히텐슈타인 검은 프레임 추가 완료');
-      } catch (frameError) {
-        console.warn('⚠️ 프레임 추가 실패, 원본 사용:', frameError);
-      }
-    }
+    // v78: 리히텐슈타인 프레임은 프롬프트로만 처리 (후처리 제거)
+    // 프롬프트: "Thick black comic panel border frames the image"
 
     // console.log('✅ Using AI info from FIRST response:', aiSelectionInfo.artist, aiSelectionInfo.work);
 

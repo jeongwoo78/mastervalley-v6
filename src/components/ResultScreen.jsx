@@ -167,8 +167,9 @@ const ResultScreen = ({
   }, [originalPhoto]);
   
   // v72: viewIndex - Original/결과 스와이프용 (-1: Original, 0~n: 결과)
-  // 초기값: currentIndex와 동기화 (갤러리 갔다와도 유지)
-  const [viewIndex, setViewIndex] = useState(appCurrentIndex || 0);
+  // 단독 변환: 항상 0 (결과만 표시, 목업 준수)
+  // 원클릭: currentIndex와 동기화
+  const [viewIndex, setViewIndex] = useState(isFullTransform ? (appCurrentIndex || 0) : 0);
   
   // viewIndex가 결과 범위를 벗어나지 않도록 보정 (-1은 Original이므로 허용)
   const maxViewIndex = isFullTransform 
@@ -2121,8 +2122,8 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* Toggle Button - 결과 화면에서만 표시 */}
-        {viewIndex >= 0 && (
+        {/* Toggle Button - 거장(masters)만 표시 (목업 준수) */}
+        {viewIndex >= 0 && displayCategory === 'masters' && (
           <div className="info-toggle">
             <button 
               className="toggle-button"
@@ -2136,8 +2137,9 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* v72: 결과 화면 - 2차 교육자료 (기존) */}
-        {viewIndex >= 0 && showInfo && (
+        {/* v72: 결과 화면 - 2차 교육자료 */}
+        {/* 목업 준수: masters는 showInfo로 토글, 사조/동양화는 항상 표시 */}
+        {viewIndex >= 0 && (displayCategory !== 'masters' || showInfo) && (
           <div className="technique-card">
             
             {/* Card Header */}
@@ -2312,35 +2314,8 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* 단독 변환 네비게이션 */}
-        {!isFullTransform && (
-          <div className="fullTransform-nav">
-            <button 
-              onClick={() => setViewIndex(-1)}
-              disabled={viewIndex === -1}
-              className="nav-btn"
-            >
-              ◀ 이전
-            </button>
-            <div className="nav-dots">
-              <button
-                className={`nav-dot ${viewIndex === -1 ? 'active' : ''}`}
-                onClick={() => setViewIndex(-1)}
-              />
-              <button
-                className={`nav-dot ${viewIndex === 0 ? 'active' : ''}`}
-                onClick={() => setViewIndex(0)}
-              />
-            </div>
-            <button 
-              onClick={() => setViewIndex(0)}
-              disabled={viewIndex === 0}
-              className="nav-btn"
-            >
-              다음 ▶
-            </button>
-          </div>
-        )}
+        {/* 단독 변환 네비게이션 - 목업 준수: 제거됨 */}
+        {/* 단독 변환은 네비게이션 없음 */}
 
         {/* Action Buttons */}
         <div className="action-buttons">
@@ -2999,8 +2974,7 @@ const ResultScreen = ({
           margin: 0;
         }
         .preview-card .edu-card.primary {
-          background: linear-gradient(135deg, #fff5f5, #ffe5e5);
-          border-left: 3px solid #667eea;
+          background: transparent;
         }
         .preview-card .edu-card h3 {
           color: #667eea;
@@ -3008,8 +2982,8 @@ const ResultScreen = ({
           font-size: 15px;
         }
         .preview-card .edu-card p {
-          color: #fff;
-          line-height: 1.6;
+          color: rgba(255,255,255,0.65);
+          line-height: 1.8;
           font-size: 13px;
           margin: 0;
           white-space: pre-line;

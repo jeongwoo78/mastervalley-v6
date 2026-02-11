@@ -613,6 +613,7 @@ const styles = {
     width: '100%',
     aspectRatio: '1',
     objectFit: 'cover',
+    objectPosition: 'top',
     display: 'block',
   },
   

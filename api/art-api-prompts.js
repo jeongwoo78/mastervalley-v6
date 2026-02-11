@@ -11,6 +11,204 @@
 
 
 // ═══════════════════════════════════════════════════════════════════
+// ⚙️ 화가별 설정 (수정하기 쉬운 위치)
+// ═══════════════════════════════════════════════════════════════════
+// control_strength: 원본 구도 유지 정도 (0.0~1.0, 높을수록 원본 유지)
+// brush_size: 붓터치 크기 (null = 붓터치 없음)
+// ═══════════════════════════════════════════════════════════════════
+
+export const ARTIST_CONFIG = {
+  // === 고대/중세 ===
+  'classical-sculpture': { control_strength: 0.55, brush_size: null },
+  'sculpture':           { control_strength: 0.55, brush_size: null },
+  'roman-mosaic':        { control_strength: 0.60, brush_size: '75mm' },
+  'mosaic':              { control_strength: 0.60, brush_size: '75mm' },
+  'byzantine':           { control_strength: 0.60, brush_size: null },
+  'gothic':              { control_strength: 0.50, brush_size: null },
+  'islamic-miniature':   { control_strength: 0.80, brush_size: '25mm' },
+  
+  // === 르네상스 ===
+  'botticelli':          { control_strength: 0.70, brush_size: '75mm' },
+  'leonardo':            { control_strength: 0.65, brush_size: '75mm' },
+  'titian':              { control_strength: 0.70, brush_size: '75mm' },
+  'michelangelo':        { control_strength: 0.70, brush_size: '75mm' },
+  'raphael':             { control_strength: 0.70, brush_size: '75mm' },
+  
+  // === 바로크 ===
+  'caravaggio':          { control_strength: 0.50, brush_size: '75mm' },
+  'rubens':              { control_strength: 0.50, brush_size: '90mm' },
+  'rembrandt':           { control_strength: 0.50, brush_size: '75mm' },
+  'velazquez':           { control_strength: 0.50, brush_size: '75mm' },
+  
+  // === 로코코 ===
+  'watteau':             { control_strength: 0.45, brush_size: '75mm' },
+  'boucher':             { control_strength: 0.45, brush_size: '75mm' },
+  
+  // === 신고전/낭만/사실 ===
+  'david':               { control_strength: 0.50, brush_size: '75mm' },
+  'ingres':              { control_strength: 0.45, brush_size: '75mm' },
+  'turner':              { control_strength: 0.45, brush_size: '75mm' },
+  'delacroix':           { control_strength: 0.50, brush_size: '90mm' },
+  'courbet':             { control_strength: 0.50, brush_size: '75mm' },
+  'manet':               { control_strength: 0.50, brush_size: '75mm' },
+  
+  // === 인상주의 ===
+  'renoir':              { control_strength: 0.30, brush_size: '75mm' },
+  'monet':               { control_strength: 0.30, brush_size: '75mm' },
+  'degas':               { control_strength: 0.50, brush_size: '75mm' },
+  'caillebotte':         { control_strength: 0.50, brush_size: '75mm' },
+  
+  // === 후기인상주의 ===
+  'vangogh':             { control_strength: 0.45, brush_size: '75mm' },
+  'gauguin':             { control_strength: 0.60, brush_size: '75mm' },
+  'cezanne':             { control_strength: 0.65, brush_size: '75mm' },
+  
+  // === 야수파 ===
+  'matisse':             { control_strength: 0.45, brush_size: '75mm' },
+  'derain':              { control_strength: 0.45, brush_size: '90mm' },
+  'vlaminck':            { control_strength: 0.45, brush_size: '100mm' },
+  
+  // === 표현주의 ===
+  'munch':               { control_strength: 0.40, brush_size: '100mm' },
+  'kirchner':            { control_strength: 0.10, brush_size: '100mm' },
+  'kokoschka':           { control_strength: 0.10, brush_size: '100mm' },
+  
+  // === 모더니즘/팝아트 ===
+  'picasso':             { control_strength: 0.10, brush_size: '75mm' },
+  'magritte':            { control_strength: 0.40, brush_size: '75mm' },
+  'miro':                { control_strength: 0.40, brush_size: '75mm' },
+  'chagall':             { control_strength: 0.40, brush_size: '75mm' },
+  'lichtenstein':        { control_strength: 0.30, brush_size: null },
+  
+  // === 거장 ===
+  'klimt':               { control_strength: 0.65, brush_size: '40mm' },
+  'frida':               { control_strength: 0.80, brush_size: '25mm' },
+  
+  // === 동양화 ===
+  'korean':              { control_strength: 0.75, brush_size: null },
+  'chinese':             { control_strength: 0.75, brush_size: null },
+  'japanese':            { control_strength: 0.75, brush_size: null },
+};
+
+
+// ═══════════════════════════════════════════════════════════════════
+// 사조별 기본값 (화가 매칭 안 될 때 fallback)
+// ═══════════════════════════════════════════════════════════════════
+export const MOVEMENT_DEFAULTS = {
+  'ancient-greek-sculpture':              { control_strength: 0.55, brush_size: null },
+  'roman-mosaic':                         { control_strength: 0.60, brush_size: '75mm' },
+  'byzantine':                            { control_strength: 0.55, brush_size: null },
+  'islamic-miniature':                    { control_strength: 0.80, brush_size: '25mm' },
+  'gothic':                               { control_strength: 0.50, brush_size: null },
+  'renaissance':                          { control_strength: 0.80, brush_size: '75mm' },
+  'baroque':                              { control_strength: 0.70, brush_size: '75mm' },
+  'rococo':                               { control_strength: 0.70, brush_size: '75mm' },
+  'neoclassicism':                        { control_strength: 0.80, brush_size: '75mm' },
+  'neoclassicism_vs_romanticism_vs_realism': { control_strength: 0.80, brush_size: '75mm' },
+  'romanticism':                          { control_strength: 0.80, brush_size: '75mm' },
+  'impressionism':                        { control_strength: 0.60, brush_size: '75mm' },
+  'post-impressionism':                   { control_strength: 0.55, brush_size: '75mm' },
+  'pointillism':                          { control_strength: 0.55, brush_size: '25mm' },
+  'fauvism':                              { control_strength: 0.45, brush_size: '75mm' },
+  'expressionism':                        { control_strength: 0.45, brush_size: '75mm' },
+  'modernism':                            { control_strength: 0.50, brush_size: '75mm' },
+  'korean':                               { control_strength: 0.75, brush_size: null },
+  'chinese':                              { control_strength: 0.75, brush_size: null },
+  'japanese':                             { control_strength: 0.75, brush_size: null },
+};
+
+
+// ═══════════════════════════════════════════════════════════════════
+// 텍스처 상수
+// ═══════════════════════════════════════════════════════════════════
+export const PAINT_TEXTURE = ' MUST look like HAND-PAINTED oil painting with VISIBLE THICK BRUSHSTROKES (20mm or thicker on subject).';
+export const VINTAGE_TEXTURE = '';
+export const EXCLUDE_VINTAGE = [
+  'classical-sculpture', 'roman-mosaic', 'byzantine', 'gothic', 'islamic-miniature', 'lichtenstein'
+];
+
+
+// ═══════════════════════════════════════════════════════════════════
+// 화가명 정규화 매핑
+// ═══════════════════════════════════════════════════════════════════
+export const ARTIST_NAME_MAPPING = {
+  'leonardodavinci': 'leonardo', 'davinci': 'leonardo', '레오나르도': 'leonardo', '다빈치': 'leonardo', '레오나르도다빈치': 'leonardo',
+  'vincentvangogh': 'vangogh', 'vincent': 'vangogh', 'gogh': 'vangogh', '반고흐': 'vangogh', '고흐': 'vangogh', '빈센트': 'vangogh', '빈센트반고흐': 'vangogh',
+  'pierreaugusterenoir': 'renoir', '르누아르': 'renoir', '피에르오귀스트르누아르': 'renoir',
+  'claudemonet': 'monet', '모네': 'monet', '클로드모네': 'monet',
+  'edgardegas': 'degas', '드가': 'degas', '에드가드가': 'degas',
+  'gustavecaillebotte': 'caillebotte', '카유보트': 'caillebotte', '귀스타브카유보트': 'caillebotte',
+  'paulcezanne': 'cezanne', '세잔': 'cezanne', '폴세잔': 'cezanne',
+  'henrimatisse': 'matisse', '마티스': 'matisse', '앙리마티스': 'matisse',
+  'andrederain': 'derain', '드랭': 'derain',
+  'mauricedevlaminck': 'vlaminck', '블라맹크': 'vlaminck',
+  'edvardmunch': 'munch', '뭉크': 'munch', '에드바르뭉크': 'munch',
+  'ernstludwigkirchner': 'kirchner', '키르히너': 'kirchner',
+  'oskarkokoschka': 'kokoschka', '코코슈카': 'kokoschka',
+  'pablopicasso': 'picasso', '피카소': 'picasso', '파블로피카소': 'picasso',
+  'renemagritte': 'magritte', '마그리트': 'magritte', '르네마그리트': 'magritte',
+  'joanmiro': 'miro', '미로': 'miro', '호안미로': 'miro',
+  'marcchagall': 'chagall', '샤갈': 'chagall', '마르크샤갈': 'chagall',
+  'roylichtenstein': 'lichtenstein', '리히텐슈타인': 'lichtenstein', '로이리히텐슈타인': 'lichtenstein',
+  'gustavklimt': 'klimt', '클림트': 'klimt', '구스타프클림트': 'klimt',
+  'fridakahlo': 'frida', '프리다': 'frida', '프리다칼로': 'frida',
+  'antoinewatteau': 'watteau', '와토': 'watteau',
+  'francoisboucher': 'boucher', '부셰': 'boucher',
+  'jacqueslouisdavid': 'david', '다비드': 'david',
+  'jeanaugustdominiqueingres': 'ingres', 'jeanaugustedominiqueingres': 'ingres', '앵그르': 'ingres',
+  'jmwturner': 'turner', '터너': 'turner',
+  'eugenedelacroix': 'delacroix', '들라크루아': 'delacroix',
+  'gustavecourbet': 'courbet', '쿠르베': 'courbet',
+  'edouardmanet': 'manet', '마네': 'manet',
+  'caravaggio': 'caravaggio', '카라바조': 'caravaggio',
+  'peterpaulrubens': 'rubens', '루벤스': 'rubens',
+  'rembrandt': 'rembrandt', '렘브란트': 'rembrandt',
+  'diegovelazquez': 'velazquez', '벨라스케스': 'velazquez',
+  'sandrobotticelli': 'botticelli', '보티첼리': 'botticelli',
+  'titian': 'titian', '티치아노': 'titian',
+  'michelangelo': 'michelangelo', '미켈란젤로': 'michelangelo',
+  'raphael': 'raphael', '라파엘로': 'raphael',
+  'paulgauguin': 'gauguin', '고갱': 'gauguin', '폴고갱': 'gauguin',
+  'classicalsculpture': 'classical-sculpture', 'sculpture': 'sculpture',
+  'romanmosaic': 'roman-mosaic', 'mosaic': 'mosaic',
+  'byzantine': 'byzantine', '비잔틴': 'byzantine',
+  'gothic': 'gothic', '고딕': 'gothic',
+};
+
+
+// ═══════════════════════════════════════════════════════════════════
+// 유틸리티 함수
+// ═══════════════════════════════════════════════════════════════════
+
+export function normalizeArtistKey(artist) {
+  if (!artist) return '';
+  const normalized = artist.toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/-/g, '')
+    .replace(/[^a-z가-힣]/g, '');
+  return ARTIST_NAME_MAPPING[normalized] || normalized;
+}
+
+export function getArtistConfig(artist, styleId, category) {
+  const artistKey = normalizeArtistKey(artist);
+  if (artistKey && ARTIST_CONFIG[artistKey]) return ARTIST_CONFIG[artistKey];
+  if (styleId && MOVEMENT_DEFAULTS[styleId]) return MOVEMENT_DEFAULTS[styleId];
+  if (category === 'oriental') return { control_strength: 0.75, brush_size: null };
+  if (category === 'modernism') return { control_strength: 0.50, brush_size: '75mm' };
+  if (category === 'masters') return { control_strength: 0.55, brush_size: '75mm' };
+  return { control_strength: 0.80, brush_size: '75mm' };
+}
+
+export function getBrushSize(artist, styleId, category) {
+  return getArtistConfig(artist, styleId, category).brush_size;
+}
+
+export function getControlStrength(artist, styleId, category) {
+  return getArtistConfig(artist, styleId, category).control_strength;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
 // 🏛️ 고대 그리스·로마 / 중세
 // ═══════════════════════════════════════════════════════════════════
 
@@ -196,7 +394,7 @@ export const RENAISSANCE_PROMPTS = {
   'titian-assumption': {
     name: '성모 승천',
     nameEn: 'Assumption of the Virgin',
-    prompt: `Hand-painted oil painting of the subject by Titian. Rich layered oil glazes build a luminous glowing surface. Colors are applied in broad warm masses rather than lines. Edges between forms dissolve softly into atmospheric warmth. Gold light surges upward and bursts across the scene. Crimson red 35%, golden yellow 30%, deep blue 20%, ivory 15%. Golden clouds fill the upper space while darkness settles below. Angels float and surround the figure among the clouds. Skin holds a warm glow in ivory and golden tones. Gold light bursts from the upper clouds and robes. Brushwork surges powerfully upward. Intense golden light pours from above wrapping the central figure. Deep blue adds weight to the lower figures and shadows. Gold and crimson intensify toward the top.`
+    prompt: `Hand-painted oil painting of the subject by Titian. Rich layered oil glazes build a luminous glowing surface. Colors are applied in broad warm masses rather than lines. Edges between forms dissolve softly into atmospheric warmth. Gold light surges upward and bursts across the scene. Crimson red 35%, golden yellow 30%, deep blue 20%, ivory 15%. Golden clouds fill the upper space while darkness settles below. Add golden clouds and small floating angels to decorate the scene. Skin holds a warm glow in ivory and golden tones. Gold light bursts from the upper clouds and robes. Brushwork surges powerfully upward. Intense golden light pours from above wrapping the central figure. Deep blue adds weight to the lower figures and shadows. Gold and crimson intensify toward the top.`
   },
 
   // ─────────────────────────────────────────
@@ -214,7 +412,7 @@ export const RENAISSANCE_PROMPTS = {
   'michelangelo-lastjudgment': {
     name: '최후의 심판',
     nameEn: 'The Last Judgment',
-    prompt: `Buon fresco of the subject by Michelangelo. Pigments are pressed firmly into fresh wet plaster. Strong bold contours define every form with sculptural weight. The surface is matte and chalky like dried plaster. Edges between forms cut crisp and solid like carved stone. Dark blue and flesh tones swirl in a massive vortex. Deep apricot 30%, dark blue 30%, burnt sienna 25%, ivory 15%. A vast sky splits between light above and darkness below. Angels hover among the swirling forms. Skin shines firmly on the forms in deep apricot and burnt sienna. Intense light explodes around the central figure. Brushwork spirals following ascending and descending masses. Intense light radiates from the center dividing the scene. Dark blue sinks heavily at the bottom and edges. Bright flesh placed at center, dark blue reserved for the edges.`
+    prompt: `Buon fresco of the subject by Michelangelo. Pigments are pressed firmly into fresh wet plaster. Strong bold contours define every form with sculptural weight. The surface is matte and chalky like dried plaster. Edges between forms cut crisp and solid like carved stone. Dark blue and flesh tones swirl in a massive vortex. Deep apricot 30%, dark blue 30%, burnt sienna 25%, ivory 15%. A vast sky splits between light above and darkness below. Add swirling forms and small hovering angels to decorate the scene. Skin shines firmly on the forms in deep apricot and burnt sienna. Intense light explodes around the central figure. Brushwork spirals following ascending and descending masses. Intense light radiates from the center dividing the scene. Dark blue sinks heavily at the bottom and edges. Bright flesh placed at center, dark blue reserved for the edges.`
   },
 
   // ─────────────────────────────────────────
@@ -239,7 +437,7 @@ export const RENAISSANCE_PROMPTS = {
   'raphael-galatea': {
     name: '갈라테아의 승리',
     nameEn: 'Triumph of Galatea',
-    prompt: `Hand-painted oil painting of the subject by Raphael. Smooth refined layers of oil build a flawless luminous surface. Soft balanced outlines define forms with gentle clarity. Figures hold perfectly balanced harmonious postures. Edges between forms transition smoothly and gracefully. A bright vibrant Mediterranean sea tone fills the scene. Aqua blue 35%, crimson red 25%, apricot 20%, ivory 20%. Bright aqua blue sea and sky fill the entire background. Flying cupids fill the sky. Skin glows healthy and lively in warm apricot and ivory. Crimson red blazes on the billowing cloak. Brushwork swirls following the churning sea and wind. Bright Mediterranean sunlight illuminates the scene. Aqua blue creates depth in waves and sky. Red cloak and golden flesh contrast against the vivid blue sea.`
+    prompt: `Hand-painted oil painting of the subject by Raphael. Smooth refined layers of oil build a flawless luminous surface. Soft balanced outlines define forms with gentle clarity. Figures hold perfectly balanced harmonious postures. Edges between forms transition smoothly and gracefully. A bright vibrant Mediterranean sea tone fills the scene. Aqua blue 35%, crimson red 25%, apricot 20%, ivory 20%. Bright aqua blue sea and sky fill the entire background. Add small cupids flying in the sky to decorate the scene. Skin glows healthy and lively in warm apricot and ivory. Crimson red blazes on the billowing cloak. Brushwork swirls following the churning sea and wind. Bright Mediterranean sunlight illuminates the scene. Aqua blue creates depth in waves and sky. Red cloak and golden flesh contrast against the vivid blue sea.`
   }
 };
 
@@ -283,7 +481,7 @@ export const BAROQUE_PROMPTS = {
   'rubens-garden': {
     name: '사랑의 정원',
     nameEn: 'The Garden of Love',
-    prompt: `Hand-painted oil painting of the subject by Peter Paul Rubens. Thick glossy oil paint overflows abundantly onto canvas. Rich sensuous colors burst with explosive energy. Outlines dissolve as forms move dynamically. Glossy smooth yet richly textured surface. Forms melt into each other in flowing motion. Warm golden light spreads softly over a lavish garden scene. Gold 30%, crimson red 25%, olive green 25%, ivory 20%. Lush garden trees and Baroque architectural columns fill the background. Flying cupids and flower garlands decorate the scene. Skin glows warmly in warm peach and pearlescent ivory. Gold light flashes across the figures and silk folds. Brushwork flows along the elegant curves of the figures. Warm afternoon sunlight descends softly from the left. Olive green settles into the tree shade and deep garden areas. Crimson and gold placed on the figures with green reserved for the background garden.`
+    prompt: `Hand-painted oil painting of the subject by Peter Paul Rubens. Thick glossy oil paint overflows abundantly onto canvas. Rich sensuous colors burst with explosive energy. Outlines dissolve as forms move dynamically. Glossy smooth yet richly textured surface. Forms melt into each other in flowing motion. Warm golden light spreads softly over a lavish garden scene. Gold 30%, crimson red 25%, olive green 25%, ivory 20%. Lush garden trees and Baroque architectural columns fill the background. Add small flying cupids and flower garlands to decorate the scene. Skin glows warmly in warm peach and pearlescent ivory. Gold light flashes across the figures and silk folds. Brushwork flows along the elegant curves of the figures. Warm afternoon sunlight descends softly from the left. Olive green settles into the tree shade and deep garden areas. Crimson and gold placed on the figures with green reserved for the background garden.`
   },
 
   // ─────────────────────────────────────────
@@ -352,7 +550,7 @@ export const ROCOCO_PROMPTS = {
   'watteau-cythera': {
     name: '키테라 섬으로의 순례',
     nameEn: 'Pilgrimage to Cythera',
-    prompt: `Hand-painted oil painting of the subject by Jean-Antoine Watteau. Thin delicate brushstrokes laid lightly like silk threads. Soft pastel tones float like mist across the surface. Outlines dissolve softly into soft haze. The surface glows feather-light and translucent. Edges between forms vanish into surrounding soft light. Soft golden pink light spreads hazily over a distant landscape. Rose pink 30%, gold 25%, olive green 25%, sky blue 20%. Misty distant mountains and soft sky fill the entire background. Flying cupids float upward in the sky. Skin glows delicately in soft ivory and pale rose. Gold light shimmers softly across the figures. Brushwork flickers softly in light, sweeping strokes across the scene. Soft twilight glow wraps the scene from behind. Olive green settles gently into tree shade and meadow. Pink and gold placed on the figures with blue and green reserved for the distant background.`
+    prompt: `Hand-painted oil painting of the subject by Jean-Antoine Watteau. Thin delicate brushstrokes laid lightly like silk threads. Soft pastel tones float like mist across the surface. Outlines dissolve softly into soft haze. The surface glows feather-light and translucent. Edges between forms vanish into surrounding soft light. Soft golden pink light spreads hazily over a distant landscape. Rose pink 30%, gold 25%, olive green 25%, sky blue 20%. Misty distant mountains and soft sky fill the entire background. Add small cupids floating in the sky to decorate the scene. Skin glows delicately in soft ivory and pale rose. Gold light shimmers softly across the figures. Brushwork flickers softly in light, sweeping strokes across the scene. Soft twilight glow wraps the scene from behind. Olive green settles gently into tree shade and meadow. Pink and gold placed on the figures with blue and green reserved for the distant background.`
   },
 
   // ★ 피에로 — 101w
@@ -943,19 +1141,18 @@ export const MODERNISM_PROMPTS = {
   // 프리다 칼로
   // ─────────────────────────────────────────
 
-  // ★ 나와 앵무새들 — ~141w
+  // ★ 나와 앵무새들 — 짧은 버전
   'frida-parrots': {
     name: '나와 앵무새들',
     nameEn: 'Me and My Parrots',
-    prompt: `Old oil painting of the subject by Frida Kahlo. Face and skin are painted smooth with warm olive tones, intense direct gaze forward. Vibrant Mexican folk colors fill symbolic elements. Lush tropical foliage surrounds the figure. Bright feathers glow against a dark background. Dark olive green 35%, emerald green 25%, white 20%, vermilion red 20%. Dark olive green fills the entire background in stillness. Parrots perch on shoulders, feathers in green, red, yellow. Eyes gaze directly forward, skin painted smooth and clean in warm olive tones. Soft light rests gently on face and white blouse. Delicate brushstrokes flow densely along feather texture and hair. Soft light illuminates the face gently from the front. Dark olive sinks deep into background and hair. Olive dominates the background, green and red fill the parrots, white remains on the blouse.`
+    prompt: `Old oil painting by Frida Kahlo, Frida Kahlo art style, intense direct gaze, symbolic personal elements, vibrant Mexican folk colors, lush tropical foliage background, raw emotional honesty. Frida Kahlo "Me and My Parrots" (1941), surrounded by colorful parrots, lush tropical foliage background, vibrant Mexican folk colors, direct gaze.`
   },
 
-  // ★ 가시 목걸이 자화상 — ~153w
-  // ★ 원숭이 자화상 — ~135w
+  // ★ 원숭이 자화상 — 짧은 버전
   'frida-monkeys': {
     name: '원숭이 자화상',
     nameEn: 'Self-Portrait with Monkeys',
-    prompt: `Old oil painting of the subject by Frida Kahlo. Face and skin are painted smooth with warm olive tones, intense direct gaze forward. Vibrant Mexican folk colors fill symbolic elements. Lush tropical foliage surrounds the figure. Green foliage wraps closely with gentle monkeys. Deep green 35%, olive skin 25%, dark brown 20%, yellow green 20%. Dense tropical foliage fills the entire background thickly. Monkeys resting softly on shoulders from behind. Eyes gaze intensely forward, skin painted smooth and clean in warm olive tones. Soft light rests gently on face and white blouse. Delicate brushstrokes flow densely along monkey fur and leaves. Soft light illuminates the face gently from the front. Deep green and brown sink into foliage and monkey fur. Green dominates background foliage, olive on skin, brown remains on monkeys.`
+    prompt: `Old oil painting by Frida Kahlo, Frida Kahlo art style, intense direct gaze, symbolic personal elements, vibrant Mexican folk colors, lush tropical foliage background, raw emotional honesty. Frida Kahlo "Self-Portrait with Monkeys" (1943), spider monkeys embracing from behind, lush green tropical leaves, vibrant Mexican colors, direct intense gaze.`
   },
 
   // ─────────────────────────────────────────
@@ -1002,21 +1199,21 @@ export const MODERNISM_PROMPTS = {
   'chagall-lovers': {
     name: '꽃과 연인들',
     nameEn: 'Lovers with Flowers',
-    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Bright bouquet radiates warmth against a dark background. Deep green 30%, dark blue 25%, vermilion red 20%, white pink 25%. Deep green and dark blue blend darkly filling the background in soft haze. Large bouquet blooms abundantly with red, white, pink flowers. Face painted in soft ivory tones, outlines melt and dissolve softly. Bright red and white of the bouquet glow vividly against the dark background. Fluid soft brushstrokes overflow along figures and flower contours. Soft light illuminates bouquet and face gently from center. Deep green and dark blue sink deep behind figures and toward edges. Green and blue claim the background, red and pink fill the flowers, ivory remains on skin.`
+    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Bright bouquet radiates warmth against a dark background. Deep green 30%, dark blue 25%, vermilion red 20%, white pink 25%. Deep green and dark blue blend darkly filling the background in soft haze. Add large bouquet with red, white, pink flowers to decorate the scene. Face painted in soft ivory tones, outlines melt and dissolve softly. Bright red and white of the bouquet glow vividly against the dark background. Fluid soft brushstrokes overflow along figures and flower contours. Soft light illuminates bouquet and face gently from center. Deep green and dark blue sink deep behind figures and toward edges. Green and blue claim the background, red and pink fill the flowers, ivory remains on skin.`
   },
 
   // ★ 신부 — ~149w
   'chagall-lamariee': {
     name: '신부',
     nameEn: 'La Mariée',
-    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Massive red veil swirls in the night sky. Crimson red 30%, deep navy blue 30%, white cream 20%, dark green 20%. Deep navy blue night sky fills the background. Violin, candelabra, small village float in the background. Face painted in soft ivory tones, outlines melt and dissolve softly. White dress and red veil glow vividly against the dark night sky. Fluid soft brushstrokes overflow along veil and dress flow. Soft light illuminates the bride from center outward gently. Deep blue sinks deep into background and edges. Blue claims the night sky, red fills the veil, white fills the dress, green remains in village and figures.`
+    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Massive red veil swirls in the night sky. Crimson red 30%, deep navy blue 30%, white cream 20%, dark green 20%. Deep navy blue night sky fills the background. Add dreamlike soft violin, candelabra and moon floating in the background. Face painted in soft ivory tones, outlines melt and dissolve softly. White dress and red veil glow vividly against the dark night sky. Fluid soft brushstrokes overflow along veil and dress flow. Soft light illuminates the bride from center outward gently. Deep blue sinks deep into background and edges. Blue claims the night sky, red fills the veil, white fills the dress, green remains in village and figures.`
   },
 
   // ★ 나와 마을 — ~148w
   'chagall-village': {
     name: '나와 마을',
     nameEn: 'I and the Village',
-    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Jewel-like primary colors layer on geometric planes. Emerald green 30%, vermilion red 25%, deep blue 25%, white yellow 20%. Emerald green and deep blue divide into geometric planes filling the background. Small village houses and church float in the background. Face painted in emerald green, outlines dissolve softly. White blends softly over green and blue planes glowing like jewels. Soft brushstrokes flow fluidly along geometric plane edges. Diffused light illuminates everything evenly making colors glow. Deep blue sinks toward the top and edges. Green claims figure and background planes, red fills accents, blue fills sky and shadows, white remains on bright planes.`
+    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Jewel-like primary colors layer on geometric planes. Emerald green 30%, vermilion red 25%, deep blue 25%, white yellow 20%. Emerald green and deep blue divide into geometric planes filling the background. Add dreamlike soft village houses and church floating in the background. Face painted in emerald green, outlines dissolve softly. White blends softly over green and blue planes glowing like jewels. Soft brushstrokes flow fluidly along geometric plane edges. Diffused light illuminates everything evenly making colors glow. Deep blue sinks toward the top and edges. Green claims figure and background planes, red fills accents, blue fills sky and shadows, white remains on bright planes.`
   },
 
   // ─────────────────────────────────────────
