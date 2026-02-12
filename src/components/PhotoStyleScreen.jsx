@@ -245,7 +245,8 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           margin: 0 28px 8px;
           background: #1a1a1a;
           border-radius: 12px;
-          height: 160px;
+          height: auto;
+          aspect-ratio: 4 / 3;
           display: flex;
           align-items: center;
           justify-content: center;
