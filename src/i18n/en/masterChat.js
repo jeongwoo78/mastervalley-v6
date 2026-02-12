@@ -7,10 +7,10 @@ export const masterChat = {
   // ===== Common UI (7) =====
   common: {
     chatWith: 'Chat with {masterName}(AI)',
-    helpText: '💡 Ask the AI master to modify your artwork or ask questions.',
+    helpText: '💡 Request changes or ask questions.',
     chatEnded: 'Chat has ended.',
     retransformComplete: '💡 Retransform complete! Previous image saved to gallery.',
-    requestModify: '✨ Modify ($${cost})',
+    requestModify: '✨ Modify',
     errorMessage: "...Sorry, my thoughts wandered. Could you say that again?",
     modifying: '{masterName} is modifying the artwork.',
     senderMe: 'Me'

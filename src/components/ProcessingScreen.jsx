@@ -668,12 +668,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                   <div className="subtitle1">
                     {category === 'movements' ? (lang === 'ko' ? `${totalCount}개 사조 · 2,500년 미술사` : `${totalCount} movements from 2,500 years`) :
                      category === 'masters' ? (lang === 'ko' ? `${totalCount}인의 거장` : `${totalCount} legendary artists`) :
-                     (lang === 'ko' ? `${totalCount}개국 동양화` : `${totalCount} nations of Eastern art`)}
+                     (lang === 'ko' ? '한국 · 중국 · 일본' : 'Korea · China · Japan')}
                   </div>
                   <div className="subtitle2">
                     {category === 'movements' ? (lang === 'ko' ? '미술사 여행' : 'Journey through art history') :
                      category === 'masters' ? (lang === 'ko' ? '거장과의 대화' : 'Conversation with masters') :
-                     (lang === 'ko' ? '동양의 미학' : 'Spirit through empty space and ink')}
+                     (lang === 'ko' ? '여백과 먹의 정신' : 'Spirit through empty space and ink')}
                   </div>
                 </div>
                 
@@ -776,42 +776,48 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           </>
         )}
 
-        {/* ===== 단일 변환 모드 - 상태 표시 (가운데) ===== */}
-        {!isFullTransform && (
-          <div className="status">
-            <div className="spinner"></div>
-            <p>{statusText}</p>
-          </div>
-        )}
-
-        {/* ===== 단일 변환 모드 (목업 준수: 이모지 + 교육자료, 원본 이미지 없음) ===== */}
+        {/* ===== 단일 변환 모드 (이모지 35%, 진행 표시 하단 고정) ===== */}
         {!isFullTransform && showEducation && (
           <div className="single-loading-container">
-            {/* 큰 이모지 아이콘 */}
+            {/* 이모지 아이콘 - 35% 고정 */}
             <div className="single-loading-icon">
               {getStyleIcon(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name)}
             </div>
             
-            {/* 제목 + 부제 (가운데 정렬) */}
-            <div className="single-loading-title">
-              {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}
-            </div>
-            {(() => {
-              const [sub1, sub2] = getStyleSubtitles(selectedStyle?.category, selectedStyle?.id, 'loading-single', null, null, selectedStyle?.name, lang);
-              return (
-                <>
-                  {sub1 && <div className="single-loading-subtitle">{sub1}</div>}
-                  {sub2 && <div className="single-loading-subtitle sub2">{sub2}</div>}
-                </>
-              );
-            })()}
-            
-            {/* 교육 콘텐츠 (투명 배경, 왼쪽 정렬) */}
-            {getSingleEducationContent(selectedStyle) && (
-              <div className="single-loading-edu">
-                <p>{getSingleEducationContent(selectedStyle).desc}</p>
+            {/* 콘텐츠 - 이모지 아래 */}
+            <div className="single-loading-content">
+              {/* 제목 + 부제 (가운데 정렬) */}
+              <div className="single-loading-title">
+                {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}
               </div>
-            )}
+              {(() => {
+                const [sub1, sub2] = getStyleSubtitles(selectedStyle?.category, selectedStyle?.id, 'loading-single', null, null, selectedStyle?.name, lang);
+                return (
+                  <>
+                    {sub1 && <div className="single-loading-subtitle">{sub1}</div>}
+                    {sub2 && <div className="single-loading-subtitle sub2">{sub2}</div>}
+                  </>
+                );
+              })()}
+              
+              {/* 교육 콘텐츠 (왼쪽 정렬) */}
+              {getSingleEducationContent(selectedStyle) && (
+                <div className="single-loading-edu">
+                  <p>{getSingleEducationContent(selectedStyle).desc}</p>
+                </div>
+              )}
+            </div>
+            
+            {/* 하단 고정: 상태 + 프로그레스 바 */}
+            <div className="single-bottom-fixed">
+              <div className="single-status">
+                <div className="spinner"></div>
+                <p>{statusText}</p>
+              </div>
+              <div className="single-progress-bar">
+                <div className="single-progress-fill"></div>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -856,10 +862,13 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         
         .oneclick-preview {
           margin-bottom: 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
         .oneclick-preview .img-placeholder {
-          width: 100%;
-          aspect-ratio: 4/3;
+          width: 248px;
+          height: 248px;
           background: #1a1a1a;
           border-radius: 12px;
           display: flex;
@@ -875,6 +884,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         
         .oneclick-style-info {
+          width: 248px;
           text-align: center;
           margin-bottom: 12px;
         }
@@ -896,6 +906,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         
         .oneclick-edu-content {
+          width: 248px;
           font-size: 13px;
           color: rgba(255,255,255,0.65);
           line-height: 1.8;
@@ -930,12 +941,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          margin: 16px 0;
+          gap: 8px;
+          margin-bottom: 12px;
         }
-        .status p { margin: 0; color: rgba(255,255,255,0.6); font-size: 14px; }
+        .status p { margin: 0; color: rgba(255,255,255,0.6); font-size: 13px; }
         .spinner {
-          width: 20px; height: 20px;
+          width: 14px; height: 14px;
           border: 2px solid rgba(255,255,255,0.2);
           border-top: 2px solid #667eea;
           border-radius: 50%;
@@ -959,47 +970,111 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .edu-card p { color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 13px; margin: 0; white-space: pre-line; }
         .hint { color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 12px !important; }
         
-        /* 단독 로딩 화면 (목업 준수: 이모지 중심) */
+        /* 단독 로딩 화면 (이모지 35%, 진행 표시 하단 고정) */
         .single-loading-container {
+          position: relative;
+          width: 100%;
+          min-height: 80vh;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 20px 0;
         }
         .single-loading-icon {
-          font-size: 4rem;
-          margin-bottom: 16px;
+          position: absolute;
+          top: 35%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 56px;
+        }
+        .single-loading-content {
+          position: absolute;
+          top: calc(35% + 45px);
+          left: 50%;
+          transform: translateX(-50%);
+          width: 248px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding-bottom: 80px; /* 하단 고정 영역 확보 */
         }
         .single-loading-title {
-          font-size: 1.2rem;
+          width: 248px;
+          font-size: 15px;
           font-weight: 700;
           color: #fff;
-          margin-bottom: 8px;
+          margin-bottom: 6px;
           text-align: center;
         }
         .single-loading-subtitle {
-          font-size: 0.95rem;
+          width: 248px;
+          font-size: 13px;
           color: rgba(255,255,255,0.7);
           margin-bottom: 4px;
           text-align: center;
         }
         .single-loading-subtitle.sub2 {
-          font-size: 0.85rem;
+          font-size: 12px;
           color: rgba(255,255,255,0.5);
-          margin-bottom: 16px;
+          margin-bottom: 20px;
         }
         .single-loading-edu {
-          width: 100%;
-          padding: 16px;
-          margin-top: 16px;
+          width: 248px;
           text-align: left;
         }
         .single-loading-edu p {
-          color: rgba(255,255,255,0.65);
+          color: rgba(255,255,255,0.7);
           line-height: 1.8;
           font-size: 13px;
-          margin: 0;
+          margin: 0 0 12px;
           white-space: pre-line;
+        }
+        .single-loading-edu p:last-child {
+          margin-bottom: 0;
+        }
+        
+        /* 하단 고정: 상태 + 프로그레스 바 */
+        .single-bottom-fixed {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 248px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .single-status {
+          width: 248px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 12px;
+        }
+        .single-status p {
+          margin: 0;
+          color: rgba(255,255,255,0.6);
+          font-size: 13px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .single-progress-bar {
+          width: 248px;
+          height: 3px;
+          background: rgba(255,255,255,0.1);
+          border-radius: 2px;
+          overflow: hidden;
+        }
+        .single-progress-fill {
+          width: 40%;
+          height: 100%;
+          background: linear-gradient(90deg, #667eea, #764ba2);
+          animation: singleProgress 2s ease-in-out infinite;
+        }
+        @keyframes singleProgress {
+          0% { width: 20%; }
+          50% { width: 60%; }
+          100% { width: 20%; }
         }
         
         .preview { background: #1a1a1a; border-radius: 12px; overflow: hidden; margin: 16px 0; }
@@ -1045,46 +1120,57 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           align-items: center;
           justify-content: center;
           gap: 12px;
-          margin-top: 16px;
+          margin-top: 20px;
         }
         .dots-nav .nav-btn {
-          padding: 8px 14px;
-          background: #667eea;
-          color: white;
+          background: rgba(255,255,255,0.1);
           border: none;
-          border-radius: 8px;
-          font-size: 13px;
+          color: rgba(255,255,255,0.7);
+          padding: 8px 14px;
+          border-radius: 16px;
+          font-size: 12px;
           cursor: pointer;
         }
         .dots-nav .nav-btn:disabled {
-          background: rgba(255,255,255,0.1);
+          opacity: 0.3;
           cursor: not-allowed;
         }
         .dots {
           display: flex;
           align-items: center;
-          justify-content: center;
           gap: 6px;
-          flex-wrap: wrap;
         }
         .dot {
-          width: 10px; height: 10px;
+          width: 8px;
+          height: 8px;
           border-radius: 50%;
-          border: none;
           background: rgba(255,255,255,0.2);
+          border: none;
           cursor: pointer;
           padding: 0;
         }
-        .dot.done { background: #4CAF50; }
-        .dot.active { transform: scale(1.4); box-shadow: 0 0 0 2px rgba(102,126,234,0.4); }
-        .dot:disabled { opacity: 0.4; cursor: default; }
-        .dot.edu {
-          width: auto; padding: 4px 8px;
-          border-radius: 10px;
-          font-size: 12px;
-          background: #667eea;
+        .dot.done {
+          background: rgba(102, 126, 234, 0.5);
         }
-        .count { font-size: 12px; color: rgba(255,255,255,0.4); margin-left: 8px; }
+        .dot.active {
+          background: #667eea;
+          transform: scale(1.3);
+        }
+        .dot:disabled {
+          opacity: 0.4;
+          cursor: default;
+        }
+        .dot.edu {
+          width: auto;
+          height: auto;
+          background: none;
+          font-size: 14px;
+        }
+        .count {
+          font-size: 11px;
+          color: rgba(255,255,255,0.5);
+          margin-left: 4px;
+        }
       `}</style>
     </div>
   );

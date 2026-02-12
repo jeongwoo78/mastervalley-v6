@@ -300,29 +300,7 @@ const MasterChat = ({
         )}
       </div>
 
-      {/* 입력 영역 */}
-      <div className="chat-input-area">
-        <input
-          type="text"
-          className="chat-input"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder={isChatEnded ? "대화가 종료되었습니다" : isRetransforming ? "변환 중..." : "수정 요청을 입력하세요..."}
-          disabled={isLoading || isRetransforming || isChatEnded}
-          style={{ borderColor: inputValue ? theme.primary : undefined }}
-        />
-        <button 
-          className="send-btn"
-          onClick={sendMessage}
-          disabled={!inputValue.trim() || isLoading || isRetransforming || isChatEnded}
-          style={{ background: theme.gradient }}
-        >
-          ➤
-        </button>
-      </div>
-
-      {/* 재변환 버튼 */}
+      {/* 재변환 버튼 (목업 순서: 입력창 위에) */}
       <button 
         className="retransform-btn"
         onClick={handleRetransform}
@@ -341,13 +319,36 @@ const MasterChat = ({
             }
           </>
         ) : (
-          chatText.common.requestModify.replace('${cost}', retransformCost)
+          chatText.common.requestModify
         )}
       </button>
+
+      {/* 입력 영역 */}
+      <div className="chat-input-area">
+        <input
+          type="text"
+          className="chat-input"
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder={isChatEnded ? "대화가 종료되었습니다" : isRetransforming ? "변환 중..." : "메시지를 입력하세요..."}
+          disabled={isLoading || isRetransforming || isChatEnded}
+          style={{ borderColor: inputValue ? theme.primary : undefined }}
+        />
+        <button 
+          className="send-btn"
+          onClick={sendMessage}
+          disabled={!inputValue.trim() || isLoading || isRetransforming || isChatEnded}
+          style={{ background: theme.gradient }}
+        >
+          ➤
+        </button>
+      </div>
 
       <style>{`
         /* ===== 마스터 챗 컨테이너 (목업 06-result-single.html 준수) ===== */
         .master-chat-section {
+          width: 248px;
           background: rgba(245, 166, 35, 0.08);
           border: 1px solid rgba(245, 166, 35, 0.25);
           border-radius: 16px;
@@ -444,12 +445,13 @@ const MasterChat = ({
           text-align: center;
         }
 
-        /* 빠른 질문 버튼 (목업 준수: 황금색 테마) */
+        /* 빠른 질문 버튼 (3줄 왼쪽 정렬) */
         .suggested-questions {
           display: flex;
-          flex-wrap: wrap;
+          flex-direction: column;
           gap: 8px;
-          margin-bottom: 10px;
+          margin-top: 10px;
+          align-items: flex-start;
         }
 
         .question-chip {
@@ -579,7 +581,7 @@ const MasterChat = ({
           cursor: not-allowed;
         }
 
-        /* 수정 요청 버튼 (목업 준수: 보라색 그라데이션) */
+        /* 수정 버튼 (목업 준수: 보라색 그라데이션, 입력창 위에) */
         .retransform-btn {
           width: 100%;
           background: linear-gradient(135deg, #667eea, #764ba2);

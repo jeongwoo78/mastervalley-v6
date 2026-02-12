@@ -7,10 +7,10 @@ export const masterChat = {
   // ===== 공통 UI (7개) =====
   common: {
     chatWith: '{masterName}(AI)와 대화하기',
-    helpText: '💡 AI 거장에게 작품 수정을 요청하거나 궁금한 점을 물어보세요.',
+    helpText: '💡 수정 사항 또는 질문을 입력하세요.',
     chatEnded: '대화가 종료되었습니다.',
     retransformComplete: '💡 재변환 완료! 이전 이미지는 갤러리에 저장되어 있습니다.',
-    requestModify: '✨ 수정 요청 ($${cost})',
+    requestModify: '✨ 수정',
     errorMessage: '...미안하네, 잠시 생각이 흐트러졌어. 다시 말해주겠나?',
     modifying: '{masterName} 그림을 수정 중입니다.',
     senderMe: '나'

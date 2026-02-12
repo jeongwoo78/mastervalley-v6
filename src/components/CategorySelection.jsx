@@ -150,24 +150,24 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           margin: 0;
         }
 
-        /* Category Grid - 목업: 투명 카드 */
+        /* Category Grid - 목업: 좌우 padding 20px */
         .category-grid {
           flex: 1;
           padding: 16px 20px 32px;
           display: flex;
           flex-direction: column;
           justify-content: center;
-          gap: 25px;
+          gap: 12px;
         }
 
         .category-card {
           background: transparent;
           border: none;
           border-radius: 12px;
-          padding: 0;
+          padding: 8px 0;
           display: flex;
           align-items: center;
-          gap: 14px;
+          gap: 12px;
           cursor: pointer;
           transition: all 0.2s;
           text-align: left;
@@ -181,11 +181,11 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           transform: scale(0.98);
         }
 
-        /* 썸네일 - 목업: 왼쪽만 둥글게, 거의 정사각형 */
+        /* 썸네일 - 88×88 정사각형 */
         .card-thumbnail {
-          width: 72px;
-          height: 72px;
-          border-radius: 10px 0 0 10px;
+          width: 88px;
+          height: 88px;
+          border-radius: 8px;
           overflow: hidden;
           flex-shrink: 0;
         }
@@ -200,18 +200,21 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 6px;
+          text-align: left;
         }
 
         .card-name {
           color: #fff;
           font-size: 16px;
           font-weight: 600;
+          text-align: left;
         }
 
         .card-desc {
           color: rgba(255,255,255,0.5);
           font-size: 13px;
+          text-align: left;
         }
 
         .card-arrow {
@@ -241,8 +244,8 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           }
 
           .card-thumbnail {
-            width: 64px;
-            height: 64px;
+            width: 88px;
+            height: 88px;
           }
         }
       `}</style>

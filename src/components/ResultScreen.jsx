@@ -2487,7 +2487,8 @@ const ResultScreen = ({
 
         /* ===== 원클릭 결과 화면 (목업 07-result-oneclick.html 준수) ===== */
         .oneclick-result-section {
-          margin-bottom: 16px;
+          width: 248px;
+          margin: 0 auto 16px;
         }
 
         .ba-section {
@@ -2495,11 +2496,11 @@ const ResultScreen = ({
         }
 
         .ba-section .ba-image {
-          width: 100%;
-          aspect-ratio: 4/3;
+          width: 248px;
+          height: 207px;
+          margin-bottom: 10px;
           background: #1a1a1a;
           border-radius: 12px;
-          margin-bottom: 10px;
           overflow: hidden;
           box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
@@ -2761,73 +2762,57 @@ const ResultScreen = ({
         }
 
         .action-buttons {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-          gap: 1rem;
+          display: flex;
+          gap: 10px;
         }
 
         .btn {
-          padding: 1rem 1.5rem;
+          flex: 1;
+          padding: 14px 8px;
           border: none;
-          border-radius: 12px;
-          font-size: 1rem;
+          border-radius: 14px;
+          font-size: 12px;
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.3s;
+          transition: all 0.2s;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.5rem;
+          gap: 6px;
         }
 
         .btn-icon {
-          font-size: 1.2rem;
-        }
-
-        .btn-gallery {
-          background: #121212;
-          color: white;
-        }
-
-        .btn-gallery:hover {
-          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 16px rgba(118, 75, 162, 0.4);
-        }
-
-        .btn-share {
-          background: #3b82f6;
-          color: white;
-        }
-
-        .btn-share:hover {
-          background: #2563eb;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-reset {
-          background: #1a1a1a;
-          color: #667eea;
-          border: 2px solid #667eea;
-        }
-
-        .btn-reset:hover {
-          background: #667eea;
-          color: white;
-          transform: translateY(-2px);
-          box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+          font-size: 1rem;
         }
 
         .btn-save-share {
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          background: linear-gradient(135deg, #667eea, #764ba2);
           color: white;
           border: none;
         }
 
         .btn-save-share:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
+          box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-gallery {
+          background: rgba(255,255,255,0.1);
+          color: white;
+        }
+
+        .btn-gallery:hover {
+          background: rgba(255,255,255,0.15);
+        }
+
+        .btn-reset {
+          background: rgba(255,255,255,0.05);
+          color: rgba(255,255,255,0.7);
+          border: none;
+        }
+
+        .btn-reset:hover {
+          background: rgba(255,255,255,0.1);
         }
 
         /* Save/Share 팝업 메뉴 */
@@ -3027,30 +3012,34 @@ const ResultScreen = ({
           margin-bottom: 16px;
         }
         .nav-btn {
-          padding: 8px 16px;
-          background: #667eea;
-          color: white;
+          background: rgba(255,255,255,0.08);
           border: none;
-          border-radius: 8px;
-          font-size: 14px;
+          color: rgba(255,255,255,0.7);
+          padding: 10px 16px;
+          border-radius: 20px;
+          font-size: 12px;
           cursor: pointer;
         }
         .nav-btn:disabled {
-          background: #ccc;
+          opacity: 0.3;
           cursor: not-allowed;
         }
         .nav-dots {
           display: flex;
+          align-items: center;
           gap: 6px;
         }
         .nav-dot {
-          width: 10px;
-          height: 10px;
+          width: 8px;
+          height: 8px;
           border-radius: 50%;
+          background: rgba(255,255,255,0.2);
           border: none;
-          background: #ddd;
           cursor: pointer;
           padding: 0;
+        }
+        .nav-dot.done {
+          background: rgba(102, 126, 234, 0.5);
         }
         .nav-dot.active {
           background: #667eea;
@@ -3059,13 +3048,17 @@ const ResultScreen = ({
         
         /* 원클릭 이미지 */
         .result-image-wrapper {
-          margin-bottom: 16px;
+          width: 248px;
+          height: 248px;
+          margin: 0 auto 16px;
           border-radius: 12px;
           overflow: hidden;
           box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .result-image {
           width: 100%;
+          height: 100%;
+          object-fit: cover;
           display: block;
         }
 
@@ -3074,11 +3067,14 @@ const ResultScreen = ({
           background: #1a1a1a;
           border-radius: 12px;
           overflow: hidden;
-          margin: 16px 0;
+          margin: 16px auto;
+          width: 248px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         .preview-card .preview-image {
-          width: 100%;
+          width: 248px;
+          height: 248px;
+          object-fit: cover;
           display: block;
         }
         .preview-card .preview-info {
