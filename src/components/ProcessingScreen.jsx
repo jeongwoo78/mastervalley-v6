@@ -649,11 +649,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         {/* ===== 원클릭 모드 (목업 05-loading-oneclick.html 준수) ===== */}
         {isFullTransform && (
           <>
-            {/* 상태 - 상단 우측 정렬 (목업 준수) */}
-            <div className="status oneclick">
-              <div className="spinner"></div>
-              <p>{statusText}</p>
-            </div>
+            {/* 상단 상태 제거 - 하단 프로그레스에만 표시 */}
 
             {/* 1차 교육 + Original */}
             {viewIndex === -1 && showEducation && getPrimaryEducation() && (
@@ -1130,16 +1126,16 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 12px;
-          margin-top: 20px;
+          gap: 8px;
+          margin-top: 16px;
         }
         .dots-nav .nav-btn {
           background: rgba(255,255,255,0.1);
           border: none;
           color: rgba(255,255,255,0.7);
-          padding: 8px 14px;
-          border-radius: 16px;
-          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 12px;
+          font-size: 11px;
           cursor: pointer;
         }
         .dots-nav .nav-btn:disabled {
@@ -1149,11 +1145,11 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .dots {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 4px;
         }
         .dot {
-          width: 8px;
-          height: 8px;
+          width: 6px;
+          height: 6px;
           border-radius: 50%;
           background: rgba(255,255,255,0.2);
           border: none;
@@ -1175,12 +1171,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           width: auto;
           height: auto;
           background: none;
-          font-size: 14px;
+          font-size: 11px;
         }
         .count {
-          font-size: 11px;
-          color: rgba(255,255,255,0.5);
-          margin-left: 4px;
+          font-size: 10px;
+          color: rgba(255,255,255,0.4);
+          margin-left: 2px;
         }
       `}</style>
     </div>

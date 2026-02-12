@@ -3034,8 +3034,8 @@ const ResultScreen = ({
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 12px;
-          margin-bottom: 16px;
+          gap: 8px;
+          margin-bottom: 12px;
           max-width: 340px;
           margin-left: auto;
           margin-right: auto;
@@ -3044,9 +3044,9 @@ const ResultScreen = ({
           background: rgba(255,255,255,0.1);
           border: none;
           color: rgba(255,255,255,0.7);
-          padding: 8px 14px;
-          border-radius: 16px;
-          font-size: 12px;
+          padding: 6px 10px;
+          border-radius: 12px;
+          font-size: 11px;
           cursor: pointer;
         }
         .nav-btn:disabled {
@@ -3056,11 +3056,11 @@ const ResultScreen = ({
         .nav-dots {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 4px;
         }
         .nav-dot {
-          width: 8px;
-          height: 8px;
+          width: 6px;
+          height: 6px;
           border-radius: 50%;
           background: rgba(255,255,255,0.2);
           border: none;
@@ -3082,12 +3082,12 @@ const ResultScreen = ({
           width: auto;
           height: auto;
           background: none;
-          font-size: 14px;
+          font-size: 11px;
         }
         .nav-count {
-          font-size: 11px;
-          color: rgba(255,255,255,0.5);
-          margin-left: 4px;
+          font-size: 10px;
+          color: rgba(255,255,255,0.4);
+          margin-left: 2px;
         }
         
         /* 원클릭 이미지 */

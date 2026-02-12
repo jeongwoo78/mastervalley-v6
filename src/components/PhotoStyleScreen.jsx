@@ -153,7 +153,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
 
       {/* Photo Section */}
       <div 
-        className={`photo-section ${selectedStyle && !photo ? 'awaiting-photo' : ''}`} 
+        className={`photo-section ${!photo ? 'awaiting-photo' : ''}`} 
         onClick={handlePhotoClick}
       >
         <input
