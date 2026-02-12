@@ -2459,15 +2459,16 @@ const ResultScreen = ({
         .result-screen {
           min-height: 100vh;
           background: #121212;
-          padding: 2rem;
+          padding: 16px;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
         }
 
         .result-container {
-          max-width: 900px;
+          max-width: 400px;
           width: 100%;
+          background: #121212;
         }
 
         .result-header {
@@ -2489,13 +2490,14 @@ const ResultScreen = ({
 
         /* ===== 원클릭 결과 화면 (목업 07-result-oneclick.html 준수) ===== */
         .oneclick-result-section {
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           margin: 0 auto 16px;
         }
 
         .oneclick-image {
-          width: 248px;
-          height: 248px;
+          width: 100%;
+          aspect-ratio: 1 / 1;
           margin: 0 auto 12px;
           border-radius: 12px;
           overflow: hidden;
@@ -2510,7 +2512,8 @@ const ResultScreen = ({
 
         /* ===== 단독변환 결과 (목업 06-result-single.html 준수) ===== */
         .single-result-section {
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           margin: 0 auto 16px;
         }
 
@@ -2519,8 +2522,8 @@ const ResultScreen = ({
         }
 
         .ba-section .ba-image {
-          width: 248px;
-          height: 207px;
+          width: 100%;
+          aspect-ratio: 6 / 5;
           margin-bottom: 10px;
           background: #1a1a1a;
           border-radius: 12px;
@@ -2537,6 +2540,7 @@ const ResultScreen = ({
         .oneclick-style-info {
           text-align: center;
           margin-bottom: 12px;
+          width: 100%;
         }
 
         .oneclick-style-info h3 {
@@ -2590,42 +2594,49 @@ const ResultScreen = ({
         }
 
         .comparison-wrapper {
-          background: #1a1a1a;
-          padding: 1.5rem;
-          border-radius: 20px;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-          margin-bottom: 1.5rem;
+          background: none;
+          padding: 0;
+          border-radius: 0;
+          box-shadow: none;
+          margin-bottom: 1rem;
+          max-width: 340px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         .info-toggle {
-          text-align: center;
-          margin-bottom: 1rem;
+          text-align: right;
+          margin-bottom: 8px;
+          max-width: 340px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         .toggle-button {
-          background: #1a1a1a;
-          border: 2px solid #667eea;
-          color: #667eea;
-          padding: 0.75rem 1.5rem;
-          border-radius: 25px;
-          font-size: 1rem;
-          font-weight: 600;
+          background: none;
+          border: none;
+          color: rgba(255,255,255,0.35);
+          padding: 4px 8px;
+          border-radius: 0;
+          font-size: 11px;
+          font-weight: 400;
           cursor: pointer;
-          transition: all 0.3s;
+          transition: color 0.2s;
         }
 
         .toggle-button:hover {
-          background: #667eea;
-          color: white;
+          background: none;
+          color: rgba(255,255,255,0.5);
         }
 
         .technique-card {
-          background: #1a1a1a;
-          border-radius: 20px;
-          padding: 2rem;
-          box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-          margin-bottom: 1.5rem;
-          animation: slideDown 0.3s ease-out;
+          background: none;
+          border-radius: 0;
+          padding: 0;
+          margin-bottom: 1rem;
+          max-width: 340px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         @keyframes slideDown {
@@ -2640,51 +2651,47 @@ const ResultScreen = ({
         }
 
         .card-header {
-          display: flex;
-          align-items: flex-start;
-          gap: 0.75rem;
-          padding-bottom: 1.5rem;
-          border-bottom: 2px solid #e0e0e0;
-          margin-bottom: 1.5rem;
+          text-align: center;
+          padding-bottom: 0;
+          border-bottom: none;
+          margin-bottom: 12px;
         }
 
         .technique-icon {
-          font-size: 3.5rem;
-          min-width: 3.5rem;
-          flex-shrink: 0;
-          filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+          font-size: 2rem;
+          display: none;
         }
 
         .card-header h2 {
-          margin: 0;
+          margin: 0 0 6px 0;
           color: #fff;
-          font-size: 1.35rem;
-          line-height: 1.2;
+          font-size: 17px;
+          font-weight: 700;
+          line-height: 1.3;
+          text-align: center;
         }
 
         .technique-subtitle {
-          color: rgba(255,255,255,0.6);
-          font-size: 1.05rem;
-          margin: 0.25rem 0 0 0;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          flex-wrap: wrap;
+          color: rgba(255,255,255,0.8);
+          font-size: 14px;
+          margin: 0 0 4px 0;
+          display: block;
+          text-align: center;
         }
         
         .technique-subtitle.sub2 {
-          margin-top: 0.15rem;
+          margin-top: 2px;
         }
         .technique-subtitle.sub2 .artist-name {
-          font-size: 0.95rem;
-          font-weight: 500;
-          color: #555;
+          font-size: 12px;
+          font-weight: 400;
+          color: rgba(255,255,255,0.5);
         }
 
         .artist-name {
-          font-weight: 600;
-          color: #222;
-          font-size: 1.1rem;
+          font-weight: 400;
+          color: rgba(255,255,255,0.8);
+          font-size: 14px;
         }
 
         .style-badge {
@@ -2762,22 +2769,23 @@ const ResultScreen = ({
 
         .technique-explanation {
           background: none;
-          padding: 1.5rem;
-          border-radius: 12px;
+          padding: 0;
+          border-radius: 0;
           border-left: none;
+          max-width: 340px;
+          margin: 0 auto;
         }
 
         .technique-explanation h3 {
-          color: rgba(255,255,255,0.7);
-          font-size: 1.1rem;
-          margin: 0 0 1rem 0;
+          display: none;
         }
 
         .technique-explanation p {
-          color: #fff;
-          line-height: 1.8;
-          font-size: 1rem;
-          margin: 0 0 1.26em 0;  /* 0.7줄 간격 = line-height(1.8) × 0.7 */
+          color: rgba(255,255,255,0.65);
+          line-height: 1.75;
+          font-size: 13px;
+          margin: 0 0 10px 0;
+          text-align: left;
         }
         
         .technique-explanation p:last-child {
@@ -2787,6 +2795,8 @@ const ResultScreen = ({
         .action-buttons {
           display: flex;
           gap: 10px;
+          max-width: 340px;
+          margin: 0 auto;
         }
 
         .btn {
@@ -3091,19 +3101,20 @@ const ResultScreen = ({
           border-radius: 12px;
           overflow: hidden;
           margin: 16px auto;
-          width: 248px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          width: 100%;
+          max-width: 340px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         .preview-card .preview-image {
-          width: 248px;
-          height: 248px;
+          width: 100%;
+          aspect-ratio: 1 / 1;
           object-fit: cover;
           display: block;
         }
         .preview-card .preview-info {
           padding: 16px;
           text-align: left;
-          border-bottom: 2px solid #e0e0e0;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .preview-card .preview-header {
           display: flex;
