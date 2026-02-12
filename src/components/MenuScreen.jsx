@@ -150,6 +150,8 @@ const menuStyles = `
     background: #121212;
     display: flex;
     flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
   /* Header */

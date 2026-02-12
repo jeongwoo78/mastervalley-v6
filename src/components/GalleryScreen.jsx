@@ -485,6 +485,8 @@ const styles = {
     background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
     color: 'white',
     padding: '20px',
+    maxWidth: '400px',
+    margin: '0 auto',
   },
   
   header: {

@@ -94,6 +94,8 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           background: #121212;
           display: flex;
           flex-direction: column;
+          max-width: 400px;
+          margin: 0 auto;
         }
 
         /* Header - 목업: 투명 배경 스타일 */

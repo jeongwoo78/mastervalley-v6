@@ -95,6 +95,8 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           background: #121212;
           display: flex;
           flex-direction: column;
+          max-width: 400px;
+          margin: 0 auto;
         }
 
         /* Header */

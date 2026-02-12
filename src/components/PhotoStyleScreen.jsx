@@ -242,7 +242,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
 
         /* Photo Section - 그리드와 동일한 비율 */
         .photo-section {
-          margin: 0 20px 16px;
+          margin: 0 28px 16px;
           background: #1a1a1a;
           border-radius: 12px;
           aspect-ratio: 16 / 9;
@@ -252,12 +252,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           cursor: pointer;
           overflow: hidden;
           transition: all 0.3s;
-          border: 2px solid transparent;
+          border: none;
+          box-shadow: none;
         }
 
         /* 사진 미선택 시 - 테두리 강조 + 펄스 */
         .photo-section.awaiting-photo {
-          border-color: #667eea !important;
+          border: 2px solid #667eea !important;
           box-shadow: 0 0 12px rgba(102, 126, 234, 0.4) !important;
           animation: photoPulse 2s ease-in-out infinite;
         }
@@ -292,7 +293,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
 
         /* Full Transform Button - 목업 준수: 더 눈에 띄는 디자인 */
         .full-transform-btn {
-          margin: 0 20px 16px;
+          margin: 0 28px 16px;
           padding: 16px 20px;
           background: linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25));
           border: 2px solid rgba(102,126,234,0.5);
@@ -331,18 +332,11 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
         /* Style Grid */
         .style-grid {
           flex: 1;
-          padding: 0 20px 24px;
+          padding: 0 28px 24px;
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
+          gap: 16px;
           overflow-y: auto;
-        }
-
-        /* 홀수 개일 때 마지막 카드 가운데 정렬 */
-        .style-card:last-child:nth-child(odd) {
-          grid-column: 1 / -1;
-          max-width: calc(50% - 6px);
-          justify-self: center;
         }
 
         .style-card {
@@ -378,8 +372,9 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           bottom: 0;
           left: 0;
           right: 0;
-          padding: 10px;
-          background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+          padding: 8px 10px;
+          background: rgba(0,0,0,0.5);
+          text-align: left;
         }
 
         .style-name {
@@ -400,8 +395,8 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
         /* Mobile */
         @media (max-width: 400px) {
           .style-grid {
-            gap: 10px;
-            padding: 0 16px 20px;
+            gap: 14px;
+            padding: 0 24px 20px;
           }
 
           .style-name {
