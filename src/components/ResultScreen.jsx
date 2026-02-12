@@ -2053,17 +2053,12 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* 원클릭: viewIndex >= 0 → Before/After + 스타일 정보 + 교육 (목업 준수) */}
+        {/* 원클릭: viewIndex >= 0 → 결과만 + 스타일 정보 + 교육 (목업 07 준수) */}
         {isFullTransform && viewIndex >= 0 && results[viewIndex] && (
           <div className="oneclick-result-section">
-            {/* Before/After 이미지 (목업: ba-section) */}
-            <div className="ba-section">
-              <div className="ba-image">
-                <img src={originalPhotoUrl} alt="Before" />
-              </div>
-              <div className="ba-image">
-                <img src={masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl} alt="After" />
-              </div>
+            {/* 결과 이미지만 (목업: 248×248, 원본 없음) */}
+            <div className="oneclick-image">
+              <img src={masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl} alt="Result" />
             </div>
             
             {/* 스타일 정보 - 가운데 정렬 (목업: style-info) */}
@@ -2158,8 +2153,15 @@ const ResultScreen = ({
           </div>
         )}
         {!isFullTransform && viewIndex >= 0 && finalDisplayImage && (
-          <div className="result-image-wrapper">
-            <img src={finalDisplayImage} alt="Result" className="result-image" />
+          <div className="single-result-section">
+            <div className="ba-section">
+              <div className="ba-image">
+                <img src={originalPhotoUrl} alt="Before" />
+              </div>
+              <div className="ba-image">
+                <img src={finalDisplayImage} alt="After" />
+              </div>
+            </div>
           </div>
         )}
 
@@ -2491,6 +2493,27 @@ const ResultScreen = ({
           margin: 0 auto 16px;
         }
 
+        .oneclick-image {
+          width: 248px;
+          height: 248px;
+          margin: 0 auto 12px;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .oneclick-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        /* ===== 단독변환 결과 (목업 06-result-single.html 준수) ===== */
+        .single-result-section {
+          width: 248px;
+          margin: 0 auto 16px;
+        }
+
         .ba-section {
           margin-bottom: 16px;
         }
@@ -2738,14 +2761,14 @@ const ResultScreen = ({
         }
 
         .technique-explanation {
-          background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+          background: none;
           padding: 1.5rem;
           border-radius: 12px;
-          border-left: 4px solid #667eea;
+          border-left: none;
         }
 
         .technique-explanation h3 {
-          color: #667eea;
+          color: rgba(255,255,255,0.7);
           font-size: 1.1rem;
           margin: 0 0 1rem 0;
         }
