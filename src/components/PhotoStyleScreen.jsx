@@ -347,7 +347,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
 
         .style-card {
           background: none;
-          border: none;
+          border: 3px solid transparent;
           padding: 0;
           cursor: pointer;
           border-radius: 12px;
@@ -356,8 +356,8 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
         }
 
         .style-card.selected {
-          outline: 3px solid #7c3aed;
-          outline-offset: -3px;
+          border-color: #7c3aed;
+          box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
         }
 
         .style-thumb {
