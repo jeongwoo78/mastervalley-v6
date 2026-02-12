@@ -308,7 +308,11 @@ const MasterChat = ({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder={isChatEnded ? "대화가 종료되었습니다" : isRetransforming ? "변환 중..." : "메시지를 입력하세요..."}
+          placeholder={isChatEnded 
+            ? (lang === 'ko' ? "대화가 종료되었습니다" : "Chat ended") 
+            : isRetransforming 
+              ? (lang === 'ko' ? "변환 중..." : "Converting...") 
+              : (lang === 'ko' ? "메시지를 입력하세요..." : "Type a message...")}
           disabled={isLoading || isRetransforming || isChatEnded}
           style={{ borderColor: inputValue ? theme.primary : undefined }}
         />

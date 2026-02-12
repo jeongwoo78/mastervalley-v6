@@ -265,6 +265,8 @@ export const ALIASES = {
   'ukiyoe': 'japanese-ukiyoe',
   'ukiyo-e': 'japanese-ukiyoe',
   'japanese ukiyo-e woodblock': 'japanese-ukiyoe',
+  'japanese ukiyo-e woodblock print': 'japanese-ukiyoe',
+  'japanese ukiyo-e woodblock prints': 'japanese-ukiyoe',
   '우키요에': 'japanese-ukiyoe',
   '일본 우키요에': 'japanese-ukiyoe',
   '일본우키요에': 'japanese-ukiyoe',

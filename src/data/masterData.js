@@ -404,7 +404,7 @@ export const ORIENTAL = {
         en: 'Ukiyo-e',
         description: '대담한 윤곽선과 평면적 색채의 목판화',
         descriptionEn: 'Floating world pressed in woodblock',
-        aliases: ['japanese ukiyo-e', 'japanese-ukiyoe', 'ukiyo-e', '일본 우키요에', '우키요에']
+        aliases: ['japanese ukiyo-e', 'japanese-ukiyoe', 'ukiyo-e', '일본 우키요에', '우키요에', 'japanese ukiyo-e woodblock print', 'japanese ukiyo-e woodblock prints']
       },
       'rinpa': { 
         ko: '린파', 
@@ -1178,7 +1178,9 @@ export const getOrientalDisplayInfo = (artistName) => {
  * @param {string} artistName - 거장 이름 (masters일 때)
  * @returns {[string, string]} [부제1, 부제2]
  */
-export const getStyleSubtitles = (category, styleId, mode, displayArtist, displayWork, artistName) => {
+export const getStyleSubtitles = (category, styleId, mode, displayArtist, displayWork, artistName, lang = 'ko') => {
+  const isEn = lang === 'en';
+  
   // 원클릭 변환중-원본 → 현행유지 (1줄만)
   if (mode === 'loading-oneclick') {
     return [null, null]; // 기존 방식 사용 signal
@@ -1191,15 +1193,19 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
     // 변환중 또는 결과-원본: 대표화가 + 사조 화풍
     if (mode === 'loading-single' || mode === 'result-original') {
       return [
-        movement?.subtitle || '',   // 부제1: 대표화가 (예: "모네 · 르누아르 · 드가")
-        movement?.description || '' // 부제2: 사조 화풍 (예: "빛의 순간을 포착")
+        isEn ? (movement?.subtitleEn || movement?.subtitle || '') : (movement?.subtitle || ''),
+        isEn ? (movement?.descriptionEn || movement?.description || '') : (movement?.description || '')
       ];
     } 
     // 결과-결과 또는 완료 미리보기: 매칭화가 + 매칭화가 화풍
     else {
       const artist = findArtistByName(displayArtist);
-      const artistDisplay = artist ? `${artist.ko}(${artist.en})` : displayArtist || '';
-      const artistStyle = artist?.description || movement?.description || '';
+      const artistDisplay = artist 
+        ? (isEn ? (artist.en || artist.ko) : `${artist.ko}(${artist.en})`)
+        : displayArtist || '';
+      const artistStyle = isEn 
+        ? (artist?.descriptionEn || movement?.descriptionEn || artist?.description || movement?.description || '')
+        : (artist?.description || movement?.description || '');
       return [
         artistDisplay,  // 부제1: 매칭화가
         artistStyle     // 부제2: 매칭화가 화풍
@@ -1219,15 +1225,15 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
     // 변환중 또는 결과-원본: 사조 + 화풍
     if (mode === 'loading-single' || mode === 'result-original') {
       return [
-        master.movement || '',     // 부제1: 사조 (예: "후기인상주의")
-        master.tagline || ''       // 부제2: 화풍
+        isEn ? (master.movementEn || master.movement || '') : (master.movement || ''),
+        isEn ? (master.taglineEn || master.tagline || '') : (master.tagline || '')
       ];
     }
     // 결과-결과 또는 완료 미리보기: 대표작 2개 + 화풍
     else {
       return [
-        master.featuredWorks || '', // 부제1: 대표작 2개 (예: "별이 빛나는 밤 · 해바라기")
-        master.tagline || ''        // 부제2: 화풍
+        isEn ? (master.featuredWorksEn || master.featuredWorks || '') : (master.featuredWorks || ''),
+        isEn ? (master.taglineEn || master.tagline || '') : (master.tagline || '')
       ];
     }
   }
@@ -1241,11 +1247,11 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
     if (mode === 'loading-single' || mode === 'result-original') {
       if (result?.country) {
         const styleList = result.country.styles 
-          ? Object.values(result.country.styles).map(s => s.ko).join(' · ')
+          ? Object.values(result.country.styles).map(s => isEn ? (s.en || s.ko) : s.ko).join(' · ')
           : '';
         return [
-          styleList,                        // 부제1: 스타일들 (예: "민화 · 풍속도 · 진경산수화")
-          result.country.description || ''  // 부제2: 국가 화풍 (예: "여백과 절제의 미")
+          styleList,
+          isEn ? (result.country.descriptionEn || result.country.description || '') : (result.country.description || '')
         ];
       }
     } 
@@ -1253,8 +1259,9 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
     else {
       if (result?.style) {
         return [
-          result.style.ko || '',                                      // 부제1: 매칭 스타일
-          result.style.description || result.country?.description || '' // 부제2: 스타일 특징
+          isEn ? (result.style.en || result.style.ko || '') : (result.style.ko || ''),
+          isEn ? (result.style.descriptionEn || result.style.description || result.country?.descriptionEn || result.country?.description || '') 
+               : (result.style.description || result.country?.description || '')
         ];
       }
     }

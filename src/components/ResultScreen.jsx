@@ -2255,7 +2255,7 @@ const ResultScreen = ({
               {isLoadingEducation ? (
                 <div className="loading-education">
                   <div className="spinner"></div>
-                  <p>작품 설명을 생성하고 있습니다...</p>
+                  <p>{lang === 'ko' ? '작품 설명을 생성하고 있습니다...' : 'Loading artwork description...'}</p>
                 </div>
               ) : (
                 <div className="technique-explanation">

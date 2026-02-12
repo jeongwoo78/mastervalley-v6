@@ -697,7 +697,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                       'result-transformed',
                       result?.aiSelectedArtist,
                       result?.selected_work,
-                      result?.style?.name
+                      result?.style?.name,
+                      lang
                     );
                     return (
                       <>
