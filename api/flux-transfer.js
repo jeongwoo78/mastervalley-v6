@@ -80,7 +80,7 @@ import {
   getBrushSize,
   getControlStrength,
   normalizeArtistKey
-} from './art-api-config.js';
+} from './art-api-prompts.js';
 
 // ========================================
 // ========================================
