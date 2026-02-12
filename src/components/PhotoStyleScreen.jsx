@@ -240,12 +240,12 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           font-size: 14px;
         }
 
-        /* Photo Section */
+        /* Photo Section - 그리드와 동일한 비율 */
         .photo-section {
           margin: 0 20px 16px;
           background: #1a1a1a;
           border-radius: 12px;
-          height: 120px;
+          aspect-ratio: 16 / 9;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -257,8 +257,8 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
 
         /* 사진 미선택 시 - 테두리 강조 + 펄스 */
         .photo-section.awaiting-photo {
-          border-color: #667eea;
-          box-shadow: 0 0 12px rgba(102, 126, 234, 0.4);
+          border-color: #667eea !important;
+          box-shadow: 0 0 12px rgba(102, 126, 234, 0.4) !important;
           animation: photoPulse 2s ease-in-out infinite;
         }
 
@@ -336,6 +336,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           grid-template-columns: repeat(2, 1fr);
           gap: 12px;
           overflow-y: auto;
+        }
+
+        /* 홀수 개일 때 마지막 카드 가운데 정렬 */
+        .style-card:last-child:nth-child(odd) {
+          grid-column: 1 / -1;
+          max-width: calc(50% - 6px);
+          justify-self: center;
         }
 
         .style-card {
