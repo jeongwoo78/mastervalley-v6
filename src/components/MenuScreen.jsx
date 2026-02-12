@@ -13,7 +13,7 @@ const MenuScreen = ({
   lang = 'en'
 }) => {
 
-  const [showLanguageScreen, setShowLanguageScreen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
 
   // i18n texts
   const texts = {
@@ -24,8 +24,7 @@ const MenuScreen = ({
       addFunds: '크레딧 충전',
       support: '고객 지원',
       logOut: '로그아웃',
-      deleteAccount: '계정 삭제',
-      selectLanguage: '언어 선택'
+      deleteAccount: '계정 삭제'
     },
     en: {
       menu: 'Menu',
@@ -34,15 +33,27 @@ const MenuScreen = ({
       addFunds: 'Add Funds',
       support: 'Support',
       logOut: 'Log Out',
-      deleteAccount: 'Delete Account',
-      selectLanguage: 'Select Language'
+      deleteAccount: 'Delete Account'
     }
   };
   const t = texts[lang] || texts.en;
 
+  const languages = [
+    { code: 'en', flag: '🇺🇸', name: 'English' },
+    { code: 'ko', flag: '🇰🇷', name: '한국어' },
+  ];
+
+  const currentLangName = languages.find(l => l.code === lang)?.name || 'English';
+
+  const handleLanguageSelect = (newLang) => {
+    if (onLanguage) {
+      onLanguage(newLang);
+    }
+    setLangOpen(false);
+  };
+
   const menuItems = [
     { id: 'gallery', icon: '🖼️', label: t.myGallery, action: onGallery },
-    { id: 'language', icon: '🌐', label: t.language, action: () => setShowLanguageScreen(true), value: lang === 'ko' ? '한국어' : 'English' },
     { id: 'funds', icon: '💳', label: t.addFunds, action: onAddFunds },
     { id: 'support', icon: '💬', label: t.support, action: onSupport },
   ];
@@ -51,54 +62,6 @@ const MenuScreen = ({
     { id: 'logout', icon: '🚪', label: t.logOut, action: onLogout },
     { id: 'delete', icon: '⚠️', label: t.deleteAccount, action: onDeleteAccount, danger: true },
   ];
-
-  const handleItemClick = (item) => {
-    if (item.action) {
-      item.action();
-    }
-  };
-
-  const handleLanguageSelect = (newLang) => {
-    setShowLanguageScreen(false);
-    if (onLanguage) {
-      onLanguage(newLang);
-    }
-  };
-
-  // 언어 선택 하위 화면
-  if (showLanguageScreen) {
-    return (
-      <div className="menu-screen">
-        <header className="menu-header">
-          <button className="back-btn" onClick={() => setShowLanguageScreen(false)}>←</button>
-          <span className="header-title">{t.selectLanguage}</span>
-          <span className="header-spacer"></span>
-        </header>
-
-        <div className="menu-section">
-          <div 
-            className={`menu-item ${lang === 'en' ? 'selected' : ''}`}
-            onClick={() => handleLanguageSelect('en')}
-          >
-            <span className="menu-icon">🇺🇸</span>
-            <span className="menu-label">English</span>
-            {lang === 'en' && <span className="menu-check">✓</span>}
-          </div>
-          
-          <div 
-            className={`menu-item ${lang === 'ko' ? 'selected' : ''}`}
-            onClick={() => handleLanguageSelect('ko')}
-          >
-            <span className="menu-icon">🇰🇷</span>
-            <span className="menu-label">한국어</span>
-            {lang === 'ko' && <span className="menu-check">✓</span>}
-          </div>
-        </div>
-
-        <style>{menuStyles}</style>
-      </div>
-    );
-  }
 
   return (
     <div className="menu-screen">
@@ -111,15 +74,49 @@ const MenuScreen = ({
 
       {/* Menu Items */}
       <div className="menu-section">
-        {menuItems.map(item => (
+        {/* Gallery */}
+        <div className="menu-item" onClick={menuItems[0].action}>
+          <span className="menu-icon">{menuItems[0].icon}</span>
+          <span className="menu-label">{menuItems[0].label}</span>
+          <span className="menu-arrow">›</span>
+        </div>
+
+        {/* Language - Accordion */}
+        <div 
+          className={`menu-item ${langOpen ? 'accordion-open' : ''}`}
+          onClick={() => setLangOpen(!langOpen)}
+        >
+          <span className="menu-icon">🌐</span>
+          <span className="menu-label">{t.language}</span>
+          <span className="menu-value">{currentLangName}</span>
+          <span className={`menu-chevron ${langOpen ? 'open' : ''}`}>›</span>
+        </div>
+
+        {langOpen && (
+          <div className="lang-accordion">
+            {languages.map(l => (
+              <div 
+                key={l.code}
+                className={`lang-option ${lang === l.code ? 'active' : ''}`}
+                onClick={() => handleLanguageSelect(l.code)}
+              >
+                <span className="lang-flag">{l.flag}</span>
+                <span className="lang-name">{l.name}</span>
+                {lang === l.code && <span className="lang-check">✓</span>}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Funds & Support */}
+        {menuItems.slice(1).map(item => (
           <div 
             key={item.id}
             className="menu-item"
-            onClick={() => handleItemClick(item)}
+            onClick={item.action}
           >
             <span className="menu-icon">{item.icon}</span>
             <span className="menu-label">{item.label}</span>
-            {item.value && <span className="menu-value">{item.value}</span>}
             <span className="menu-arrow">›</span>
           </div>
         ))}
@@ -130,7 +127,7 @@ const MenuScreen = ({
           <div 
             key={item.id}
             className={`menu-item ${item.danger ? 'danger' : ''}`}
-            onClick={() => handleItemClick(item)}
+            onClick={item.action}
           >
             <span className="menu-icon">{item.icon}</span>
             <span className="menu-label">{item.label}</span>
@@ -154,7 +151,6 @@ const menuStyles = `
     margin: 0 auto;
   }
 
-  /* Header */
   .menu-header {
     display: flex;
     align-items: center;
@@ -184,7 +180,6 @@ const menuStyles = `
     width: 40px;
   }
 
-  /* Menu Section */
   .menu-section {
     padding: 16px 20px;
   }
@@ -208,9 +203,10 @@ const menuStyles = `
     background: #2a2a2a;
   }
 
-  .menu-item.selected {
-    background: rgba(139, 92, 246, 0.15);
-    border: 1px solid #8b5cf6;
+  .menu-item.accordion-open {
+    margin-bottom: 0;
+    border-radius: 12px 12px 0 0;
+    background: #1e1e1e;
   }
 
   .menu-icon {
@@ -235,10 +231,15 @@ const menuStyles = `
     font-size: 18px;
   }
 
-  .menu-check {
-    color: #8b5cf6;
+  .menu-chevron {
+    color: #666;
     font-size: 18px;
-    font-weight: bold;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+
+  .menu-chevron.open {
+    transform: rotate(90deg);
   }
 
   .menu-divider {
@@ -251,12 +252,52 @@ const menuStyles = `
     color: #ef4444;
   }
 
-  /* Mobile */
+  /* Language Accordion */
+  .lang-accordion {
+    background: #161616;
+    border-radius: 0 0 12px 12px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-top: 1px solid #2a2a2a;
+  }
+
+  .lang-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px 12px 48px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .lang-option:hover {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .lang-option.active {
+    background: rgba(139, 92, 246, 0.1);
+  }
+
+  .lang-flag {
+    font-size: 18px;
+    margin-right: 12px;
+  }
+
+  .lang-name {
+    flex: 1;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+  }
+
+  .lang-check {
+    color: #8b5cf6;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
   @media (max-width: 400px) {
     .menu-item {
       padding: 12px 14px;
     }
-
     .menu-label {
       font-size: 14px;
     }
