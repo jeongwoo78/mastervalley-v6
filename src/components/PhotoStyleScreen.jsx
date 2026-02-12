@@ -29,7 +29,7 @@ import korean from '../assets/thumbnails/oriental/korean.webp';
 import chinese from '../assets/thumbnails/oriental/chinese.webp';
 import japanese from '../assets/thumbnails/oriental/japanese.webp';
 
-const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
+const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lang = 'en' }) => {
   const fileInputRef = useRef(null);
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -148,7 +148,10 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
       <header className="style-header">
         <button className="back-btn" onClick={onBack}>←</button>
         <span className="header-title">{currentCategory.name}</span>
-        <span className="header-price">{currentCategory.price}</span>
+        <div className="header-right">
+          <span className="header-price">{currentCategory.price}</span>
+          <span className="header-balance">${userCredits.toFixed(2)}</span>
+        </div>
       </header>
 
       {/* Photo Section */}
@@ -238,6 +241,18 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
         .header-price {
           color: rgba(255,255,255,0.5);
           font-size: 14px;
+        }
+
+        .header-right {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .header-balance {
+          color: #fff;
+          font-size: 15px;
+          font-weight: 600;
         }
 
         /* Photo Section */

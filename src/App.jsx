@@ -322,6 +322,7 @@ const App = () => {
               mainCategory={mainCategory}
               onBack={handleBackToCategory}
               onSelect={handlePhotoStyleSelect}
+              userCredits={userCredits}
               lang={lang}
             />
           )}

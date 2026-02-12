@@ -917,9 +917,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         
         .progress-section {
           margin-top: 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
         }
         .progress-bar {
-          width: 100%;
+          width: 50%;
           height: 2px;
           background: rgba(255,255,255,0.1);
           border-radius: 1px;
@@ -931,7 +934,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           transition: width 0.3s;
         }
         .progress-text {
-          text-align: center;
+          text-align: right;
           margin-top: 8px;
           font-size: 11px;
           color: rgba(255,255,255,0.4);

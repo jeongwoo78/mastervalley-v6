@@ -262,7 +262,8 @@ const MasterChat = ({
                           }, 50);
                         }}
                         style={{ 
-                          borderColor: `${theme.primary}60`,
+                          background: `${theme.primary}20`,
+                          borderColor: `${theme.primary}50`,
                           color: theme.primary
                         }}
                       >
@@ -460,18 +461,16 @@ const MasterChat = ({
         }
 
         .question-chip {
-          background: rgba(245, 166, 35, 0.15);
-          border: 1px solid rgba(245, 166, 35, 0.3);
-          color: #F5A623;
           border-radius: 20px;
           padding: 8px 10px;
           font-size: 11px;
           cursor: pointer;
           transition: all 0.2s;
+          border: 1px solid;
         }
 
         .question-chip:hover {
-          background: rgba(245, 166, 35, 0.25);
+          filter: brightness(1.2);
           transform: translateY(-1px);
         }
 

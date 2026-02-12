@@ -56,7 +56,8 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
       {/* Header */}
       <header className="main-header">
         <button className="menu-btn" onClick={handleMenuClick}>
-          👤
+          <span className="menu-icon">👤</span>
+          <span className="menu-label">MY</span>
         </button>
         <span className="credits">${userCredits.toFixed(2)}</span>
       </header>
@@ -107,16 +108,26 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
         }
 
         .menu-btn {
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: transparent;
           border: none;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          font-size: 18px;
           cursor: pointer;
           display: flex;
+          flex-direction: column;
           align-items: center;
-          justify-content: center;
+          gap: 2px;
+          padding: 4px 8px;
+        }
+
+        .menu-icon {
+          font-size: 28px;
+          filter: grayscale(1) brightness(2);
+        }
+
+        .menu-label {
+          font-size: 10px;
+          color: rgba(255,255,255,0.7);
+          font-weight: 600;
+          letter-spacing: 0.5px;
         }
 
         .credits {
