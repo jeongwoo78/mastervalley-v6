@@ -245,8 +245,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           margin: 0 28px 8px;
           background: #1a1a1a;
           border-radius: 12px;
-          height: auto;
-          aspect-ratio: 4 / 3;
+          height: 100px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -256,16 +255,18 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           box-shadow: none;
         }
 
+        /* 사진 선택 후 - 4:3 비율 */
+        .photo-section:not(.awaiting-photo) {
+          height: auto;
+          aspect-ratio: 4 / 3;
+          background: transparent;
+        }
+
         /* 사진 미선택 시 - 테두리 */
         .photo-section.awaiting-photo {
           border: 2px solid #667eea !important;
           box-shadow: 0 0 12px rgba(102, 126, 234, 0.4) !important;
           animation: photoPulse 2s ease-in-out infinite;
-        }
-
-        /* 사진 선택 후 */
-        .photo-section:not(.awaiting-photo) {
-          background: transparent;
         }
 
         @keyframes photoPulse {
@@ -338,7 +339,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
         /* Style Grid */
         .style-grid {
           flex: 1;
-          padding: 0 28px 24px;
+          padding: 4px 28px 24px;
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           gap: 16px;
