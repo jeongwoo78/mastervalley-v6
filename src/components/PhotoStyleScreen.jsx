@@ -29,7 +29,7 @@ import korean from '../assets/thumbnails/oriental/korean.webp';
 import chinese from '../assets/thumbnails/oriental/chinese.webp';
 import japanese from '../assets/thumbnails/oriental/japanese.webp';
 
-const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
+const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
   const fileInputRef = useRef(null);
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -207,6 +207,8 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
           background: #121212;
           display: flex;
           flex-direction: column;
+          max-width: 400px;
+          margin: 0 auto;
         }
 
         /* Header */
@@ -250,11 +252,12 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
           cursor: pointer;
           overflow: hidden;
           transition: all 0.3s;
+          border: 2px solid transparent;
         }
 
-        /* 스타일 선택 후 사진 대기 상태 - 테두리 강조 + 펄스 */
+        /* 사진 미선택 시 - 테두리 강조 + 펄스 */
         .photo-section.awaiting-photo {
-          border: 2px solid #667eea;
+          border-color: #667eea;
           box-shadow: 0 0 12px rgba(102, 126, 234, 0.4);
           animation: photoPulse 2s ease-in-out infinite;
         }

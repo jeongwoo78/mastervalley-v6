@@ -832,7 +832,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           background: #121212;
           padding: 20px;
           border-radius: 16px;
-          max-width: 500px;
+          max-width: 400px;
           width: 100%;
           max-height: 90vh;
           overflow-y: auto;
