@@ -251,9 +251,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           justify-content: center;
           cursor: pointer;
           overflow: hidden;
-          transition: all 0.3s;
           border: none;
           box-shadow: none;
+        }
+
+        /* 사진 선택 후 - 깔끔하게 */
+        .photo-section:not(.awaiting-photo) {
+          background: transparent;
         }
 
         /* 사진 미선택 시 - 테두리 강조 + 펄스 */
@@ -373,7 +377,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           left: 0;
           right: 0;
           padding: 8px 10px;
-          background: rgba(0,0,0,0.5);
+          background: none;
           text-align: left;
         }
 
@@ -383,13 +387,15 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, lang = 'en' }) => {
           font-size: 13px;
           font-weight: 600;
           line-height: 1.3;
+          text-shadow: 0 1px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5);
         }
 
         .style-period {
           display: block;
-          color: rgba(255,255,255,0.6);
+          color: rgba(255,255,255,0.8);
           font-size: 11px;
           margin-top: 2px;
+          text-shadow: 0 1px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5);
         }
 
         /* Mobile */
