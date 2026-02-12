@@ -13,7 +13,10 @@ export const masterChat = {
     requestModify: '✨ Modify',
     errorMessage: "...Sorry, my thoughts wandered. Could you say that again?",
     modifying: '{masterName} is modifying the artwork.',
-    senderMe: 'Me'
+    senderMe: 'Me',
+    placeholderEnded: 'Chat ended',
+    placeholderConverting: 'Converting...',
+    placeholderDefault: 'Type a message...'
   },
 
   // ===== Master Names (7) =====

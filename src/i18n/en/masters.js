@@ -86,7 +86,7 @@ export const mastersBasicInfo = {
     },
     result: {
       name: 'Frida Kahlo (1907–1954)',
-      subtitle1: 'The Broken Column · Self-Portrait with Thorn Necklace',
+      subtitle1: 'The Two Fridas · The Broken Column · Thorn Necklace',
       subtitle2: 'Self-portrait gazing at pain'
     }
   },

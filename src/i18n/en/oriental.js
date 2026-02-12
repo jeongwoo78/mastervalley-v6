@@ -26,7 +26,7 @@ export const orientalBasicInfo = {
   'japanese': {
     loading: {
       name: 'Japanese Traditional Painting',
-      subtitle1: 'Ukiyo-e',
+      subtitle1: 'Ukiyo-e · Rinpa',
       subtitle2: 'Beauty of the floating world'
     }
   },

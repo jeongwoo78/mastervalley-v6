@@ -807,26 +807,26 @@ export function detectCategory(key) {
 export function getMovementDisplayInfo(styleName, artistName, lang = 'en') {
   // 사조 정보
   const movementData = {
-    '고대': { ko: '고대', en: 'Greco-Roman', period: 'BC~AD 4세기' },
-    '고대 그리스-로마': { ko: '그리스·로마', en: 'Greco-Roman', period: 'BC~AD 4세기' },
-    '그리스·로마': { ko: '그리스·로마', en: 'Greco-Roman', period: 'BC~AD 4세기' },
-    '중세': { ko: '중세 미술', en: 'Medieval', period: '5~15세기' },
-    '중세 미술': { ko: '중세 미술', en: 'Medieval', period: '5~15세기' },
-    '르네상스': { ko: '르네상스', en: 'Renaissance', period: '14~16세기' },
-    '바로크': { ko: '바로크', en: 'Baroque', period: '17~18세기' },
-    '로코코': { ko: '로코코', en: 'Rococo', period: '18세기' },
-    '신고전 vs 낭만 vs 사실주의': { ko: '신고전·낭만·사실주의', en: 'Neoclassicism·Romanticism·Realism', period: '18~19세기' },
-    '신고전주의': { ko: '신고전주의', en: 'Neoclassicism', period: '18~19세기' },
-    '낭만주의': { ko: '낭만주의', en: 'Romanticism', period: '19세기' },
-    '사실주의': { ko: '사실주의', en: 'Realism', period: '19세기' },
-    '인상주의': { ko: '인상주의', en: 'Impressionism', period: '19세기 말' },
-    '후기인상주의': { ko: '후기인상주의', en: 'Post-Impressionism', period: '19세기 말' },
-    '야수파': { ko: '야수파', en: 'Fauvism', period: '20세기 초' },
-    '표현주의': { ko: '표현주의', en: 'Expressionism', period: '20세기 초' },
-    '20세기 모더니즘': { ko: '모더니즘', en: 'Modernism', period: '20세기' },
-    '입체주의': { ko: '입체주의', en: 'Cubism', period: '20세기 초' },
-    '초현실주의': { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반' },
-    '팝아트': { ko: '팝아트', en: 'Pop Art', period: '20세기 중반' }
+    '고대': { ko: '고대', en: 'Greco-Roman', period: 'BC~AD 4세기', periodEn: 'BC–AD 4th Century' },
+    '고대 그리스-로마': { ko: '그리스·로마', en: 'Greco-Roman', period: 'BC~AD 4세기', periodEn: 'BC–AD 4th Century' },
+    '그리스·로마': { ko: '그리스·로마', en: 'Greco-Roman', period: 'BC~AD 4세기', periodEn: 'BC–AD 4th Century' },
+    '중세': { ko: '중세 미술', en: 'Medieval', period: '5~15세기', periodEn: '5th–15th Century' },
+    '중세 미술': { ko: '중세 미술', en: 'Medieval', period: '5~15세기', periodEn: '5th–15th Century' },
+    '르네상스': { ko: '르네상스', en: 'Renaissance', period: '14~16세기', periodEn: '14th–16th Century' },
+    '바로크': { ko: '바로크', en: 'Baroque', period: '17~18세기', periodEn: '17th–18th Century' },
+    '로코코': { ko: '로코코', en: 'Rococo', period: '18세기', periodEn: '18th Century' },
+    '신고전 vs 낭만 vs 사실주의': { ko: '신고전·낭만·사실주의', en: 'Neoclassicism·Romanticism·Realism', period: '18~19세기', periodEn: '18th–19th Century' },
+    '신고전주의': { ko: '신고전주의', en: 'Neoclassicism', period: '18~19세기', periodEn: '18th–19th Century' },
+    '낭만주의': { ko: '낭만주의', en: 'Romanticism', period: '19세기', periodEn: '19th Century' },
+    '사실주의': { ko: '사실주의', en: 'Realism', period: '19세기', periodEn: '19th Century' },
+    '인상주의': { ko: '인상주의', en: 'Impressionism', period: '19세기 말', periodEn: 'Late 19th Century' },
+    '후기인상주의': { ko: '후기인상주의', en: 'Post-Impressionism', period: '19세기 말', periodEn: 'Late 19th Century' },
+    '야수파': { ko: '야수파', en: 'Fauvism', period: '20세기 초', periodEn: 'Early 20th Century' },
+    '표현주의': { ko: '표현주의', en: 'Expressionism', period: '20세기 초', periodEn: 'Early 20th Century' },
+    '20세기 모더니즘': { ko: '모더니즘', en: 'Modernism', period: '20세기', periodEn: '20th Century' },
+    '입체주의': { ko: '입체주의', en: 'Cubism', period: '20세기 초', periodEn: 'Early 20th Century' },
+    '초현실주의': { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반', periodEn: 'Early–Mid 20th Century' },
+    '팝아트': { ko: '팝아트', en: 'Pop Art', period: '20세기 중반', periodEn: 'Mid 20th Century' }
   };
   
   // 사조 결정 (신고전/낭만/사실, 모더니즘 세분화)
@@ -846,9 +846,10 @@ export function getMovementDisplayInfo(styleName, artistName, lang = 'en') {
   }
   
   const mvInfo = movementData[actualMovement] || { ko: styleName, en: styleName, period: '' };
+  const period = lang === 'ko' ? mvInfo.period : (mvInfo.periodEn || mvInfo.period);
   const title = lang === 'ko'
-    ? (mvInfo.period ? `${mvInfo.ko}(${mvInfo.en}, ${mvInfo.period})` : `${mvInfo.ko}(${mvInfo.en})`)
-    : (mvInfo.period ? `${mvInfo.en} (${mvInfo.period})` : mvInfo.en);
+    ? (period ? `${mvInfo.ko}(${mvInfo.en}, ${period})` : `${mvInfo.ko}(${mvInfo.en})`)
+    : (period ? `${mvInfo.en} (${period})` : mvInfo.en);
   
   // 부제: 화가명
   let subtitle = '';
@@ -987,11 +988,20 @@ export function getStyleTitle(category, styleId, artistName, lang = 'en') {
     const masterInfo = getMasterInfo(artistName || styleId, lang);
     return masterInfo.fullName;
   } else if (category === 'movements') {
+    // 복합사조 해결: artistName으로 세부 사조 특정
+    if (artistName && (styleId === 'neoclassicism_vs_romanticism_vs_realism' || styleId === 'modernism')) {
+      const info = getMovementDisplayInfo(
+        styleId === 'neoclassicism_vs_romanticism_vs_realism' ? '신고전 vs 낭만 vs 사실주의' : '20세기 모더니즘',
+        artistName, lang
+      );
+      return info.title;
+    }
     const m = MOVEMENTS[styleId];
     if (!m) return lang === 'ko' ? '미술사조' : 'Art Movement';
+    const period = lang === 'ko' ? m.period : (m.periodEn || m.period);
     return lang === 'ko' 
-      ? `${m.ko}(${m.en}, ${m.period})`
-      : `${m.en} (${m.period})`;
+      ? `${m.ko}(${m.en}, ${period})`
+      : `${m.en} (${period})`;
   } else if (category === 'oriental') {
     const o = ORIENTAL[styleId];
     if (!o) return lang === 'ko' ? '동양화' : 'East Asian Art';

@@ -86,7 +86,7 @@ export const mastersBasicInfo = {
     },
     result: {
       name: '프리다 칼로(Frida Kahlo, 1907~1954)',
-      subtitle1: '부러진 기둥 · 가시 목걸이와 벌새',
+      subtitle1: '두 명의 프리다 · 부러진 기둥 · 가시 목걸이',
       subtitle2: '고통을 응시한 자화상'
     }
   },

@@ -166,6 +166,8 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showSaveShareMenu, setShowSaveShareMenu] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
 
   // i18n texts
   const texts = {
@@ -183,7 +185,23 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       confirmDeleteAll: '모든 이미지를 삭제할까요?\n이 작업은 취소할 수 없습니다.',
       savedToGallery: '✅ 갤러리에 저장되었습니다!',
       savedToFiles: '✅ 저장되었습니다!\n📁 파일 앱 → Documents → MasterValley',
-      saveFailed: '저장에 실패했습니다'
+      saveFailed: '저장에 실패했습니다',
+      shareTitle: 'Master Valley 작품',
+      shareText: 'Master Valley로 만든 AI 명화를 확인해보세요!',
+      linkCopied: '링크가 클립보드에 복사되었습니다!',
+      loading: '갤러리 로딩 중...',
+      back: '뒤로',
+      home: '홈',
+      deviceNote: '💡 이미지는 기기에 저장됩니다.',
+      countUnit: '개',
+      delete: '삭제',
+      select: '선택',
+      selectAll: '전체 선택',
+      deselectAll: '전체 해제',
+      deleteSelected: '선택 삭제',
+      cancel: '취소',
+      confirmDeleteSelected: '선택한 {count}개 이미지를 삭제할까요?',
+      selectedCount: '{count}개 선택'
     },
     en: {
       title: 'My Gallery',
@@ -199,7 +217,23 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       confirmDeleteAll: 'Delete all images?\nThis cannot be undone.',
       savedToGallery: '✅ Saved to Gallery!',
       savedToFiles: '✅ Saved!\n📁 Files app → Documents → MasterValley',
-      saveFailed: 'Save failed'
+      saveFailed: 'Save failed',
+      shareTitle: 'Master Valley Art',
+      shareText: 'Check out my AI masterpiece from Master Valley!',
+      linkCopied: 'Link copied to clipboard!',
+      loading: 'Loading gallery...',
+      back: 'Back',
+      home: 'Home',
+      deviceNote: '💡 Images are saved on your device.',
+      countUnit: '',
+      delete: 'Delete',
+      select: 'Select',
+      selectAll: 'Select All',
+      deselectAll: 'Deselect All',
+      deleteSelected: 'Delete Selected',
+      cancel: 'Cancel',
+      confirmDeleteSelected: 'Delete {count} selected images?',
+      selectedCount: '{count} selected'
     }
   };
   const t = texts[lang] || texts.en;
@@ -225,6 +259,42 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
         setSelectedItem(null);
       }
     }
+  };
+
+  // 다중 선택 토글
+  const toggleSelect = (id) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const selectAll = () => {
+    setSelectedIds(new Set(galleryItems.map(item => item.id)));
+  };
+
+  const deselectAll = () => {
+    setSelectedIds(new Set());
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.size === 0) return;
+    const msg = t.confirmDeleteSelected.replace('{count}', selectedIds.size);
+    if (window.confirm(msg)) {
+      for (const id of selectedIds) {
+        await deleteImage(id);
+      }
+      setGalleryItems(prev => prev.filter(item => !selectedIds.has(item.id)));
+      setSelectedIds(new Set());
+      setSelectMode(false);
+    }
+  };
+
+  const exitSelectMode = () => {
+    setSelectMode(false);
+    setSelectedIds(new Set());
   };
 
   // 이미지 저장 (mobileShare 사용)
@@ -256,15 +326,13 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       // 워터마크 추가
       const watermarkedImage = await addWatermark(item.imageData);
       
-      const shareTitle = lang === 'ko' ? 'Master Valley 작품' : 'Master Valley Art';
-      const shareText = lang === 'ko' 
-        ? `${item.styleName || '예술'} 스타일로 변환한 작품입니다 ✨`
-        : `Converted to ${item.styleName || 'art'} style ✨`;
+      const shareTitle = t.shareTitle;
+      const shareText = t.shareText;
       
       const result = await shareImage(watermarkedImage, shareTitle, shareText);
       
       if (result.clipboard) {
-        alert(lang === 'ko' ? '링크가 클립보드에 복사되었습니다!' : 'Link copied to clipboard!');
+        alert(t.linkCopied);
       }
       setShowSaveShareMenu(false);
       setSelectedItem(null);
@@ -299,7 +367,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       <div style={styles.container}>
         <div style={styles.loading}>
           <div style={styles.spinner}></div>
-          <p>{lang === 'ko' ? '갤러리 로딩 중...' : 'Loading gallery...'}</p>
+          <p>{t.loading}</p>
         </div>
         <style>{animationStyle}</style>
       </div>
@@ -312,24 +380,49 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       <div style={styles.header}>
         <div style={styles.headerLeft}>
           <button style={styles.backButton} onClick={onBack}>
-            ← {lang === 'ko' ? '뒤로' : 'Back'}
+            ← {t.back}
           </button>
           <button style={styles.homeButton} onClick={onHome}>
-            🏠 {lang === 'ko' ? '홈' : 'Home'}
+            🏠 {t.home}
           </button>
         </div>
         <h2 style={styles.title}>{t.title}</h2>
-        {galleryItems.length > 0 && (
-          <button style={styles.clearButton} onClick={handleClearAll}>
-            {t.deleteAll}
+        {galleryItems.length > 0 && !selectMode && (
+          <button style={styles.selectButton} onClick={() => setSelectMode(true)}>
+            {t.select}
           </button>
         )}
       </div>
 
+      {/* 선택 모드 툴바 */}
+      {selectMode && (
+        <div className="select-toolbar">
+          <div className="select-toolbar-left">
+            <button className="select-action-btn" onClick={selectAll}>{t.selectAll}</button>
+            <button className="select-action-btn" onClick={deselectAll}>{t.deselectAll}</button>
+          </div>
+          <span className="select-count">
+            {t.selectedCount.replace('{count}', selectedIds.size)}
+          </span>
+          <div className="select-toolbar-right">
+            <button 
+              className="select-delete-btn" 
+              onClick={handleDeleteSelected}
+              disabled={selectedIds.size === 0}
+            >
+              🗑️ {t.deleteSelected}
+            </button>
+            <button className="select-cancel-btn" onClick={exitSelectMode}>
+              {t.cancel}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 안내 메시지 */}
       <div style={styles.notice}>
-        <p style={{ margin: 0 }}>{lang === 'ko' ? '💡 이미지는 기기에 저장됩니다.' : '💡 Images are saved on your device.'}</p>
-        <p style={styles.countText}>{t.saved}: {galleryItems.length}{lang === 'ko' ? '개' : ''}</p>
+        <p style={{ margin: 0 }}>{t.deviceNote}</p>
+        <p style={styles.countText}>{t.saved}: {galleryItems.length}{t.countUnit}</p>
       </div>
 
       {/* 갤러리 그리드 */}
@@ -344,15 +437,22 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
           {galleryItems.map((item) => (
             <div
               key={item.id}
-              className="gallery-item"
-              onClick={() => setSelectedItem(item)}
+              className={`gallery-item ${selectMode && selectedIds.has(item.id) ? 'selected' : ''}`}
+              onClick={() => selectMode ? toggleSelect(item.id) : setSelectedItem(item)}
             >
-              <img
-                src={item.imageData}
-                alt={item.styleName}
-                style={styles.thumbnail}
-                loading="lazy"
-              />
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={item.imageData}
+                  alt={item.styleName}
+                  style={styles.thumbnail}
+                  loading="lazy"
+                />
+                {selectMode && (
+                  <div className={`select-checkbox ${selectedIds.has(item.id) ? 'checked' : ''}`}>
+                    {selectedIds.has(item.id) && '✓'}
+                  </div>
+                )}
+              </div>
               <div style={styles.itemLabel}>
                 <span style={styles.styleName}>{item.styleName}</span>
                 <span style={styles.date}>{formatDate(item.createdAt)}</span>
@@ -398,7 +498,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
                 style={styles.deleteButton}
                 onClick={() => handleDelete(selectedItem.id)}
               >
-                🗑️ {lang === 'ko' ? '삭제' : 'Delete'}
+                🗑️ {t.delete}
               </button>
             </div>
             
@@ -463,6 +563,97 @@ const animationStyle = `
   .gallery-item:hover {
     transform: scale(1.02);
     box-shadow: 0 8px 25px rgba(167, 139, 250, 0.3);
+  }
+  
+  .gallery-item.selected {
+    outline: 2px solid #a78bfa;
+    outline-offset: -2px;
+    opacity: 0.85;
+  }
+  
+  .select-checkbox {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+    z-index: 1;
+  }
+  
+  .select-checkbox.checked {
+    background: #a78bfa;
+    border-color: #a78bfa;
+  }
+  
+  .select-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(167, 139, 250, 0.1);
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .select-toolbar-left, .select-toolbar-right {
+    display: flex;
+    gap: 6px;
+  }
+  
+  .select-count {
+    font-size: 13px;
+    color: #a78bfa;
+    font-weight: 600;
+  }
+  
+  .select-action-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #ddd;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .select-action-btn:hover {
+    background: rgba(255,255,255,0.15);
+  }
+  
+  .select-delete-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #dc3545;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .select-delete-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  
+  .select-cancel-btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: transparent;
+    color: #999;
+    font-size: 12px;
+    cursor: pointer;
   }
   
   @media (min-width: 768px) {
@@ -532,6 +723,16 @@ const styles = {
     background: 'rgba(255,100,100,0.3)',
     border: 'none',
     color: '#ff6b6b',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+  },
+  
+  selectButton: {
+    background: 'rgba(167, 139, 250, 0.2)',
+    border: '1px solid rgba(167, 139, 250, 0.4)',
+    color: '#a78bfa',
     padding: '10px 20px',
     borderRadius: '8px',
     cursor: 'pointer',

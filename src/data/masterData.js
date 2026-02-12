@@ -19,6 +19,7 @@ export const MOVEMENTS = {
     ko: '그리스·로마',
     en: 'Greek & Roman',
     period: 'BC 800~AD 500',
+    periodEn: 'BC 800–AD 500',
     icon: '🏛️',
     description: '완벽한 비례와 균형미',
     descriptionEn: 'Ideal beauty of gods and heroes',
@@ -30,6 +31,7 @@ export const MOVEMENTS = {
     ko: '중세 미술',
     en: 'Medieval Art',
     period: '5~15세기',
+    periodEn: '5th–15th Century',
     icon: '⛪',
     description: '신을 향한 경건한 표현',
     descriptionEn: 'Golden art for the divine',
@@ -41,7 +43,8 @@ export const MOVEMENTS = {
     ko: '르네상스',
     en: 'Renaissance',
     period: '14~16세기',
-    icon: '🎭',
+    periodEn: '14th–16th Century',
+    icon: '🖼️',
     description: '인간 중심의 이상적 아름다움',
     descriptionEn: 'Seeing anew through human eyes',
     subtitle: '다빈치 · 미켈란젤로 · 보티첼리',
@@ -52,6 +55,7 @@ export const MOVEMENTS = {
     ko: '바로크',
     en: 'Baroque',
     period: '17~18세기',
+    periodEn: '17th–18th Century',
     icon: '👑',
     description: '빛과 어둠의 드라마',
     descriptionEn: 'Drama of light and shadow',
@@ -63,6 +67,7 @@ export const MOVEMENTS = {
     ko: '로코코',
     en: 'Rococo',
     period: '18세기',
+    periodEn: '18th Century',
     icon: '🌸',
     description: '우아하고 장식적인 취향',
     descriptionEn: 'Elegant play of aristocracy',
@@ -74,7 +79,8 @@ export const MOVEMENTS = {
     ko: '신고전 vs 낭만 vs 사실주의',
     en: 'Neoclassicism·Romanticism·Realism',
     period: '19세기',
-    icon: '⚖️',
+    periodEn: '19th Century',
+    icon: '🗽',
     description: '이성 vs 감성 vs 현실',
     descriptionEn: 'Reason, emotion, reality diverge',
     subtitle: '다비드 · 들라크루아 · 쿠르베',
@@ -85,6 +91,7 @@ export const MOVEMENTS = {
     ko: '인상주의',
     en: 'Impressionism',
     period: '19세기 후반',
+    periodEn: 'Late 19th Century',
     icon: '🌅',
     description: '빛의 순간을 포착',
     descriptionEn: 'The moment light becomes color',
@@ -96,6 +103,7 @@ export const MOVEMENTS = {
     ko: '후기인상주의',
     en: 'Post-Impressionism',
     period: '19세기 말',
+    periodEn: 'Late 19th Century',
     icon: '🌻',
     description: '감정과 구조의 탐구',
     descriptionEn: 'Beyond light, into the soul',
@@ -107,7 +115,8 @@ export const MOVEMENTS = {
     ko: '야수파',
     en: 'Fauvism',
     period: '20세기 초',
-    icon: '🎨',
+    periodEn: 'Early 20th Century',
+    icon: '🦁',
     description: '순수 색채의 해방',
     descriptionEn: 'Beasts who liberated color',
     subtitle: '마티스 · 드랭 · 블라맹크',
@@ -118,6 +127,7 @@ export const MOVEMENTS = {
     ko: '표현주의',
     en: 'Expressionism',
     period: '20세기 초',
+    periodEn: 'Early 20th Century',
     icon: '😱',
     description: '내면의 불안과 고독',
     descriptionEn: 'Painting what is felt',
@@ -129,6 +139,7 @@ export const MOVEMENTS = {
     ko: '20세기 모더니즘',
     en: 'Modernism',
     period: '20세기',
+    periodEn: '20th Century',
     icon: '🔮',
     description: '전통을 부수는 실험',
     descriptionEn: 'Breaking all the rules',
@@ -139,16 +150,16 @@ export const MOVEMENTS = {
 
 // 20세기 모더니즘 세부 사조 (화가별 분류용)
 export const MODERNISM_SUB = {
-  cubism: { ko: '입체주의', en: 'Cubism', period: '20세기 초' },
-  surrealism: { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반' },
-  popArt: { ko: '팝아트', en: 'Pop Art', period: '20세기 중반' }
+  cubism: { ko: '입체주의', en: 'Cubism', period: '20세기 초', periodEn: 'Early 20th Century' },
+  surrealism: { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반', periodEn: 'Early–Mid 20th Century' },
+  popArt: { ko: '팝아트', en: 'Pop Art', period: '20세기 중반', periodEn: 'Mid 20th Century' }
 };
 
 // 19세기 세부 사조 (화가별 분류용)
 export const NINETEENTH_CENTURY_SUB = {
-  neoclassicism: { ko: '신고전주의', en: 'Neoclassicism', period: '18~19세기' },
-  romanticism: { ko: '낭만주의', en: 'Romanticism', period: '19세기' },
-  realism: { ko: '사실주의', en: 'Realism', period: '19세기' }
+  neoclassicism: { ko: '신고전주의', en: 'Neoclassicism', period: '18~19세기', periodEn: '18th–19th Century' },
+  romanticism: { ko: '낭만주의', en: 'Romanticism', period: '19세기', periodEn: '19th Century' },
+  realism: { ko: '사실주의', en: 'Realism', period: '19세기', periodEn: '19th Century' }
 };
 
 // 아르누보 (클림트용)
@@ -233,7 +244,7 @@ export const MASTERS = {
     movementEn: 'Fauvism',
     tagline: '색채의 기쁨과 해방',
     taglineEn: 'Master of color',
-    icon: '🎭',
+    icon: '💃',
     description: '1869-1954 | 야수파',
     featuredWorks: '춤 · 붉은 방',
     featuredWorksEn: 'The Dance · The Red Room',
@@ -255,7 +266,7 @@ export const MASTERS = {
     movementEn: 'Surrealism',
     tagline: '사랑과 꿈의 비행',
     taglineEn: 'Poet of love and dreams',
-    icon: '🎠',
+    icon: '🎻',
     description: '1887-1985 | 초현실주의',
     featuredWorks: '나와 마을 · 산책',
     featuredWorksEn: 'I and the Village · The Walk',
@@ -276,7 +287,7 @@ export const MASTERS = {
     movementEn: 'Surrealism',
     tagline: '고통 속 강인한 자아',
     taglineEn: 'Self-portrait gazing at pain',
-    icon: '🌺',
+    icon: '🦜',
     description: '1907-1954 | 초현실주의',
     featuredWorks: '부러진 기둥 · 가시 목걸이와 벌새',
     featuredWorksEn: 'The Broken Column · Self-Portrait with Thorn Necklace',
@@ -299,7 +310,7 @@ export const MASTERS = {
     movementEn: 'Cubism',
     tagline: '형태를 해체한 혁명가',
     taglineEn: 'Revolutionary who deconstructed vision',
-    icon: '🎨',
+    icon: '💎',
     description: '1881-1973 | 입체주의',
     featuredWorks: '아비뇽의 처녀들 · 게르니카',
     featuredWorksEn: "Les Demoiselles d'Avignon · Guernica",
@@ -395,7 +406,7 @@ export const ORIENTAL = {
     id: 'japanese',
     ko: '일본 전통회화',
     en: 'Japanese Traditional Art',
-    icon: '🗾',
+    icon: '🌊',
     description: '섬세한 관찰과 대담함',
     descriptionEn: 'Beauty of the floating world',
     styles: {

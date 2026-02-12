@@ -26,7 +26,7 @@ export const orientalBasicInfo = {
   'japanese': {
     loading: {
       name: '일본 전통회화(Japanese Traditional Painting)',
-      subtitle1: '우키요에',
+      subtitle1: '우키요에 · 린파',
       subtitle2: '떠도는 세상의 아름다움'
     }
   },

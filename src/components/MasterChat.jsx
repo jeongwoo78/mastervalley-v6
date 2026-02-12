@@ -9,13 +9,13 @@ const API_BASE_URL = 'https://mastervalley-v5.vercel.app';
 
 // 거장별 테마 색상 (7명) - 색상은 i18n 불필요
 const MASTER_THEMES = {
-  'VAN GOGH': { primary: '#F5A623', gradient: 'linear-gradient(135deg, #F5A623, #e8941a)' },
-  'KLIMT': { primary: '#D4AF37', gradient: 'linear-gradient(135deg, #D4AF37, #b8962e)' },
-  'MUNCH': { primary: '#8B4513', gradient: 'linear-gradient(135deg, #8B4513, #6d360f)' },
-  'CHAGALL': { primary: '#E6A8D7', gradient: 'linear-gradient(135deg, #E6A8D7, #7EB6D8)' },
-  'MATISSE': { primary: '#FF6B6B', gradient: 'linear-gradient(135deg, #FF6B6B, #ee5a5a)' },
-  'FRIDA': { primary: '#C41E3A', gradient: 'linear-gradient(135deg, #C41E3A, #a01830)' },
-  'LICHTENSTEIN': { primary: '#FFD700', gradient: 'linear-gradient(135deg, #FFD700, #FF4500)' }
+  'VAN GOGH': { primary: '#F5A623', gradient: 'linear-gradient(135deg, #F5A623, #e8941a)', icon: '🌻' },
+  'KLIMT': { primary: '#D4AF37', gradient: 'linear-gradient(135deg, #D4AF37, #b8962e)', icon: '✨' },
+  'MUNCH': { primary: '#8B4513', gradient: 'linear-gradient(135deg, #8B4513, #6d360f)', icon: '😱' },
+  'CHAGALL': { primary: '#E6A8D7', gradient: 'linear-gradient(135deg, #E6A8D7, #7EB6D8)', icon: '🎻' },
+  'MATISSE': { primary: '#FF6B6B', gradient: 'linear-gradient(135deg, #FF6B6B, #ee5a5a)', icon: '💃' },
+  'FRIDA': { primary: '#C41E3A', gradient: 'linear-gradient(135deg, #C41E3A, #a01830)', icon: '🦜' },
+  'LICHTENSTEIN': { primary: '#FFD700', gradient: 'linear-gradient(135deg, #FFD700, #FF4500)', icon: '💥' }
 };
 
 const MasterChat = ({ 
@@ -230,7 +230,7 @@ const MasterChat = ({
       {/* 헤더 (목업 준수: 이름 + AI 태그) */}
       <div className="master-chat-header">
         <div className="master-avatar" style={{ background: theme.gradient }}>
-          🎨
+          {theme.icon}
         </div>
         <div className="master-info">
           <h3>{masterName}<span className="ai-tag">(AI)</span></h3>
@@ -242,7 +242,7 @@ const MasterChat = ({
         {messages.map((msg, idx) => (
           <div key={idx} className={`chat-message ${msg.role}`}>
             {msg.role === 'master' && (
-              <div className="avatar" style={{ background: theme.gradient }}>🎨</div>
+              <div className="avatar" style={{ background: theme.gradient }}>{theme.icon}</div>
             )}
             {msg.role === 'system' ? (
               <div className="system-message">
@@ -289,7 +289,7 @@ const MasterChat = ({
         {/* 타이핑 인디케이터 */}
         {isLoading && (
           <div className="chat-message master">
-            <div className="avatar" style={{ background: theme.gradient }}>🎨</div>
+            <div className="avatar" style={{ background: theme.gradient }}>{theme.icon}</div>
             <div className="bubble typing" style={{ 
               background: `${theme.primary}20`,
               borderColor: `${theme.primary}40`
@@ -309,10 +309,10 @@ const MasterChat = ({
           onChange={(e) => setInputValue(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder={isChatEnded 
-            ? (lang === 'ko' ? "대화가 종료되었습니다" : "Chat ended") 
+            ? chatText.common.placeholderEnded
             : isRetransforming 
-              ? (lang === 'ko' ? "변환 중..." : "Converting...") 
-              : (lang === 'ko' ? "메시지를 입력하세요..." : "Type a message...")}
+              ? chatText.common.placeholderConverting
+              : chatText.common.placeholderDefault}
           disabled={isLoading || isRetransforming || isChatEnded}
           style={{ borderColor: inputValue ? theme.primary : undefined }}
         />

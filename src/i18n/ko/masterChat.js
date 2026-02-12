@@ -13,7 +13,10 @@ export const masterChat = {
     requestModify: '✨ 수정',
     errorMessage: '...미안하네, 잠시 생각이 흐트러졌어. 다시 말해주겠나?',
     modifying: '{masterName} 그림을 수정 중입니다.',
-    senderMe: '나'
+    senderMe: '나',
+    placeholderEnded: '대화가 종료되었습니다',
+    placeholderConverting: '변환 중...',
+    placeholderDefault: '메시지를 입력하세요...'
   },
 
   // ===== 거장 이름 (7명) =====

@@ -39,7 +39,7 @@ export const movementsBasicInfo = {
   'rococo': {
     loading: {
       name: 'Rococo (18th Century)',
-      subtitle1: 'Watteau · Boucher',
+      subtitle1: 'Watteau · Boucher · Fragonard',
       subtitle2: 'Elegant play of aristocracy'
     }
   },

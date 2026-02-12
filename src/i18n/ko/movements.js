@@ -39,7 +39,7 @@ export const movementsBasicInfo = {
   'rococo': {
     loading: {
       name: '로코코(Rococo, 18세기)',
-      subtitle1: '와토 · 부셰',
+      subtitle1: '와토 · 부셰 · 프라고나르',
       subtitle2: '귀족의 우아한 유희'
     }
   },
