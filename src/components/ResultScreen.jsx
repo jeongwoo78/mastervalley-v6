@@ -2017,15 +2017,7 @@ const ResultScreen = ({
         onTouchEnd={handleTouchEnd}
       >
         
-        {/* Header */}
-        <div className="result-header">
-          <p className="result-subtitle">
-            {isFullTransform 
-              ? `${selectedStyle.name} (${currentIndex + 1}/${fullTransformResults.length})`
-              : `${selectedStyle.name} style`
-            }
-          </p>
-        </div>
+        {/* Header 제거 - 목업에 없음 */}
 
         {/* ===== 원클릭 결과 화면 (목업 07-result-oneclick.html 준수) ===== */}
         {/* 원클릭: viewIndex === -1 → 1차 교육 + Original */}
@@ -2097,7 +2089,7 @@ const ResultScreen = ({
               <div className="oneclick-edu-section">
                 <div className="edu-header">
                   <button className="toggle-btn" onClick={() => setShowInfo(!showInfo)}>
-                    {showInfo ? '▼' : '▶'} {lang === 'ko' ? '숨기기' : 'Hide'}
+                    {showInfo ? '▼' : '▶'} {showInfo ? (lang === 'ko' ? '숨기기' : 'Hide') : (lang === 'ko' ? '보기' : 'Show')}
                   </button>
                 </div>
                 {showInfo && educationText && (
@@ -2198,8 +2190,8 @@ const ResultScreen = ({
               onClick={() => setShowInfo(!showInfo)}
             >
               {showInfo 
-                ? (lang === 'ko' ? '🔽 작품 설명 숨기기' : '🔽 Hide Info')
-                : (lang === 'ko' ? '🔼 작품 설명 보기' : '🔼 Show Info')
+                ? (lang === 'ko' ? '▼ 숨기기' : '▼ Hide')
+                : (lang === 'ko' ? '▶ 보기' : '▶ Show')
               }
             </button>
           </div>
@@ -2323,7 +2315,7 @@ const ResultScreen = ({
           />
         )}
 
-        {/* 원클릭 네비게이션 (채팅창 아래, 버튼 위) */}
+        {/* 원클릭 네비게이션 (채팅창 아래, 버튼 위) - ProcessingScreen과 동일 */}
         {isFullTransform && (
           <div className="fullTransform-nav">
             <button 
@@ -2340,15 +2332,15 @@ const ResultScreen = ({
               className="nav-btn"
               style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
-              ◀ {lang === 'ko' ? '이전' : 'Prev'}
+              ◀ Prev
             </button>
             <div className="nav-dots">
               <button
-                className={`nav-dot ${viewIndex === -1 ? 'active' : ''}`}
+                className={`nav-dot edu ${viewIndex === -1 ? 'active' : ''}`}
                 onClick={() => !isRetrying && setViewIndex(-1)}
                 disabled={isRetrying}
                 style={{ opacity: isRetrying ? 0.5 : 1 }}
-              />
+              >📚</button>
               {fullTransformResults.map((_, idx) => (
                 <button
                   key={idx}
@@ -2363,12 +2355,13 @@ const ResultScreen = ({
                   style={{ opacity: isRetrying ? 0.5 : 1 }}
                 />
               ))}
+              <span className="nav-count">[{viewIndex === -1 ? 0 : viewIndex + 1}/{fullTransformResults.length}]</span>
             </div>
             <button 
               onClick={() => {
                 if (viewIndex === -1) {
                   setViewIndex(0);
-                  setCurrentIndex(0);  // 동기화
+                  setCurrentIndex(0);
                 } else if (viewIndex < fullTransformResults.length - 1) {
                   setViewIndex(v => v + 1);
                   setCurrentIndex(i => i + 1);
@@ -2378,7 +2371,7 @@ const ResultScreen = ({
               className="nav-btn"
               style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
-              {lang === 'ko' ? '다음' : 'Next'} ▶
+              Next ▶
             </button>
           </div>
         )}
@@ -3041,15 +3034,18 @@ const ResultScreen = ({
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 16px;
+          gap: 12px;
           margin-bottom: 16px;
+          max-width: 340px;
+          margin-left: auto;
+          margin-right: auto;
         }
         .nav-btn {
-          background: rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.1);
           border: none;
           color: rgba(255,255,255,0.7);
-          padding: 10px 16px;
-          border-radius: 20px;
+          padding: 8px 14px;
+          border-radius: 16px;
           font-size: 12px;
           cursor: pointer;
         }
@@ -3078,15 +3074,31 @@ const ResultScreen = ({
           background: #667eea;
           transform: scale(1.3);
         }
+        .nav-dot:disabled {
+          opacity: 0.4;
+          cursor: default;
+        }
+        .nav-dot.edu {
+          width: auto;
+          height: auto;
+          background: none;
+          font-size: 14px;
+        }
+        .nav-count {
+          font-size: 11px;
+          color: rgba(255,255,255,0.5);
+          margin-left: 4px;
+        }
         
         /* 원클릭 이미지 */
         .result-image-wrapper {
-          width: 248px;
-          height: 248px;
+          width: 100%;
+          max-width: 340px;
+          aspect-ratio: 1 / 1;
           margin: 0 auto 16px;
           border-radius: 12px;
           overflow: hidden;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         .result-image {
           width: 100%;

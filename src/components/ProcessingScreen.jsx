@@ -94,10 +94,10 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
       const results = [];
       for (let i = 0; i < styles.length; i++) {
         const style = styles[i];
-        // 목업 기준 진행 메시지: "X master in progress..." / "Van Gogh in progress..."
+        // 진행 메시지: displayConfig에서 적절한 이름 가져오기
         const progressName = category === 'masters' 
           ? style.name  // 거장: "Van Gogh in progress..."
-          : `${style.name} master`;  // 사조/동양화: "Impressionism master in progress..."
+          : getStyleTitle(category, style.id, style.name, lang);  // 사조/동양화: 정식 이름
         setStatusText(`${progressName} ${t.inProgress} [${i + 1}/${totalCount}]`);
         
         const result = await processSingleStyle(style, i, totalCount);
@@ -865,10 +865,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           display: flex;
           flex-direction: column;
           align-items: center;
+          width: 100%;
         }
         .oneclick-preview .img-placeholder {
-          width: 248px;
-          height: 248px;
+          width: 100%;
+          max-width: 340px;
+          aspect-ratio: 1 / 1;
           background: #1a1a1a;
           border-radius: 12px;
           display: flex;
@@ -884,7 +886,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         
         .oneclick-style-info {
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           text-align: center;
           margin-bottom: 12px;
         }
@@ -906,7 +909,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         
         .oneclick-edu-content {
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           font-size: 13px;
           color: rgba(255,255,255,0.65);
           line-height: 1.8;
@@ -919,9 +923,9 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         .progress-bar {
           width: 100%;
-          height: 3px;
+          height: 2px;
           background: rgba(255,255,255,0.1);
-          border-radius: 2px;
+          border-radius: 1px;
           overflow: hidden;
         }
         .progress-fill {
@@ -991,14 +995,16 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           top: calc(35% + 45px);
           left: 50%;
           transform: translateX(-50%);
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding-bottom: 80px; /* 하단 고정 영역 확보 */
+          padding-bottom: 80px;
         }
         .single-loading-title {
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           font-size: 15px;
           font-weight: 700;
           color: #fff;
@@ -1006,7 +1012,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           text-align: center;
         }
         .single-loading-subtitle {
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           font-size: 13px;
           color: rgba(255,255,255,0.7);
           margin-bottom: 4px;
@@ -1018,7 +1025,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           margin-bottom: 20px;
         }
         .single-loading-edu {
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           text-align: left;
         }
         .single-loading-edu p {
@@ -1038,13 +1046,15 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           bottom: 20px;
           left: 50%;
           transform: translateX(-50%);
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           display: flex;
           flex-direction: column;
           align-items: center;
         }
         .single-status {
-          width: 248px;
+          width: 100%;
+          max-width: 340px;
           display: flex;
           align-items: center;
           gap: 8px;
@@ -1059,8 +1069,9 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           text-overflow: ellipsis;
         }
         .single-progress-bar {
-          width: 248px;
-          height: 3px;
+          width: 100%;
+          max-width: 340px;
+          height: 2px;
           background: rgba(255,255,255,0.1);
           border-radius: 2px;
           overflow: hidden;

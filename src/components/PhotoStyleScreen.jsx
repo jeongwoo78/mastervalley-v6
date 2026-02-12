@@ -252,9 +252,16 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect }) => {
           transition: all 0.3s;
         }
 
-        /* 스타일 선택 후 사진 대기 상태 - 테두리만 */
+        /* 스타일 선택 후 사진 대기 상태 - 테두리 강조 + 펄스 */
         .photo-section.awaiting-photo {
           border: 2px solid #667eea;
+          box-shadow: 0 0 12px rgba(102, 126, 234, 0.4);
+          animation: photoPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes photoPulse {
+          0%, 100% { box-shadow: 0 0 8px rgba(102, 126, 234, 0.3); }
+          50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.6); }
         }
 
         .photo-placeholder {
