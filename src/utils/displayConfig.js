@@ -44,14 +44,15 @@ export const STANDARD_KEYS = {
     'lichtenstein'
   ],
   
-  // 동양화 (6개)
+  // 동양화 (7개)
   oriental: [
     'korean-minhwa',
     'korean-pungsokdo',
     'korean-jingyeong',
     'chinese-ink',
     'chinese-gongbi',
-    'japanese-ukiyoe'
+    'japanese-ukiyoe',
+    'japanese-rinpa'
   ],
   
   // 사조별 화가 (37명)
@@ -270,6 +271,18 @@ export const ALIASES = {
   '우키요에': 'japanese-ukiyoe',
   '일본 우키요에': 'japanese-ukiyoe',
   '일본우키요에': 'japanese-ukiyoe',
+  
+  // 일본 - 린파
+  'japanese-rinpa': 'japanese-rinpa',
+  'japanese_rinpa': 'japanese-rinpa',
+  'japanese rinpa': 'japanese-rinpa',
+  'japaneserinpa': 'japanese-rinpa',
+  'rinpa': 'japanese-rinpa',
+  'rinpa school': 'japanese-rinpa',
+  'japanese rinpa school': 'japanese-rinpa',
+  '린파': 'japanese-rinpa',
+  '일본 린파': 'japanese-rinpa',
+  '일본린파': 'japanese-rinpa',
   
   // ===== 화가 별칭 (37명) =====
   // 그리스·로마
@@ -620,6 +633,10 @@ export const DISPLAY_INFO = {
     'japanese-ukiyoe': {
       loading: { title: '일본 우키요에', subtitle: 'Japanese Ukiyo-e' },
       result: { title: '우키요에' }
+    },
+    'japanese-rinpa': {
+      loading: { title: '일본 린파', subtitle: 'Japanese Rinpa' },
+      result: { title: '린파' }
     }
   },
   
@@ -727,7 +744,8 @@ export const EDUCATION_KEY_MAP = {
     'korean-jingyeong': 'korean-jingyeong',
     'chinese-ink': 'chinese-ink',
     'chinese-gongbi': 'chinese-gongbi',
-    'japanese-ukiyoe': 'japanese-ukiyoe'
+    'japanese-ukiyoe': 'japanese-ukiyoe',
+    'japanese-rinpa': 'japanese-rinpa'
   }
 };
 
@@ -879,7 +897,8 @@ export function getOrientalDisplayInfo(artistName, lang = 'en') {
     'korean-jingyeong': { title: '한국 전통회화(Korean Traditional Art)', subtitle: '진경산수화(Jingyeong)' },
     'chinese-ink': { title: '중국 전통회화(Chinese Traditional Art)', subtitle: '수묵화(Ink Wash)' },
     'chinese-gongbi': { title: '중국 전통회화(Chinese Traditional Art)', subtitle: '공필화(Gongbi)' },
-    'japanese-ukiyoe': { title: '일본 전통회화(Japanese Traditional Art)', subtitle: '우키요에(Ukiyo-e)' }
+    'japanese-ukiyoe': { title: '일본 전통회화(Japanese Traditional Art)', subtitle: '우키요에(Ukiyo-e)' },
+    'japanese-rinpa': { title: '일본 전통회화(Japanese Traditional Art)', subtitle: '린파(Rinpa)' }
   };
   
   const orientalDataEn = {
@@ -888,7 +907,8 @@ export function getOrientalDisplayInfo(artistName, lang = 'en') {
     'korean-jingyeong': { title: 'Korean Traditional Art', subtitle: 'Jingyeong Sansuhwa' },
     'chinese-ink': { title: 'Chinese Traditional Art', subtitle: 'Ink Wash Painting' },
     'chinese-gongbi': { title: 'Chinese Traditional Art', subtitle: 'Gongbi' },
-    'japanese-ukiyoe': { title: 'Japanese Traditional Art', subtitle: 'Ukiyo-e' }
+    'japanese-ukiyoe': { title: 'Japanese Traditional Art', subtitle: 'Ukiyo-e' },
+    'japanese-rinpa': { title: 'Japanese Traditional Art', subtitle: 'Rinpa' }
   };
   
   const orientalData = lang === 'ko' ? orientalDataKo : orientalDataEn;

@@ -12,35 +12,40 @@ export const oneclickOrientalBasicInfo = {
   // 한국
   'korean-minhwa': {
     name: '한국 전통회화(Korean Traditional Painting)',
-    subtitle1: '민화(民畵, Minhwa)',
+    subtitle1: '민화(Minhwa)',
     subtitle2: '소망을 담은 민중의 그림'
   },
   'korean-pungsokdo': {
     name: '한국 전통회화(Korean Traditional Painting)',
-    subtitle1: '풍속도(風俗圖, Genre Painting)',
+    subtitle1: '풍속도(Pungsokdo)',
     subtitle2: '민중의 일상을 담다'
   },
   'korean-jingyeong': {
     name: '한국 전통회화(Korean Traditional Painting)',
-    subtitle1: '진경산수화(眞景山水畵, True-view Landscape)',
+    subtitle1: '진경산수화(Jingyeong Sansuhwa)',
     subtitle2: '조선의 눈으로 본 산천'
   },
   // 중국
   'chinese-ink': {
     name: '중국 전통회화(Chinese Traditional Painting)',
-    subtitle1: '수묵화(水墨畵, Ink Wash Painting)',
+    subtitle1: '수묵화(Ink Wash)',
     subtitle2: '먹으로 그린 정신의 풍경'
   },
   'chinese-gongbi': {
     name: '중국 전통회화(Chinese Traditional Painting)',
-    subtitle1: '공필화(工筆畵, Gongbi Painting)',
+    subtitle1: '공필화(Gongbi)',
     subtitle2: '정밀함의 극치'
   },
   // 일본
   'japanese-ukiyoe': {
     name: '일본 전통회화(Japanese Traditional Painting)',
-    subtitle1: '우키요에(浮世繪, Ukiyo-e)',
+    subtitle1: '우키요에(Ukiyo-e)',
     subtitle2: '떠도는 세상을 판화로 찍다'
+  },
+  'japanese-rinpa': {
+    name: '일본 전통회화(Japanese Traditional Painting)',
+    subtitle1: '린파(Rinpa)',
+    subtitle2: '금박 위에 피어난 장식의 미학'
   }
 };
 
@@ -106,11 +111,19 @@ export const oneclickOrientalSecondary = {
 
   // ========== 일본 ==========
   'japanese-ukiyoe': {
-    content: `일본 전통회화는 덧없는 세상, 우키요를 그림으로 붙잡은 예술입니다.
-순간의 아름다움을 선명한 색채로 새겼습니다.
+    content: `일본 전통회화는 대중의 감각과 궁정의 화려함이 공존하는 예술입니다.
+거리의 판화와 금빛 장식화가 각각의 아름다움을 꽃피웠습니다.
 
 우키요에는 에도 시대 서민이 즐긴 목판화입니다.
 굵은 윤곽선과 평면적 색면이 인상파에 영감을 주었습니다.`
+  },
+
+  'japanese-rinpa': {
+    content: `일본 전통회화는 대중의 감각과 궁정의 화려함이 공존하는 예술입니다.
+거리의 판화와 금빛 장식화가 각각의 아름다움을 꽃피웠습니다.
+
+린파는 금박 위에 자연을 화려하게 장식한 궁정 회화입니다.
+색을 겹겹이 흘려 넣어, 꽃과 파도에 자연스러운 번짐을 만들었습니다.`
   }
 };
 

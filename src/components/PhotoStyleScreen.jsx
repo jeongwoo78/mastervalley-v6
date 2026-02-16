@@ -97,7 +97,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
       styles: [
         { id: 'korean', name: 'Korean', period: 'Minhwa · Pungsokdo', thumbnail: korean, category: 'oriental' },
         { id: 'chinese', name: 'Chinese', period: 'Ink wash · Gongbi', thumbnail: chinese, category: 'oriental' },
-        { id: 'japanese', name: 'Japanese', period: 'Ukiyo-e', thumbnail: japanese, category: 'oriental' }
+        { id: 'japanese', name: 'Japanese', period: 'Ukiyo-e · Rinpa', thumbnail: japanese, category: 'oriental' }
       ]
     }
   };

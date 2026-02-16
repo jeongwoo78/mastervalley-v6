@@ -662,14 +662,14 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                 <div className="oneclick-style-info">
                   <h3>{getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}</h3>
                   <div className="subtitle1">
-                    {category === 'movements' ? (lang === 'ko' ? `${totalCount}개 사조 · 2,500년 미술사` : `${totalCount} movements from 2,500 years`) :
-                     category === 'masters' ? (lang === 'ko' ? `${totalCount}인의 거장` : `${totalCount} legendary artists`) :
+                    {category === 'movements' ? (lang === 'ko' ? '그리스에서 모더니즘까지' : 'From Greece to Modernism') :
+                     category === 'masters' ? (lang === 'ko' ? '일곱 개의 세계' : 'Seven worlds') :
                      (lang === 'ko' ? '한국 · 중국 · 일본' : 'Korea · China · Japan')}
                   </div>
                   <div className="subtitle2">
-                    {category === 'movements' ? (lang === 'ko' ? '미술사 여행' : 'Journey through art history') :
-                     category === 'masters' ? (lang === 'ko' ? '거장과의 대화' : 'Conversation with masters') :
-                     (lang === 'ko' ? '여백과 먹의 정신' : 'Spirit through empty space and ink')}
+                    {category === 'movements' ? (lang === 'ko' ? '서양미술 2,500년을 관통하다' : 'Traversing 2,500 years of Western art') :
+                     category === 'masters' ? (lang === 'ko' ? '묻고, 부수고, 다시 세우다' : 'Question, break, rebuild') :
+                     (lang === 'ko' ? '닮은 듯 다른 세 나라의 미학' : 'Three nations, alike yet distinct')}
                   </div>
                 </div>
                 

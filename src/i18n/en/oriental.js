@@ -27,7 +27,7 @@ export const orientalBasicInfo = {
     loading: {
       name: 'Japanese Traditional Painting',
       subtitle1: 'Ukiyo-e · Rinpa',
-      subtitle2: 'Beauty of the floating world'
+      subtitle2: 'Street prints and golden decorative art'
     }
   },
 
@@ -73,6 +73,13 @@ export const orientalBasicInfo = {
       subtitle1: 'Ukiyo-e',
       subtitle2: 'Floating world pressed in woodblock'
     }
+  },
+  'japanese-rinpa': {
+    result: {
+      name: 'Japanese Traditional Painting',
+      subtitle1: 'Rinpa',
+      subtitle2: 'Decorative beauty bloomed on gold leaf'
+    }
   }
 };
 
@@ -86,8 +93,8 @@ export const orientalLoadingEducation = {
 Minhwa wished for fortune through magpies and tigers, while Pungsokdo captured the daily lives of common folk.
 Jingyeong Sansuhwa depicted not idealized landscapes, but the real mountains and rivers before the painter's eyes.
 
-Empty space speaks, and spirit flows through the brush tip — that is the aesthetics of Korean painting.
-Within this flow, Korean painting unfolds.`
+Empty space speaks, and spirit flows through the brush tip — that is the art of Korean traditional painting.
+Wishes, daily life, and landscapes captured by the brush — meet Korean painting, bloomed from its own soil.`
   },
 
   // ── Chinese ──
@@ -97,17 +104,17 @@ Ink Wash painting raised mountains with gradations of ink alone and conjured mis
 Gongbi rendered every last petal with meticulous precision, offered to the emperor.
 
 The wellspring of East Asian art, flowing for over a millennium, is Chinese traditional painting.
-Now explore its depth through two streams.`
+Through ink and color across a thousand years — meet Chinese painting, the origin of East Asian art.`
   },
 
   // ── Japanese ──
   japanese: {
-    description: `In Edo-period Japan, a culture of savoring "ukiyo" — the floating world — blossomed.
-Kabuki actors, beautiful women, and famous landscapes were printed as woodblocks and sold to the masses.
-At the price of a bowl of rice, these prints were Edo popular culture itself.
+    description: `In Edo’s streets, woodblock prints flourished; in Kyoto’s courts, decorative painting blossomed.
+Ukiyo-e carved actors, beauties, and landscapes into woodblocks sold to the common people.
+Rinpa painted irises and wind gods over gold leaf, captivating the eyes of the aristocracy.
 
-When ukiyo-e crossed the ocean to Europe, it gave Monet and Van Gogh a decisive new vision.
-Enter the world of Japanese woodblock prints — where East shook the foundations of Western art.`
+Popular sensibility and courtly splendor coexisting — that is the art of Japanese traditional painting.
+Born in streets and courts, crossing the ocean — meet Japanese painting that shook the Western art world.`
   }
 };
 
@@ -169,6 +176,15 @@ Like Hokusai's *The Great Wave off Kanagawa*, a split second of nature's fury is
 This is the vision that traveled from East to West, inspiring the Impressionists to see art anew.`
   },
 
+  // ── Japanese: Rinpa ──
+  'japanese-rinpa': {
+    description: `Rinpa's gold leaf decoration and bold composition have been applied to your image.
+Pigment is laid over gold leaf, with colors pooled layer upon layer to create natural texture.
+
+Like Ogata Korin's *Irises Screen*, vibrant nature blooms upon a field of gold.
+Born from aristocratic taste and inspiring Art Nouveau — the essence of Japanese decorative painting.`
+  },
+
 
   // ── Defaults (fallback, present tense) ──
   'korean_default': {
@@ -186,11 +202,11 @@ The literati's spirit and the court's mastery coexist in Chinese painting.
 This is the wellspring of East Asian art, flowing through Gongbi and Ink Wash for over a millennium.`
   },
   'japanese_default': {
-    description: `Japanese traditional outlines and flat color planes have been applied to your image.
-Bold outlines and vivid flat colors capture the beauty of the floating world.
+    description: `Japanese traditional outlines and decorative color planes have been applied to your image.
+Bold outlines and splendid coloring over gold leaf capture beauty in distinct ways.
 
-Born from Edo popular culture, these prints crossed the ocean and shook Western art.
-This is the vision of ukiyo-e — where East redefined how the West sees art.`
+Prints born from Edo popular culture and decorative painting of the court coexist in Japanese art.
+Born in streets and courts, crossing the ocean — Japanese painting that shook the Western art world.`
   }
 };
 

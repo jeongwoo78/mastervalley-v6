@@ -41,6 +41,11 @@ export const oneclickOrientalBasicInfo = {
     name: 'Japanese Traditional Painting',
     subtitle1: 'Ukiyo-e (Floating World Pictures)',
     subtitle2: 'Beauty of the fleeting world'
+  },
+  'japanese-rinpa': {
+    name: 'Japanese Traditional Painting',
+    subtitle1: 'Rinpa (Decorative School)',
+    subtitle2: 'Decorative beauty bloomed on gold leaf'
   }
 };
 
@@ -106,11 +111,19 @@ Transparent colors are layered to create depth and luster.`
 
   // ========== Japan ==========
   'japanese-ukiyoe': {
-    content: `Japanese traditional painting is an art that captured the fleeting world, ukiyo, in images.
-Momentary beauty was carved in vivid colors.
+    content: `Japanese traditional painting is an art where popular sensibility and courtly splendor coexist.
+Street prints and golden decorative painting each bloomed with their own beauty.
 
 Ukiyo-e are woodblock prints enjoyed by Edo period commoners.
 Bold outlines and flat color planes inspired the Impressionists.`
+  },
+
+  'japanese-rinpa': {
+    content: `Japanese traditional painting is an art where popular sensibility and courtly splendor coexist.
+Street prints and golden decorative painting each bloomed with their own beauty.
+
+Rinpa is a courtly painting style that lavishly decorated nature over gold leaf.
+Colors were pooled layer upon layer, giving flowers and waves a natural, flowing beauty.`
   }
 };
 

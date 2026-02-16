@@ -183,13 +183,15 @@ export const MASTERS = {
     taglineEn: 'Swirling passion of the brush',
     icon: '🌻',
     description: '1853-1890 | 후기인상주의',
-    featuredWorks: '별이 빛나는 밤 · 해바라기',
-    featuredWorksEn: 'The Starry Night · Sunflowers',
+    featuredWorks: '별이 빛나는 밤 · 카페 테라스 · 해바라기',
+    featuredWorksEn: 'The Starry Night · Café Terrace · Sunflowers',
     aliases: ['van gogh', 'gogh', 'vincent', '고흐', '반 고흐'],
     works: {
       'starrynight': ['The Starry Night', '별이 빛나는 밤', 'Starry Night'],
+      'cafe': ['Café Terrace at Night', '밤의 카페 테라스', 'Cafe Terrace'],
       'sunflowers': ['Sunflowers', '해바라기'],
-      'selfportrait': ['Self-Portrait', '자화상', 'Van Gogh Self-Portrait']
+      'selfportrait': ['Self-Portrait with Grey Felt Hat', '회색 펠트 모자 자화상', 'Grey Felt Hat'],
+      'wheatfield': ['Wheat Field with Cypresses', '사이프러스 밀밭', 'Cypresses']
     }
   },
   'klimt-master': {
@@ -225,13 +227,13 @@ export const MASTERS = {
     taglineEn: 'Painting the inner scream',
     icon: '😱',
     description: '1863-1944 | 표현주의',
-    featuredWorks: '절규 · 마돈나',
-    featuredWorksEn: 'The Scream · Madonna',
+    featuredWorks: '절규 · 마돈나 · 생의 춤',
+    featuredWorksEn: 'The Scream · Madonna · The Dance of Life',
     aliases: ['edvard', 'edvard munch', '뭉크'],
     works: {
       'scream': ['The Scream', '절규', 'Scream'],
       'madonna': ['Madonna', '마돈나', 'Munch Madonna'],
-      'jealousy': ['Jealousy', '질투', 'The Jealousy']
+      'danceoflife': ['The Dance of Life', '생의 춤', 'Dance of Life']
     }
   },
   'matisse-master': {
@@ -246,14 +248,14 @@ export const MASTERS = {
     taglineEn: 'Master of color',
     icon: '💃',
     description: '1869-1954 | 야수파',
-    featuredWorks: '춤 · 붉은 방',
-    featuredWorksEn: 'The Dance · The Red Room',
+    featuredWorks: '초록 줄무늬 · 붉은 방',
+    featuredWorksEn: 'The Green Stripe · The Red Room',
     aliases: ['henri', 'henri matisse', '마티스'],
     works: {
-      'dance': ['The Dance', '춤', 'Dance', 'La Danse'],
+      'greenstripe': ['The Green Stripe', '초록 줄무늬', 'Green Stripe', 'Portrait of Madame Matisse'],
+      'purplecoat': ['Woman in a Purple Coat', '보라색 코트', 'Purple Coat'],
       'redroom': ['The Red Room', '붉은 방', 'Red Room', 'Harmony in Red'],
-      'womanhat': ['Woman with a Hat', '모자를 쓴 여인', 'Femme au Chapeau'],
-      'greenstripe': ['The Green Stripe', '녹색 줄무늬', 'Green Stripe', 'Portrait of Madame Matisse']
+      'derain': ['Portrait of André Derain', '드랭의 초상', 'Portrait of Derain']
     }
   },
   'chagall-master': {
@@ -268,13 +270,13 @@ export const MASTERS = {
     taglineEn: 'Poet of love and dreams',
     icon: '🎻',
     description: '1887-1985 | 초현실주의',
-    featuredWorks: '나와 마을 · 산책',
-    featuredWorksEn: 'I and the Village · The Walk',
+    featuredWorks: '생일 · 신부 · 나와 마을',
+    featuredWorksEn: 'The Birthday · La Mariée · I and the Village',
     aliases: ['marc', 'marc chagall', '샤갈', '마르크 샤갈'],
     works: {
-      'lovers': ['Lovers with Flowers', '꽃다발과 연인들', 'Lovers'],
-      'labranche': ['La Branche', '나뭇가지', 'The Branch'],
-      'lamariee': ['La Mariée', 'La Mariee', '신부', 'The Bride']
+      'lovers': ['The Birthday', '생일', 'Lovers with Flowers', '꽃다발과 연인들'],
+      'lamariee': ['La Mariée', 'La Mariee', '신부', 'The Bride'],
+      'village': ['I and the Village', '나와 마을', 'Village']
     }
   },
   'frida-master': {
@@ -289,15 +291,12 @@ export const MASTERS = {
     taglineEn: 'Self-portrait gazing at pain',
     icon: '🦜',
     description: '1907-1954 | 초현실주의',
-    featuredWorks: '부러진 기둥 · 가시 목걸이와 벌새',
-    featuredWorksEn: 'The Broken Column · Self-Portrait with Thorn Necklace',
+    featuredWorks: '나와 앵무새들 · 원숭이와 자화상',
+    featuredWorksEn: 'Me and My Parrots · Self-Portrait with Monkeys',
     aliases: ['kahlo', 'frida kahlo', '프리다', '프리다 칼로'],
     works: {
-      'parrots': ['Me and My Parrots', '나와 내 앵무새들', 'Self-Portrait with Parrots'],
-      'brokencolumn': ['The Broken Column', '부러진 기둥', 'Broken Column'],
-      'thornnecklace': ['Self-Portrait with Thorn Necklace', '가시 목걸이와 벌새', 'Thorn Necklace', 'Self-Portrait with Thorn Necklace and Hummingbird'],
-      'monkeys': ['Self-Portrait with Monkeys', '원숭이와 자화상', 'Monkeys'],
-      'diegoandi': ['Diego and I', '디에고와 나']
+      'parrots': ['Me and My Parrots', '나와 앵무새들', 'Self-Portrait with Parrots'],
+      'monkeys': ['Self-Portrait with Monkeys', '원숭이와 자화상', 'Monkeys']
     }
   },
   'picasso-master': {
@@ -312,12 +311,11 @@ export const MASTERS = {
     taglineEn: 'Revolutionary who deconstructed vision',
     icon: '💎',
     description: '1881-1973 | 입체주의',
-    featuredWorks: '아비뇽의 처녀들 · 게르니카',
-    featuredWorksEn: "Les Demoiselles d'Avignon · Guernica",
+    featuredWorks: '도라 마르의 초상',
+    featuredWorksEn: 'Portrait of Dora Maar',
     aliases: ['pablo', 'pablo picasso', '피카소'],
     works: {
-      'demoiselles': ["Les Demoiselles d'Avignon", '아비뇽의 처녀들', 'Demoiselles', "Demoiselles d'Avignon"],
-      'guernica': ['Guernica', '게르니카']
+      'doramaar': ['Portrait of Dora Maar', '도라 마르의 초상', 'Dora Maar']
     }
   },
   'lichtenstein-master': {
