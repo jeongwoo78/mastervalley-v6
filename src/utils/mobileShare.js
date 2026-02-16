@@ -3,6 +3,11 @@
 
 import { Capacitor } from '@capacitor/core';
 
+// ========== 워터마크 설정 ==========
+// true: 저장 시에도 워터마크 적용 (테스트/프리런칭 기간)
+// false: 공유할 때만 워터마크 (정식 출시용)
+export const WATERMARK_ON_SAVE = true;
+
 // 동적 import로 플러그인 로드 (설치 안됐을 때 에러 방지)
 let Share = null;
 let Filesystem = null;

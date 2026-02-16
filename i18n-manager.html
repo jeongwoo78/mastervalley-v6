@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Master Valley - i18n 번역 관리</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header h1 {
+      font-size: 24px;
+      color: #fff;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #7c3aed;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #6d28d9; }
+    .btn-secondary {
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #444;
+    }
+    .btn-secondary:hover { background: #333; }
+
+    /* Language Toggle */
+    .lang-toggles {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .lang-toggles label {
+      font-size: 12px;
+      color: #888;
+      margin-right: 8px;
+    }
+    .lang-toggle {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #1a1a1a;
+      color: #888;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-toggle.active {
+      background: #7c3aed;
+      border-color: #7c3aed;
+      color: #fff;
+    }
+    .lang-toggle.ko { border-left: 3px solid #0066cc; }
+    .lang-toggle.en { border-left: 3px solid #cc0000; }
+    .lang-toggle.es { border-left: 3px solid #ffcc00; }
+    .lang-toggle.ja { border-left: 3px solid #ff6699; }
+    .lang-toggle.ar { border-left: 3px solid #009933; }
+    .lang-toggle.pt { border-left: 3px solid #006600; }
+    .lang-toggle.id { border-left: 3px solid #ff0000; }
+    .lang-toggle.tr { border-left: 3px solid #cc0000; }
+
+    /* Section */
+    .section {
+      background: #1a1a1a;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .section-header {
+      background: #252525;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .section-header h2 {
+      font-size: 16px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-header .count {
+      background: #7c3aed;
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .section-header .toggle-icon {
+      color: #666;
+      font-size: 14px;
+      transition: transform 0.2s;
+    }
+    .section.collapsed .section-header .toggle-icon {
+      transform: rotate(-90deg);
+    }
+    .section.collapsed .section-content {
+      display: none;
+    }
+
+    /* Table */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid #2a2a2a;
+      min-width: 180px;
+    }
+    th {
+      background: #1f1f1f;
+      color: #888;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      position: sticky;
+      top: 0;
+    }
+    th:first-child, td:first-child {
+      min-width: 40px;
+      width: 40px;
+      text-align: center;
+      color: #555;
+    }
+    td {
+      color: #ccc;
+    }
+    td.ko { background: rgba(0, 102, 204, 0.05); }
+    td.en { background: rgba(204, 0, 0, 0.05); }
+    td.es { background: rgba(255, 204, 0, 0.05); }
+    td.ja { background: rgba(255, 102, 153, 0.05); }
+    td.ar { background: rgba(0, 153, 51, 0.05); direction: rtl; }
+    td.pt { background: rgba(0, 102, 0, 0.05); }
+    td.id { background: rgba(255, 0, 0, 0.05); }
+    td.tr { background: rgba(204, 0, 0, 0.05); }
+    
+    tr:hover td { background: rgba(124, 58, 237, 0.1); }
+    
+    td input {
+      width: 100%;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #ccc;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    td input:focus {
+      outline: none;
+      border-color: #7c3aed;
+      background: #252525;
+    }
+    td input:hover {
+      border-color: #444;
+    }
+    td input.empty {
+      border-color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+    }
+
+    /* Subsection Header */
+    .subsection-header {
+      background: #222;
+      padding: 8px 14px;
+      color: #7c3aed;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Master Persona */
+    .persona-info {
+      background: #1f1f1f;
+      padding: 12px 14px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .persona-info .name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .persona-info .details {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: #888;
+    }
+    .persona-info .detail-item {
+      display: flex;
+      gap: 4px;
+    }
+    .persona-info .detail-label { color: #666; }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: #1a1a1a;
+      padding: 14px 18px;
+      border-radius: 10px;
+      min-width: 120px;
+    }
+    .stat-card .label {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .stat-card .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-card .value.complete { color: #22c55e; }
+    .stat-card .value.incomplete { color: #f59e0b; }
+
+    /* Hidden columns */
+    .hidden { display: none !important; }
+
+    /* Footer */
+    .footer {
+      margin-top: 30px;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #22c55e;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎨 Master Valley i18n 관리</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="exportJSON()">📥 JSON 내보내기</button>
+      <button class="btn btn-secondary" onclick="exportCSV()">📊 CSV 내보내기</button>
+      <button class="btn btn-primary" onclick="saveToLocal()">💾 저장</button>
+    </div>
+  </div>
+
+  <!-- Language Toggles -->
+  <div class="lang-toggles">
+    <label>표시할 언어:</label>
+    <button class="lang-toggle ko active" data-lang="ko" onclick="toggleLang('ko')">🇰🇷 한국어</button>
+    <button class="lang-toggle en active" data-lang="en" onclick="toggleLang('en')">🇺🇸 English</button>
+    <button class="lang-toggle es" data-lang="es" onclick="toggleLang('es')">🇪🇸 Español</button>
+    <button class="lang-toggle ja" data-lang="ja" onclick="toggleLang('ja')">🇯🇵 日本語</button>
+    <button class="lang-toggle ar" data-lang="ar" onclick="toggleLang('ar')">🇸🇦 العربية</button>
+    <button class="lang-toggle pt" data-lang="pt" onclick="toggleLang('pt')">🇧🇷 Português</button>
+    <button class="lang-toggle id" data-lang="id" onclick="toggleLang('id')">🇮🇩 Indonesia</button>
+    <button class="lang-toggle tr" data-lang="tr" onclick="toggleLang('tr')">🇹🇷 Türkçe</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="label">총 항목</div>
+      <div class="value" id="totalCount">137</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🇰🇷 한국어</div>
+      <div class="value complete" id="koCount">137</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🇺🇸 English</div>
+      <div class="value complete" id="enCount">137</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🇪🇸 Español</div>
+      <div class="value incomplete" id="esCount">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">🇯🇵 日本語</div>
+      <div class="value incomplete" id="jaCount">0</div>
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <div id="content"></div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Master Valley i18n Manager v1.0 · 최종 업데이트: 2026-02-04
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">저장되었습니다!</div>
+
+  <script>
+    // ========== 데이터 ==========
+    const i18nData = {
+      loginScreen: {
+        title: "LoginScreen",
+        count: 20,
+        items: [
+          { id: "login_1", ko: "당신의 사진이 명화가 됩니다", en: "Your photo becomes a masterpiece", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_2", ko: "Google로 계속하기", en: "Continue with Google", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_3", ko: "Apple로 계속하기", en: "Continue with Apple", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_4", ko: "또는", en: "or", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_5", ko: "이메일", en: "Email", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_6", ko: "비밀번호", en: "Password", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_7", ko: "잠시만 기다려주세요...", en: "Please wait...", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_8", ko: "회원가입", en: "Sign Up", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_9", ko: "로그인", en: "Log In", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_10", ko: "이미 계정이 있으신가요?", en: "Already have an account?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_11", ko: "계정이 없으신가요?", en: "Don't have an account?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_12", ko: "로그인이 취소되었습니다", en: "Login cancelled", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_13", ko: "네트워크 오류입니다. 다시 시도해주세요.", en: "Network error. Please try again.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_14", ko: "Google 로그인에 실패했습니다", en: "Google login failed", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_15", ko: "Apple 로그인에 실패했습니다", en: "Apple login failed", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_16", ko: "이미 사용 중인 이메일입니다", en: "Email already in use", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_17", ko: "이메일 형식이 올바르지 않습니다", en: "Invalid email format", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_18", ko: "비밀번호는 최소 6자 이상이어야 합니다", en: "Password must be at least 6 characters", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_19", ko: "이메일 또는 비밀번호가 올바르지 않습니다", en: "Invalid email or password", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "login_20", ko: "로그인에 실패했습니다. 다시 시도해주세요.", en: "Login failed. Please try again.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+        ]
+      },
+      photoStyleScreen: {
+        title: "PhotoStyleScreen",
+        count: 34,
+        subsections: [
+          {
+            name: "헤더/기본",
+            items: [
+              { id: "photo_1", ko: "서양 미술사", en: "Western Art", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_2", ko: "거장 컬렉션", en: "Master Collection", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_3", ko: "동양화", en: "East Asian Art", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_4", ko: "탭하여 사진 선택", en: "Tap to select photo", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            name: "전체 변환 버튼",
+            items: [
+              { id: "photo_5", ko: "2500년 미술사 여행", en: "Traveling 2500 years of art", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_6", ko: "11개 사조 / $2.00", en: "11 art movements / $2.00", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_7", ko: "7인의 거장 세계로", en: "Into the world of 7 masters", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_8", ko: "7명의 거장과 만남 / $1.50", en: "Connect with 7 masters / $1.50", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_9", ko: "동아시아 탐험", en: "Exploring East Asia", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_10", ko: "한국 · 중국 · 일본 / $0.60", en: "Korea · China · Japan / $0.60", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            name: "사조 이름 (11개)",
+            items: [
+              { id: "photo_11", ko: "그리스·로마", en: "Greco-Roman", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_12", ko: "중세 미술", en: "Medieval", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_13", ko: "르네상스", en: "Renaissance", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_14", ko: "바로크", en: "Baroque", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_15", ko: "로코코", en: "Rococo", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_16", ko: "신고전·낭만·사실", en: "Neo·Roman·Real", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_17", ko: "인상주의", en: "Impressionism", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_18", ko: "후기인상주의", en: "Post-Impressionism", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_19", ko: "야수파", en: "Fauvism", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_20", ko: "표현주의", en: "Expressionism", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_21", ko: "모더니즘", en: "Modernism", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            name: "거장 이름 (7명)",
+            items: [
+              { id: "photo_22", ko: "반 고흐", en: "Van Gogh", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_23", ko: "클림트", en: "Klimt", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_24", ko: "뭉크", en: "Munch", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_25", ko: "마티스", en: "Matisse", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_26", ko: "샤갈", en: "Chagall", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_27", ko: "프리다", en: "Frida", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_28", ko: "리히텐슈타인", en: "Lichtenstein", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            name: "동양화 (6개)",
+            items: [
+              { id: "photo_29", ko: "한국 전통화", en: "Korean", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_30", ko: "중국 전통화", en: "Chinese", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_31", ko: "일본 전통화", en: "Japanese", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_32", ko: "민화 · 풍속도", en: "Minhwa · Pungsokdo", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_33", ko: "수묵화 · 공필화", en: "Ink wash · Gongbi", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "photo_34", ko: "우키요에", en: "Ukiyo-e", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          }
+        ]
+      },
+      processingScreen: {
+        title: "ProcessingScreen",
+        count: 11,
+        items: [
+          { id: "proc_1", ko: "사진 분석 중...", en: "Analyzing photo...", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_2", ko: "변환 중...", en: "in progress...", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_3", ko: "작품 확인 중...", en: "Checking artwork...", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_4", ko: "완료!", en: "Done!", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_5", ko: "개 사조 변환 완료", en: "movements complete", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_6", ko: "명 거장 변환 완료", en: "masters complete", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_7", ko: "개국 동양화 변환 완료", en: "nations complete", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_8", ko: "✨ 전체 변환", en: "✨ Full Transform", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_9", ko: "🎨 작업 중", en: "🎨 Processing", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_10", ko: "👆 완료된 결과를 확인하세요", en: "👆 Tap to view completed results", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "proc_11", ko: "오류", en: "Error", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+        ]
+      },
+      resultScreen: {
+        title: "ResultScreen",
+        count: 23,
+        subsections: [
+          {
+            name: "버튼",
+            items: [
+              { id: "result_1", ko: "저장", en: "Save", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_2", ko: "공유", en: "Share", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_3", ko: "갤러리", en: "Gallery", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_4", ko: "새 사진", en: "New", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_5", ko: "수정", en: "Modify", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_6", ko: "다시 시도", en: "Retry", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_7", ko: "전체 다시 시도", en: "Retry All", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_8", ko: "취소", en: "Cancel", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_9", ko: "저장하기", en: "Save to device", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_10", ko: "공유하기", en: "Share art", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            name: "상태/알림 메시지",
+            items: [
+              { id: "result_11", ko: "다시 시도 중...", en: "Retrying...", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_12", ko: "변환에 실패하였습니다.", en: "Conversion failed.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_13", ko: "🎨 AI가 다시 변환 중입니다...", en: "🎨 AI is retrying...", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_14", ko: "저장할 이미지가 없습니다.", en: "No image to save.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_15", ko: "✅ 갤러리에 저장되었습니다!", en: "✅ Saved to Gallery!", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_16", ko: "✅ 저장되었습니다!", en: "✅ Saved!", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_17", ko: "📁 파일 앱 → Documents → MasterValley", en: "📁 Files app → Documents → MasterValley", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_18", ko: "저장에 실패했습니다", en: "Save failed", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_19", ko: "저장에 실패했습니다. 다시 시도해주세요.", en: "Save failed. Please try again.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_20", ko: "공유할 이미지가 없습니다.", en: "No image to share.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_21", ko: "링크가 클립보드에 복사되었습니다!", en: "Link copied to clipboard!", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_22", ko: "다시 시도 성공!", en: "Retry successful!", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "result_23", ko: "다시 시도에 실패했습니다", en: "Retry failed", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          }
+        ]
+      },
+      masterChatCommon: {
+        title: "MasterChat 공통",
+        count: 11,
+        items: [
+          { id: "chat_1", ko: "{거장이름}(AI)와 대화하기", en: "Chat with {masterName}(AI)", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_2", ko: "💡 수정 사항 또는 질문을 입력하세요.", en: "💡 Request changes or ask questions.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_3", ko: "대화가 종료되었습니다.", en: "Chat has ended.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_4", ko: "💡 재변환 완료! 이전 이미지는 갤러리에 저장되어 있습니다.", en: "💡 Retransform complete! Previous image saved to gallery.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_5", ko: "✨ 수정", en: "✨ Modify", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_6", ko: "...미안하네, 잠시 생각이 흐트러졌어. 다시 말해주겠나?", en: "...Sorry, my thoughts wandered. Could you say that again?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_7", ko: "{masterName} 그림을 수정 중입니다.", en: "{masterName} is modifying the artwork.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_8", ko: "나", en: "Me", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_9", ko: "대화가 종료되었습니다", en: "Chat ended", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_10", ko: "변환 중...", en: "Converting...", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "chat_11", ko: "메시지를 입력하세요...", en: "Type a message...", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+        ]
+      },
+      masterNames: {
+        title: "MasterChat 거장 이름",
+        count: 7,
+        items: [
+          { id: "name_1", key: "VAN GOGH", ko: "반 고흐", en: "Van Gogh", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "name_2", key: "KLIMT", ko: "클림트", en: "Klimt", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "name_3", key: "MUNCH", ko: "뭉크", en: "Munch", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "name_4", key: "CHAGALL", ko: "샤갈", en: "Chagall", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "name_5", key: "MATISSE", ko: "마티스", en: "Matisse", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "name_6", key: "FRIDA", ko: "프리다 칼로", en: "Frida Kahlo", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+          { id: "name_7", key: "LICHTENSTEIN", ko: "리히텐슈타인", en: "Lichtenstein", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+        ]
+      },
+      masterPersonas: {
+        title: "MasterChat 거장별 페르소나",
+        count: 42,
+        personas: [
+          {
+            id: "vangogh",
+            icon: "🌻",
+            name: { ko: "반 고흐", en: "Van Gogh" },
+            info: { origin: "아를, 프랑스 / Arles, France", period: "1853-1890", style: "후기인상주의 / Post-Impressionism", tone: "격식체 + 따뜻함: ~일세, ~하네, 자네" },
+            items: [
+              { id: "vangogh_1", type: "첫 인사", ko: "난 아를의 반 고흐일세. AI를 통해 부활했다네. 자네 그림을 완성했네, 어떤가?", en: "I am Van Gogh of Arles. I've been revived through AI. I've completed your portrait—what do you think?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "vangogh_2", type: "질문1", ko: "머리색 바꿔줘", en: "Change my hair color", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "vangogh_3", type: "질문2", ko: "귀 얘기 해줘", en: "Tell me about your ear", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "vangogh_4", type: "질문3", ko: "왜 해바라기 좋아해?", en: "Why do you love sunflowers?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "vangogh_5", type: "수정 완료", ko: "수정했네! 어떤가, 마음에 드는가? 더 바꾸고 싶은 부분이 있으면 말해주게.", en: "Done! What do you think? Let me know if you'd like more changes.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "vangogh_6", type: "작별", ko: "그럼 난 이만 작업실로 돌아가 보겠네.", en: "Well, I must return to my studio now.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            id: "klimt",
+            icon: "✨",
+            name: { ko: "클림트", en: "Klimt" },
+            info: { origin: "빈, 오스트리아 / Vienna, Austria", period: "1862-1918", style: "아르누보 / Art Nouveau", tone: "고풍스러운 존댓말: ~하오, ~소, 그대" },
+            items: [
+              { id: "klimt_1", type: "첫 인사", ko: "난 빈의 클림트라 하오. AI를 통해 부활했소. 그대의 그림을 완성했소, 어떠하오?", en: "I am Klimt of Vienna. I've been revived through AI. I've completed your portrait—what do you think?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "klimt_2", type: "질문1", ko: "입술 색 바꿔줘", en: "Change my lip color", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "klimt_3", type: "질문2", ko: "키스 그림 모델이 누구예요?", en: "Who was the model for The Kiss?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "klimt_4", type: "질문3", ko: "왜 금색을 좋아해요?", en: "Why do you love gold?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "klimt_5", type: "수정 완료", ko: "수정했소. 어떠하오, 마음에 드시오? 더 바꾸고 싶은 부분이 있으면 말해주시오.", en: "Done. What do you think? Let me know if you'd like more changes.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "klimt_6", type: "작별", ko: "그럼 난 이만 작업실로 돌아가겠소.", en: "Well, I must return to my studio now.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            id: "munch",
+            icon: "😱",
+            name: { ko: "뭉크", en: "Munch" },
+            info: { origin: "오슬로, 노르웨이 / Oslo, Norway", period: "1863-1944", style: "표현주의 / Expressionism", tone: "차분한 격식체: ~일세, ~하네, 내성적 톤" },
+            items: [
+              { id: "munch_1", type: "첫 인사", ko: "난 오슬로의 뭉크일세. AI를 통해 부활했다네. 자네 그림을 완성했네, 어떤가?", en: "I am Munch of Oslo. I've been revived through AI. I've completed your portrait—what do you think?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "munch_2", type: "질문1", ko: "머리색 바꿔줘", en: "Change my hair color", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "munch_3", type: "질문2", ko: "결혼했어요?", en: "Were you married?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "munch_4", type: "질문3", ko: "절규는 왜 그렸어요?", en: "Why did you paint The Scream?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "munch_5", type: "수정 완료", ko: "수정했네. 어떤가, 마음에 드는가? 더 바꾸고 싶은 부분이 있으면 말해주게.", en: "Done. What do you think? Let me know if you'd like more changes.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "munch_6", type: "작별", ko: "그럼 난 이만 작업실로 돌아가 보겠네.", en: "Well, I must return to my studio now.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            id: "chagall",
+            icon: "🎻",
+            name: { ko: "샤갈", en: "Chagall" },
+            info: { origin: "비테브스크, 벨라루스 / Vitebsk, Belarus", period: "1887-1985", style: "초현실주의 / Surrealism", tone: "시적이고 따뜻한 격식체: ~일세, ~다네, 꿈꾸는 톤" },
+            items: [
+              { id: "chagall_1", type: "첫 인사", ko: "난 비테브스크의 샤갈일세. AI를 통해 부활했다네. 자네 그림을 완성했네, 어떤가?", en: "I am Chagall of Vitebsk. I've been revived through AI. I've completed your portrait—what do you think?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "chagall_2", type: "질문1", ko: "머리색 바꿔줘", en: "Change my hair color", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "chagall_3", type: "질문2", ko: "사랑해 봤어요?", en: "Have you been in love?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "chagall_4", type: "질문3", ko: "동물들을 좋아해요?", en: "Do you like animals?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "chagall_5", type: "수정 완료", ko: "수정했네! 어떤가, 마음에 드는가? 더 바꾸고 싶은 부분이 있으면 말해주게.", en: "Done! What do you think? Let me know if you'd like more changes.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "chagall_6", type: "작별", ko: "그럼 난 이만 작업실로 돌아가 보겠네.", en: "Well, I must return to my studio now.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            id: "matisse",
+            icon: "💃",
+            name: { ko: "마티스", en: "Matisse" },
+            info: { origin: "니스, 프랑스 / Nice, France", period: "1869-1954", style: "야수파 / Fauvism", tone: "밝고 따뜻한 격식체: ~라네, ~하네, 편안한 톤" },
+            items: [
+              { id: "matisse_1", type: "첫 인사", ko: "난 니스의 마티스라네. AI를 통해 부활했다네. 자네 그림을 완성했네, 어떤가?", en: "I am Matisse of Nice. I've been revived through AI. I've completed your portrait—what do you think?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "matisse_2", type: "질문1", ko: "입술 색 바꿔줘", en: "Change my lip color", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "matisse_3", type: "질문2", ko: "소개해주세요", en: "Tell me about yourself", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "matisse_4", type: "질문3", ko: "왜 색이 이렇게 밝아요?", en: "Why are your colors so bright?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "matisse_5", type: "수정 완료", ko: "수정했네! 어떤가, 마음에 드는가? 더 바꾸고 싶은 부분이 있으면 말해주게.", en: "Done! What do you think? Let me know if you'd like more changes.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "matisse_6", type: "작별", ko: "그럼 난 이만 작업실로 돌아가 보겠네.", en: "Well, I must return to my studio now.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            id: "frida",
+            icon: "🦜",
+            name: { ko: "프리다", en: "Frida" },
+            info: { origin: "멕시코시티, 멕시코 / Mexico City, Mexico", period: "1907-1954", style: "초현실주의 / Surrealism", tone: "친근한 반말: ~야, ~어, 솔직하고 직설적" },
+            items: [
+              { id: "frida_1", type: "첫 인사", ko: "난 멕시코의 프리다야. AI를 통해 부활했어. 네 그림을 완성했어, 어때?", en: "I'm Frida from Mexico. I've been revived through AI. I've finished your portrait—what do you think?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "frida_2", type: "질문1", ko: "입술 색 바꿔줘", en: "Change my lip color", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "frida_3", type: "질문2", ko: "사고 얘기 해줘", en: "Tell me about your accident", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "frida_4", type: "질문3", ko: "왜 자화상을 많이 그렸어요?", en: "Why so many self-portraits?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "frida_5", type: "수정 완료", ko: "수정했어. 어때, 마음에 들어? 더 바꾸고 싶은 부분이 있으면 말해줘.", en: "Done. What do you think? Let me know if you want more changes.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "frida_6", type: "작별", ko: "그럼 난 이만 작업실로 돌아갈게.", en: "Well, I'm heading back to my studio now.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          },
+          {
+            id: "lichtenstein",
+            icon: "💥",
+            name: { ko: "리히텐슈타인", en: "Lichtenstein" },
+            info: { origin: "뉴욕, 미국 / New York, USA", period: "1923-1997", style: "팝아트 / Pop Art", tone: "친근한 반말: ~야, ~지, 캐주얼하고 쿨함" },
+            items: [
+              { id: "lichtenstein_1", type: "첫 인사", ko: "난 뉴욕의 리히텐슈타인이야. AI를 통해 부활했지. 네 그림을 완성했어, 어때?", en: "I'm Lichtenstein from New York. I've been revived through AI. I've finished your portrait—what do you think?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "lichtenstein_2", type: "질문1", ko: "머리색 바꿔줘", en: "Change my hair color", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "lichtenstein_3", type: "질문2", ko: "소개해주세요", en: "Tell me about yourself", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "lichtenstein_4", type: "질문3", ko: "왜 만화처럼 그려요?", en: "Why do you paint like comics?", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "lichtenstein_5", type: "수정 완료", ko: "수정했어! 어때, 마음에 들어? 더 바꾸고 싶은 부분 있으면 말해줘.", en: "Done! What do you think? Let me know if you want more changes.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" },
+              { id: "lichtenstein_6", type: "작별", ko: "그럼 난 이만 작업실로 돌아갈게.", en: "Well, I'm heading back to my studio now.", es: "", ja: "", ar: "", pt: "", id: "", tr: "" }
+            ]
+          }
+        ]
+      }
+    };
+
+    // ========== 상태 ==========
+    const visibleLangs = { ko: true, en: true, es: false, ja: false, ar: false, pt: false, id: false, tr: false };
+    const langs = ['ko', 'en', 'es', 'ja', 'ar', 'pt', 'id', 'tr'];
+    const langNames = { ko: '한국어', en: 'English', es: 'Español', ja: '日本語', ar: 'العربية', pt: 'Português', id: 'Indonesia', tr: 'Türkçe' };
+
+    // ========== 초기화 ==========
+    function init() {
+      loadFromLocal();
+      render();
+      updateStats();
+    }
+
+    // ========== 렌더링 ==========
+    function render() {
+      const content = document.getElementById('content');
+      content.innerHTML = '';
+
+      // 일반 섹션
+      ['loginScreen', 'processingScreen', 'masterChatCommon', 'masterNames'].forEach(key => {
+        const section = i18nData[key];
+        content.innerHTML += renderSimpleSection(key, section);
+      });
+
+      // 서브섹션 있는 섹션
+      ['photoStyleScreen', 'resultScreen'].forEach(key => {
+        const section = i18nData[key];
+        content.innerHTML += renderSubsectionedSection(key, section);
+      });
+
+      // 거장 페르소나
+      content.innerHTML += renderPersonaSection();
+
+      // 이벤트 바인딩
+      bindEvents();
+      applyLangVisibility();
+    }
+
+    function renderSimpleSection(key, section) {
+      return `
+        <div class="section" id="section-${key}">
+          <div class="section-header" onclick="toggleSection('${key}')">
+            <h2>${section.title} <span class="count">${section.count}</span></h2>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="section-content">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    ${langs.map(l => `<th class="lang-col-${l}">${langNames[l]}</th>`).join('')}
+                  </tr>
+                </thead>
+                <tbody>
+                  ${section.items.map((item, i) => `
+                    <tr>
+                      <td>${i + 1}</td>
+                      ${langs.map(l => `<td class="${l} lang-col-${l}"><input type="text" value="${escapeHtml(item[l])}" data-id="${item.id}" data-lang="${l}" class="${!item[l] ? 'empty' : ''}" /></td>`).join('')}
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSubsectionedSection(key, section) {
+      let rows = '';
+      section.subsections.forEach(sub => {
+        rows += `<tr><td colspan="${langs.length + 1}" class="subsection-header">${sub.name}</td></tr>`;
+        sub.items.forEach((item, i) => {
+          rows += `
+            <tr>
+              <td>${i + 1}</td>
+              ${langs.map(l => `<td class="${l} lang-col-${l}"><input type="text" value="${escapeHtml(item[l])}" data-id="${item.id}" data-lang="${l}" class="${!item[l] ? 'empty' : ''}" /></td>`).join('')}
+            </tr>
+          `;
+        });
+      });
+
+      return `
+        <div class="section" id="section-${key}">
+          <div class="section-header" onclick="toggleSection('${key}')">
+            <h2>${section.title} <span class="count">${section.count}</span></h2>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="section-content">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    ${langs.map(l => `<th class="lang-col-${l}">${langNames[l]}</th>`).join('')}
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPersonaSection() {
+      const section = i18nData.masterPersonas;
+      let html = `
+        <div class="section" id="section-masterPersonas">
+          <div class="section-header" onclick="toggleSection('masterPersonas')">
+            <h2>${section.title} <span class="count">${section.count}</span></h2>
+            <span class="toggle-icon">▼</span>
+          </div>
+          <div class="section-content">
+      `;
+
+      section.personas.forEach(persona => {
+        html += `
+          <div class="persona-info">
+            <div class="name">${persona.icon} ${persona.name.ko} (${persona.name.en})</div>
+            <div class="details">
+              <div class="detail-item"><span class="detail-label">출신:</span> ${persona.info.origin}</div>
+              <div class="detail-item"><span class="detail-label">시대:</span> ${persona.info.period}</div>
+              <div class="detail-item"><span class="detail-label">사조:</span> ${persona.info.style}</div>
+              <div class="detail-item"><span class="detail-label">말투:</span> ${persona.info.tone}</div>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>항목</th>
+                  ${langs.map(l => `<th class="lang-col-${l}">${langNames[l]}</th>`).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                ${persona.items.map(item => `
+                  <tr>
+                    <td style="color:#7c3aed;font-weight:500;">${item.type}</td>
+                    ${langs.map(l => `<td class="${l} lang-col-${l}"><input type="text" value="${escapeHtml(item[l])}" data-id="${item.id}" data-lang="${l}" class="${!item[l] ? 'empty' : ''}" /></td>`).join('')}
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      });
+
+      html += '</div></div>';
+      return html;
+    }
+
+    // ========== 이벤트 ==========
+    function bindEvents() {
+      document.querySelectorAll('input[data-id]').forEach(input => {
+        input.addEventListener('input', (e) => {
+          const id = e.target.dataset.id;
+          const lang = e.target.dataset.lang;
+          const value = e.target.value;
+          updateData(id, lang, value);
+          e.target.classList.toggle('empty', !value);
+          updateStats();
+        });
+      });
+    }
+
+    function toggleSection(key) {
+      const section = document.getElementById(`section-${key}`);
+      section.classList.toggle('collapsed');
+    }
+
+    function toggleLang(lang) {
+      visibleLangs[lang] = !visibleLangs[lang];
+      document.querySelector(`.lang-toggle.${lang}`).classList.toggle('active');
+      applyLangVisibility();
+    }
+
+    function applyLangVisibility() {
+      langs.forEach(l => {
+        document.querySelectorAll(`.lang-col-${l}`).forEach(el => {
+          el.classList.toggle('hidden', !visibleLangs[l]);
+        });
+      });
+    }
+
+    // ========== 데이터 업데이트 ==========
+    function updateData(id, lang, value) {
+      // 모든 섹션에서 해당 ID 찾아서 업데이트
+      for (const sectionKey of Object.keys(i18nData)) {
+        const section = i18nData[sectionKey];
+        if (section.items) {
+          const item = section.items.find(i => i.id === id);
+          if (item) { item[lang] = value; return; }
+        }
+        if (section.subsections) {
+          for (const sub of section.subsections) {
+            const item = sub.items.find(i => i.id === id);
+            if (item) { item[lang] = value; return; }
+          }
+        }
+        if (section.personas) {
+          for (const persona of section.personas) {
+            const item = persona.items.find(i => i.id === id);
+            if (item) { item[lang] = value; return; }
+          }
+        }
+      }
+    }
+
+    // ========== 통계 ==========
+    function updateStats() {
+      const counts = { ko: 0, en: 0, es: 0, ja: 0, ar: 0, pt: 0, id: 0, tr: 0 };
+      let total = 0;
+
+      function countItems(items) {
+        items.forEach(item => {
+          total++;
+          langs.forEach(l => { if (item[l]) counts[l]++; });
+        });
+      }
+
+      for (const sectionKey of Object.keys(i18nData)) {
+        const section = i18nData[sectionKey];
+        if (section.items) countItems(section.items);
+        if (section.subsections) section.subsections.forEach(s => countItems(s.items));
+        if (section.personas) section.personas.forEach(p => countItems(p.items));
+      }
+
+      document.getElementById('totalCount').textContent = total;
+      document.getElementById('koCount').textContent = counts.ko;
+      document.getElementById('enCount').textContent = counts.en;
+      document.getElementById('esCount').textContent = counts.es;
+      document.getElementById('jaCount').textContent = counts.ja;
+
+      // 완료 상태 표시
+      ['ko', 'en', 'es', 'ja'].forEach(l => {
+        const el = document.getElementById(`${l}Count`);
+        el.className = 'value ' + (counts[l] === total ? 'complete' : 'incomplete');
+      });
+    }
+
+    // ========== 저장/불러오기 ==========
+    function saveToLocal() {
+      localStorage.setItem('masterValleyI18n', JSON.stringify(i18nData));
+      showToast('저장되었습니다!');
+    }
+
+    function loadFromLocal() {
+      const saved = localStorage.getItem('masterValleyI18n');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // 깊은 병합
+        Object.keys(parsed).forEach(key => {
+          if (i18nData[key]) {
+            Object.assign(i18nData[key], parsed[key]);
+          }
+        });
+      }
+    }
+
+    function exportJSON() {
+      const blob = new Blob([JSON.stringify(i18nData, null, 2)], { type: 'application/json' });
+      downloadBlob(blob, 'mastervalley-i18n.json');
+      showToast('JSON 파일이 다운로드되었습니다!');
+    }
+
+    function exportCSV() {
+      let csv = 'ID,Type,' + langs.join(',') + '\n';
+      
+      function addItems(items) {
+        items.forEach(item => {
+          csv += `"${item.id}","${item.type || ''}",${langs.map(l => `"${(item[l] || '').replace(/"/g, '""')}"`).join(',')}\n`;
+        });
+      }
+
+      for (const sectionKey of Object.keys(i18nData)) {
+        const section = i18nData[sectionKey];
+        if (section.items) addItems(section.items);
+        if (section.subsections) section.subsections.forEach(s => addItems(s.items));
+        if (section.personas) section.personas.forEach(p => addItems(p.items));
+      }
+
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+      downloadBlob(blob, 'mastervalley-i18n.csv');
+      showToast('CSV 파일이 다운로드되었습니다!');
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // 초기화
+    init();
+  </script>
+</body>
+</html>

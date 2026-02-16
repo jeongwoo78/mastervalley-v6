@@ -183,8 +183,8 @@ export const MASTERS = {
     taglineEn: 'Swirling passion of the brush',
     icon: '🌻',
     description: '1853-1890 | 후기인상주의',
-    featuredWorks: '별이 빛나는 밤 · 카페 테라스 · 해바라기',
-    featuredWorksEn: 'The Starry Night · Café Terrace · Sunflowers',
+    featuredWorks: '별이 빛나는 밤 · 해바라기 · 자화상',
+    featuredWorksEn: 'The Starry Night · Sunflowers · Self-Portrait',
     aliases: ['van gogh', 'gogh', 'vincent', '고흐', '반 고흐'],
     works: {
       'starrynight': ['The Starry Night', '별이 빛나는 밤', 'Starry Night'],
@@ -206,8 +206,8 @@ export const MASTERS = {
     taglineEn: 'A world of golden sensuality',
     icon: '✨',
     description: '1862-1918 | 아르누보',
-    featuredWorks: '키스 · 생명의 나무',
-    featuredWorksEn: 'The Kiss · The Tree of Life',
+    featuredWorks: '키스 · 유디트 · 생명의 나무',
+    featuredWorksEn: 'The Kiss · Judith · The Tree of Life',
     aliases: ['gustav', 'gustav klimt', '클림트'],
     works: {
       'kiss': ['The Kiss', '키스', 'Kiss'],
@@ -248,8 +248,8 @@ export const MASTERS = {
     taglineEn: 'Master of color',
     icon: '💃',
     description: '1869-1954 | 야수파',
-    featuredWorks: '초록 줄무늬 · 붉은 방',
-    featuredWorksEn: 'The Green Stripe · The Red Room',
+    featuredWorks: '춤 · 붉은 방 · 초록 줄무늬',
+    featuredWorksEn: 'The Dance · The Red Room · The Green Stripe',
     aliases: ['henri', 'henri matisse', '마티스'],
     works: {
       'greenstripe': ['The Green Stripe', '초록 줄무늬', 'Green Stripe', 'Portrait of Madame Matisse'],
@@ -270,8 +270,8 @@ export const MASTERS = {
     taglineEn: 'Poet of love and dreams',
     icon: '🎻',
     description: '1887-1985 | 초현실주의',
-    featuredWorks: '생일 · 신부 · 나와 마을',
-    featuredWorksEn: 'The Birthday · La Mariée · I and the Village',
+    featuredWorks: '생일 · 나와 마을 · 신부',
+    featuredWorksEn: 'The Birthday · I and the Village · La Mariée',
     aliases: ['marc', 'marc chagall', '샤갈', '마르크 샤갈'],
     works: {
       'lovers': ['The Birthday', '생일', 'Lovers with Flowers', '꽃다발과 연인들'],
@@ -291,8 +291,8 @@ export const MASTERS = {
     taglineEn: 'Self-portrait gazing at pain',
     icon: '🦜',
     description: '1907-1954 | 초현실주의',
-    featuredWorks: '나와 앵무새들 · 원숭이와 자화상',
-    featuredWorksEn: 'Me and My Parrots · Self-Portrait with Monkeys',
+    featuredWorks: '나와 앵무새들 · 부러진 기둥 · 원숭이와 자화상',
+    featuredWorksEn: 'Me and My Parrots · The Broken Column · Self-Portrait with Monkeys',
     aliases: ['kahlo', 'frida kahlo', '프리다', '프리다 칼로'],
     works: {
       'parrots': ['Me and My Parrots', '나와 앵무새들', 'Self-Portrait with Parrots'],
@@ -311,8 +311,8 @@ export const MASTERS = {
     taglineEn: 'Revolutionary who deconstructed vision',
     icon: '💎',
     description: '1881-1973 | 입체주의',
-    featuredWorks: '도라 마르의 초상',
-    featuredWorksEn: 'Portrait of Dora Maar',
+    featuredWorks: '아비뇽의 처녀들 · 게르니카 · 도라 마르의 초상',
+    featuredWorksEn: "Les Demoiselles d'Avignon · Guernica · Portrait of Dora Maar",
     aliases: ['pablo', 'pablo picasso', '피카소'],
     works: {
       'doramaar': ['Portrait of Dora Maar', '도라 마르의 초상', 'Dora Maar']
@@ -330,8 +330,8 @@ export const MASTERS = {
     taglineEn: 'Dots that changed art',
     icon: '💥',
     description: '1923-1997 | 팝아트',
-    featuredWorks: '행복한 눈물 · 익사하는 소녀',
-    featuredWorksEn: 'Whaam! · Drowning Girl',
+    featuredWorks: '차 안에서 · 아마도 · 날 잊어',
+    featuredWorksEn: 'In the Car · M-Maybe · Forget It!',
     aliases: ['roy', 'roy lichtenstein', '리히텐슈타인', '로이 리히텐슈타인'],
     works: {
       'inthecar': ['In the Car', '차 안에서', 'In Car'],

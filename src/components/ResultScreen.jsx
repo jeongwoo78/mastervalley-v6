@@ -32,9 +32,9 @@ import { saveToGallery } from './GalleryScreen';
 import { processStyleTransfer } from '../utils/styleTransferAPI';
 // v73: displayConfig 통합 함수
 import { normalizeKey, getDisplayInfo, getArtistName, getMovementDisplayInfo, getOrientalDisplayInfo, getMasterInfo, getStyleIcon, getStyleTitle, getStyleSubtitle, getStyleSubtitles } from '../utils/displayConfig';
-import { getEducationKey, getEducationContent } from '../utils/educationMatcher';
+import { getEducationKey, getEducationContent, getMasterEducationKey } from '../utils/educationMatcher';
 // v74: 모바일 공유/저장 유틸리티
-import { saveImage, shareImage, isNativePlatform, addWatermark } from '../utils/mobileShare';
+import { saveImage, shareImage, isNativePlatform, addWatermark, WATERMARK_ON_SAVE } from '../utils/mobileShare';
 
 
 const ResultScreen = ({ 
@@ -680,15 +680,22 @@ const ResultScreen = ({
       // console.log('   - matched key:', key);
       
       if (key) {
-        // 교육자료 데이터 객체 구성
-        const educationData = {
-          masters: oneclickMastersSecondary,
-          movements: oneclickMovementsSecondary,
-          oriental: oneclickOrientalSecondary
-        };
+        // 거장 카테고리: 작품별 교육자료 우선 시도 (mastersResultEducation)
+        // → fallback: 원클릭 거장 일반 교육 (oneclickMastersSecondary)
+        if (category === 'masters' && mastersResultEducation[key]) {
+          const edu = mastersResultEducation[key];
+          content = edu.content || edu.description || edu.desc || null;
+        }
         
-        // 새로운 콘텐츠 가져오기 함수 사용
-        content = getEducationContent(category, key, educationData);
+        // 작품별 매칭 실패 시 원래 교육자료 데이터 사용
+        if (!content) {
+          const educationData = {
+            masters: oneclickMastersSecondary,
+            movements: oneclickMovementsSecondary,
+            oriental: oneclickOrientalSecondary
+          };
+          content = getEducationContent(category, key, educationData);
+        }
         
         if (content) {
           // console.log('✅ Found oneclick education for:', key);
@@ -860,137 +867,24 @@ const ResultScreen = ({
     // console.log('========================================');
     // console.log('');
     
-    // ========== 2차 교육자료 (화풍 설명) ==========
-    // selectedStyle.id에서 masterId 추출하여 검색 (v62 신규)
+    // ========== 2차 교육자료 (작품별 → 거장 fallback) ==========
+    // selectedStyle.id에서 masterId 추출
     const styleId = selectedStyle?.id || '';
     const masterId = styleId.replace('-master', ''); // 'vangogh-master' → 'vangogh'
     
-    // console.log('🎯 Trying 2nd education with masterId:', masterId);
-    
-    if (masterId && mastersEducation[masterId]) {
-      const education = mastersEducation[masterId];
-      // console.log('✅ Found 2nd education (화풍 설명)!');
-      // console.log('   - title:', education.title || education.name);
-      // console.log('   - desc length:', education.description?.length || education.desc?.length);
-      return education.description || education.desc;
-    }
-    
-    // ========== 2차 교육자료 (개별 작품) - 레거시 지원 ==========
-    // aiSelectedWork가 있으면 해당 작품 키로 검색 (기존 로직 유지)
-    if (aiSelectedWork) {
-      // console.log('🎯 Trying 2nd education with selected_work:', aiSelectedWork);
-      
-      // 작품명 → mastersEducation 키 매핑
-      const workKeyMap = {
-        // 반 고흐
-        'The Starry Night': 'vangogh-starrynight',
-        '별이 빛나는 밤': 'vangogh-starrynight',
-        'Starry Night': 'vangogh-starrynight',
-        'Sunflowers': 'vangogh-sunflowers',
-        '해바라기': 'vangogh-sunflowers',
-        'Bedroom in Arles': 'vangogh-bedroom',
-        '아를의 침실': 'vangogh-bedroom',
-        'The Potato Eaters': 'vangogh-potatoeaters',
-        '감자 먹는 사람들': 'vangogh-potatoeaters',
-        'Self-Portrait': 'vangogh-selfportrait',
-        '자화상': 'vangogh-selfportrait',
-        
-        // 클림트
-        'The Kiss': 'klimt-kiss',
-        '키스': 'klimt-kiss',
-        'Portrait of Adele Bloch-Bauer I': 'klimt-adele',
-        '아델레 블로흐-바우어의 초상': 'klimt-adele',
-        'Adele Bloch-Bauer': 'klimt-adele',
-        'The Tree of Life': 'klimt-treeoflife',
-        '생명의 나무': 'klimt-treeoflife',
-        'Tree of Life': 'klimt-treeoflife',
-        'Danae': 'klimt-danae',
-        '다나에': 'klimt-danae',
-        'Judith I': 'klimt-judith',
-        'Judith': 'klimt-judith',
-        '유디트': 'klimt-judith',
-        
-        // 뭉크
-        'The Scream': 'munch-scream',
-        '절규': 'munch-scream',
-        'Scream': 'munch-scream',
-        'Madonna': 'munch-madonna',
-        '마돈나': 'munch-madonna',
-        'Jealousy': 'munch-jealousy',
-        '질투': 'munch-jealousy',
-        'The Sick Child': 'munch-sickchild',
-        '병든 아이': 'munch-sickchild',
-        'Sick Child': 'munch-sickchild',
-        'The Dance of Life': 'munch-vampire',
-        'Puberty': 'munch-puberty',
-        '사춘기': 'munch-puberty',
-        'Vampire': 'munch-vampire',
-        '뱀파이어': 'munch-vampire',
-        
-        // 마티스
-        'The Dance': 'matisse-dance',
-        '춤': 'matisse-dance',
-        'Dance': 'matisse-dance',
-        'The Red Room': 'matisse-redroom',
-        '붉은 방': 'matisse-redroom',
-        'Red Room': 'matisse-redroom',
-        'Woman with a Hat': 'matisse-womanhat',
-        '모자를 쓴 여인': 'matisse-womanhat',
-        'Goldfish': 'matisse-goldfish',
-        '금붕어': 'matisse-goldfish',
-        'The Snail': 'matisse-snail',
-        '달팽이': 'matisse-snail',
-        'Snail': 'matisse-snail',
-        
-        // 피카소
-        'Les Demoiselles d\'Avignon': 'picasso-demoiselles',
-        '아비뇽의 처녀들': 'picasso-demoiselles',
-        'Demoiselles': 'picasso-demoiselles',
-        'Guernica': 'picasso-guernica',
-        '게르니카': 'picasso-guernica',
-        'Bull\'s Head': 'picasso-bullhead',
-        '황소 머리': 'picasso-bullhead',
-        
-        // 프리다 칼로
-        'Me and My Parrots': 'frida-parrots',
-        '나와 앵무새들': 'frida-parrots',
-        '나와 내 앵무새들': 'frida-parrots',
-        'My Parrots': 'frida-parrots',
-        'The Broken Column': 'frida-brokencolumn',
-        '부러진 기둥': 'frida-brokencolumn',
-        'Broken Column': 'frida-brokencolumn',
-        'Self-Portrait with Thorn Necklace': 'frida-thornnecklace',
-        '가시 목걸이와 벌새': 'frida-thornnecklace',
-        'Thorn Necklace': 'frida-thornnecklace',
-        'Self-Portrait with Monkeys': 'frida-monkeys',
-        '원숭이와 자화상': 'frida-monkeys'
-      };
-      
-      // 직접 매칭 시도
-      let workKey = workKeyMap[aiSelectedWork];
-      
-      // 부분 매칭 시도
-      if (!workKey) {
-        const workLower = aiSelectedWork.toLowerCase();
-        for (const [name, key] of Object.entries(workKeyMap)) {
-          if (workLower.includes(name.toLowerCase()) || name.toLowerCase().includes(workLower)) {
-            workKey = key;
-            break;
-          }
-        }
-      }
-      
-      // console.log('   - workKey:', workKey);
-      
-      if (workKey && mastersEducation[workKey]) {
-        const education = mastersEducation[workKey];
-        // console.log('✅ Found 2nd education (개별 작품)!');
-        // console.log('   - title:', education.title || education.name);
-        // console.log('   - desc length:', education.description?.length || education.desc?.length);
+    // 1단계: 작품별 교육자료 시도 (educationMatcher의 masterData.works 활용)
+    if (masterId && aiSelectedWork) {
+      const workSpecificKey = getMasterEducationKey(masterId, aiSelectedWork);
+      if (workSpecificKey && mastersEducation[workSpecificKey]) {
+        const education = mastersEducation[workSpecificKey];
         return education.description || education.desc;
       }
-      
-      // console.log('⚠️ 2nd education not found, falling back to 1st');
+    }
+    
+    // 2단계: 거장 레벨 fallback
+    if (masterId && mastersEducation[masterId]) {
+      const education = mastersEducation[masterId];
+      return education.description || education.desc;
     }
     
     // ========== 1차 교육자료 (거장 개요) ==========
@@ -1920,7 +1814,9 @@ const ResultScreen = ({
       const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
       const fileName = `mastervalley-${styleId || 'art'}-${Date.now()}.jpg`;
       
-      const result = await saveImage(imageToSave, fileName);
+      // 워터마크 적용 (WATERMARK_ON_SAVE 플래그로 제어)
+      const finalImage = WATERMARK_ON_SAVE ? await addWatermark(imageToSave) : imageToSave;
+      const result = await saveImage(finalImage, fileName);
       
       if (result.success) {
         if (result.gallery) {

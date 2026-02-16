@@ -13,7 +13,8 @@ import {
   getOneclickMastersPrimary,
   getOneclickMastersSecondary,
   getOneclickOrientalPrimary,
-  getOneclickOrientalSecondary
+  getOneclickOrientalSecondary,
+  getMastersResultEducation
 } from '../i18n';
 // v73: displayConfig 통합 함수
 import { normalizeKey, getDisplayInfo, getArtistName, getMovementDisplayInfo, getOrientalDisplayInfo, getMasterInfo, getCategoryIcon, getStyleIcon, getStyleTitle, getStyleSubtitle, getStyleSubtitles } from '../utils/displayConfig';
@@ -557,7 +558,19 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
     console.log(`📚 교육자료 매칭: ${resultCategory} → ${key || '없음'} (${artistName}, ${workName || '-'})`);
     
     if (key) {
-      // 교육자료 데이터 객체 구성
+      // 거장 카테고리: 작품별 교육자료 우선 시도 (mastersResultEducation)
+      if (resultCategory === 'masters') {
+        const mastersResult = getMastersResultEducation(lang);
+        if (mastersResult[key]) {
+          const edu = mastersResult[key];
+          const content = edu.content || edu.description || edu.desc || null;
+          if (content) {
+            return content;
+          }
+        }
+      }
+      
+      // 기존 원클릭 교육자료 fallback
       const educationData = {
         masters: oneclickMastersSecondary,
         movements: oneclickMovementsSecondary,

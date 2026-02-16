@@ -1,7 +1,7 @@
 // GalleryScreen.jsx - 갤러리 컴포넌트 (IndexedDB 버전)
 // 대용량 이미지 저장 + 그리드 UI + 저장/공유/삭제 기능
 import React, { useState, useEffect } from 'react';
-import { saveImage as saveToDevice, shareImage, addWatermark, isNativePlatform } from '../utils/mobileShare';
+import { saveImage as saveToDevice, shareImage, addWatermark, isNativePlatform, WATERMARK_ON_SAVE } from '../utils/mobileShare';
 
 // ========== IndexedDB 설정 ==========
 const DB_NAME = 'PicoArtGallery';
@@ -301,7 +301,10 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   const handleDownload = async (item) => {
     try {
       const fileName = `mastervalley_${item.styleName.replace(/\s+/g, '_')}_${Date.now()}.jpg`;
-      const result = await saveToDevice(item.imageData, fileName);
+      
+      // 워터마크 적용 (WATERMARK_ON_SAVE 플래그로 제어)
+      const finalImage = WATERMARK_ON_SAVE ? await addWatermark(item.imageData) : item.imageData;
+      const result = await saveToDevice(finalImage, fileName);
       
       if (result.success) {
         if (result.gallery) {

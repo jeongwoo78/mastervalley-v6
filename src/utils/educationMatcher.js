@@ -11,6 +11,41 @@
 // ========================================
 
 import { normalizeKey, getArtistName, ALIASES } from './displayConfig.js';
+import { MASTERS } from '../data/masterData.js';
+
+// ========================================
+// 거장 작품 매칭 헬퍼: selected_work → workKey
+// masterData.works를 활용하여 API 반환 작품명을 키로 변환
+// ========================================
+
+function findWorkKey(masterKey, selectedWork) {
+  if (!selectedWork || !masterKey) return null;
+  
+  const masterStyleId = `${masterKey}-master`;
+  const master = MASTERS[masterStyleId];
+  if (!master?.works) return null;
+  
+  const workLower = selectedWork.toLowerCase().trim();
+  
+  for (const [workKey, aliases] of Object.entries(master.works)) {
+    for (const alias of aliases) {
+      if (alias.toLowerCase() === workLower) {
+        return workKey; // exact match
+      }
+    }
+  }
+  
+  // 부분 매칭 (포함 관계)
+  for (const [workKey, aliases] of Object.entries(master.works)) {
+    for (const alias of aliases) {
+      if (workLower.includes(alias.toLowerCase()) || alias.toLowerCase().includes(workLower)) {
+        return workKey;
+      }
+    }
+  }
+  
+  return null;
+}
 
 // ========================================
 // 메인 함수: 교육자료 키 가져오기
@@ -47,6 +82,15 @@ export function getEducationContent(category, key, educationData) {
     return targetData[normalizedKey].content || targetData[normalizedKey].description || targetData[normalizedKey].desc || null;
   }
   
+  // 거장 작품키 fallback: 'vangogh-starrynight' → 'vangogh'
+  if (category === 'masters' && key.includes('-')) {
+    const masterOnly = key.split('-')[0];
+    if (targetData[masterOnly]) {
+      console.log(`✅ getEducationContent: master fallback ${key} → ${masterOnly}`);
+      return targetData[masterOnly].content || targetData[masterOnly].description || targetData[masterOnly].desc || null;
+    }
+  }
+  
   console.log(`❌ getEducationContent: no match found for key: ${key} in category: ${category}`);
   return null;
 }
@@ -55,10 +99,21 @@ export function getEducationContent(category, key, educationData) {
  * 거장 교육자료 키 가져오기
  * @param {string} masterKey - 거장 키 (vangogh, klimt 등)
  * @param {string} selectedWork - AI가 선택한 작품명
+ * @returns {string} 작품별 키 (vangogh-starrynight) 또는 거장 키 (vangogh)
  */
 export function getMasterEducationKey(masterKey, selectedWork) {
-  // 원클릭 거장 모드: 화가명만 반환 (작품 상관없이 같은 교육자료)
   const normalizedMaster = normalizeKey(masterKey);
+  
+  // 작품별 키 시도: vangogh + "The Starry Night" → "vangogh-starrynight"
+  const workKey = findWorkKey(normalizedMaster, selectedWork);
+  if (workKey) {
+    const compositeKey = `${normalizedMaster}-${workKey}`;
+    console.log(`🎨 getMasterEducationKey: ${normalizedMaster} + "${selectedWork}" → ${compositeKey}`);
+    return compositeKey;
+  }
+  
+  // fallback: 거장 키만 반환
+  console.log(`🎨 getMasterEducationKey: ${normalizedMaster} (no work match for "${selectedWork}")`);
   return normalizedMaster;
 }
 

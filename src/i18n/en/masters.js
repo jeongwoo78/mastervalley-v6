@@ -102,9 +102,11 @@ export const mastersBasicInfo = {
     },
     result: {
       name: 'Pablo Picasso (1881–1973)',
-      subtitle1: 'Portrait of Dora Maar',
+      subtitle1: "Les Demoiselles d'Avignon · Guernica · Portrait of Dora Maar",
       subtitle2: 'Revolutionary who deconstructed vision',
       works: {
+        'demoiselles': { subtitle1: "Les Demoiselles d'Avignon", subtitle2: 'Five women who flung open the door to Cubism' },
+        'guernica': { subtitle1: 'Guernica', subtitle2: 'A scream of war exploding in black and white' },
         'doramaar': { subtitle1: 'Portrait of Dora Maar', subtitle2: 'A deconstructed portrait where front meets side' }
       }
     }
@@ -117,10 +119,11 @@ export const mastersBasicInfo = {
     },
     result: {
       name: 'Frida Kahlo (1907–1954)',
-      subtitle1: 'Me and My Parrots · Self-Portrait with Monkeys',
+      subtitle1: 'Me and My Parrots · The Broken Column · Self-Portrait with Monkeys',
       subtitle2: 'Self-portrait gazing at pain',
       works: {
         'parrots': { subtitle1: 'Me and My Parrots', subtitle2: 'A self-portrait in solitude, with parrots' },
+        'brokencolumn': { subtitle1: 'The Broken Column', subtitle2: 'An unbroken gaze from a shattered body' },
         'monkeys': { subtitle1: 'Self-Portrait with Monkeys', subtitle2: 'A portrait of pain, embraced by monkeys' }
       }
     }
@@ -224,6 +227,207 @@ With Ben-Day dots and bold outlines, he overturned the hierarchy between popular
 
 // ========== Result Education (Style/Technique) ==========
 export const mastersResultEducation = {
+  // ===== Work-specific education (2nd result screen) =====
+
+  // ── Van Gogh ──
+  'vangogh-starrynight': {
+    description: `The swirling impasto brushstrokes of 〈The Starry Night〉 have been applied.
+The intense contrast of cobalt blue and chrome yellow unleashes the energy of the night.
+
+〈The Starry Night〉 was Van Gogh's reimagined vision of the landscape beyond his asylum window at Saint-Rémy.
+Rather than painting the actual night sky, he projected his inner turmoil onto the stars.`
+  },
+  'vangogh-cafe': {
+    description: `The complementary color nightscape technique of 〈Café Terrace at Night〉—without using black—has been applied.
+Yellow gaslights and deep blue night sky express darkness through color contrast alone.
+
+〈Café Terrace at Night〉 is the first outdoor night scene Van Gogh painted under starlight at Arles' Place du Forum.
+The empty chairs on the terrace and passing figures hold both the stillness and warmth of the night.`
+  },
+  'vangogh-sunflowers': {
+    description: `The subtle tonal variations of a single chrome yellow in 〈Sunflowers〉 have been applied.
+Thickly layered paint captures the texture of the petals as they are.
+
+〈Sunflowers〉 is a series Van Gogh painted to decorate the Yellow House in Arles for Gauguin's arrival.
+Full blooms, wilted flowers, and seeds together reveal the cycle of life.`
+  },
+  'vangogh-selfportrait': {
+    description: `The swirling background and thick impasto brushstrokes of 〈Self-Portrait〉 have been applied.
+Cool tones of blue and green convey both solitude and resolve.
+
+〈Self-Portrait〉 was painted when Van Gogh, too poor to afford models, used himself as subject.
+The eyes gazing directly forward and tightly closed lips show unwavering will amid suffering.`
+  },
+  'vangogh-wheatfield': {
+    description: `The dynamic curved brushstrokes and complementary color contrasts of 〈Wheat Field with Cypresses〉 have been applied.
+Wind-blown wheat and flame-like cypresses convey nature's vital energy.
+
+〈Wheat Field with Cypresses〉 is a landscape Van Gogh repeatedly painted near the asylum at Saint-Rémy.
+The golden horizon of the wheat field and the vertical cypress connect earth and sky.`
+  },
+
+  // ── Klimt ──
+  'klimt-kiss': {
+    description: `The gold leaf background and geometric decorative patterns of 〈The Kiss〉 have been applied.
+Rectangles on the man's robe contrast with curves and circles on the woman's, creating opposition and harmony.
+
+〈The Kiss〉 is Klimt's masterpiece from his "Golden Phase," inspired by Byzantine mosaics.
+The lovers' embrace wrapped in gold holds both the ecstasy of love and the anxiety of its passing.`
+  },
+  'klimt-treeoflife': {
+    description: `The spiral curves and golden decorative patterns of 〈The Tree of Life〉 have been applied.
+Triangles, circles, and spirals repeat, creating a rhythmic flow of life's energy.
+
+〈The Tree of Life〉 was created as a dining room mural for the Stoclet Palace in Brussels.
+The endlessly branching spiral limbs are a metaphor for birth, death, and the cycle of life.`
+  },
+  'klimt-judith': {
+    description: `The gold leaf decoration and jewel-like sensual colors of 〈Judith〉 have been applied.
+Transparent veils and gold necklaces create tension between the sacred and the sensual.
+
+〈Judith〉 is Klimt's reinterpretation of the biblical heroine as a sensual woman.
+Half-closed eyes and a provocative smile completely overturn the piety of traditional religious painting.`
+  },
+
+  // ── Munch ──
+  'munch-scream': {
+    description: `The undulating curves and distorted forms of 〈The Scream〉 have been applied.
+A blood-red sky and rippling background contrast with the straight railing, creating extreme anxiety.
+
+〈The Scream〉 captures the terror Munch felt when the sky turned blood-red during a walk.
+The open-mouthed figure's cry is expressed not as sound but as a tremor passing through all existence.`
+  },
+  'munch-madonna': {
+    description: `The red halo and undulating sensual curves of 〈Madonna〉 have been applied.
+At the boundary between open and closed eyes, life and death merge into one.
+
+〈Madonna〉 is Munch's reinterpretation of the Virgin Mary as a moment where sensuality and death intersect.
+Closed eyes, parted lips, and a red halo reveal human desire rather than holiness.`
+  },
+  'munch-danceoflife': {
+    description: `The symbolic contrast of light and dark colors in 〈The Dance of Life〉 has been applied.
+With the central woman in a red dress as axis, innocence and despair are placed on either side.
+
+〈The Dance of Life〉 is Munch's autobiographical work compressing memories of love and heartbreak into one canvas.
+Light and dark colors alternate on a single canvas, capturing both the beginning and end of love.`
+  },
+
+  // ── Matisse ──
+  'matisse-greenstripe': {
+    description: `The bold color plane division that bisects the face in 〈The Green Stripe〉 has been applied.
+Pink, yellow, and green coexist on the skin, completely ignoring natural color.
+
+〈The Green Stripe〉 is a portrait Matisse painted of his wife Amélie, drawing cries of "Wild beasts!" at the 1905 Salon.
+A single green stripe down the center of the face divides light and shadow through color alone.`
+  },
+  'matisse-purplecoat': {
+    description: `The intense color planes and decorative flat composition of 〈Woman in a Purple Coat〉 have been applied.
+The boundary between figure and background dissolves, with color itself creating space.
+
+〈Woman in a Purple Coat〉 is a work where Matisse conveyed emotion through simplified forms and pure color.
+The vast color plane of the purple coat dominates the canvas, merging with the background patterns as one.`
+  },
+  'matisse-redroom': {
+    description: `The flat color plane composition that defies perspective in 〈The Red Room〉 has been applied.
+The red wall and red table merge into one as arabesque patterns blanket the entire space.
+
+〈The Red Room〉 was originally painted in blue, but Matisse repainted it red just before completion.
+Even the view through the window appears as flat decoration, erasing the boundary between inside and out.`
+  },
+  'matisse-derain': {
+    description: `The rough brushstrokes and unnatural skin colors of 〈Portrait of André Derain〉 have been applied.
+Green shadows and orange skin, with bold primary colors, render the subject in a wild, Fauvist manner.
+
+〈Portrait of André Derain〉 is a portrait of friendship Matisse painted of his fellow artist André Derain.
+The two painters exchanged portraits of each other at the same time, sharing their Fauvist experiments together.`
+  },
+
+  // ── Chagall ──
+  'chagall-lovers': {
+    description: `The dreamlike colors and overlapping images of 〈The Lovers〉 have been applied.
+Pink, cobalt blue, and violet blend together, erasing the boundary between dream and reality.
+
+〈The Lovers〉 is a work Chagall painted of his love for Bella, his lifelong muse and wife.
+Lovers layered like a dream over a real background express the intoxication of love.`
+  },
+  'chagall-lamariee': {
+    description: `The dreamlike contrast of red bouquets and blue night sky in 〈La Mariée〉 has been applied.
+Animals and figures blend like apparitions, unfolding a festive fantasy.
+
+〈La Mariée〉 captures the rooftops and church spires of Chagall's hometown Vitebsk as a landscape of memory.
+The bride holding a red bouquet, overlaid with the village scene, holds both nostalgia and joy.`
+  },
+  'chagall-village': {
+    description: `The multiple perspectives and transparently overlapping images of 〈I and the Village〉 have been applied.
+People, animals, and village scenery intermingle dreamlike, defying scale and proportion.
+
+〈I and the Village〉 was painted in Paris as Chagall longed for his hometown of Vitebsk.
+Reality and memory merge on a single canvas, capturing an endless yearning for home.`
+  },
+
+  // ── Picasso ──
+  'picasso-doramaar': {
+    description: `The simultaneous front and side view of 〈Portrait of Dora Maar〉 has been applied.
+Intense primary color planes divide the face geometrically, creating Cubist tension.
+
+〈Portrait of Dora Maar〉 was painted by Picasso of his lover and fellow photographer Dora Maar.
+The seated woman's front and side coexist in one face, revealing the complexity within.`
+  },
+
+  // ── Frida Kahlo ──
+  'frida-parrots': {
+    description: `The intense frontal gaze and Mexican folk colors of 〈Me and My Parrots〉 have been applied.
+Vivid reds, greens, and blues fill the canvas alongside tropical foliage.
+
+〈Me and My Parrots〉 is a self-portrait in which Frida is surrounded by four parrots.
+Parrots are messengers of love in Mexican folklore, and faithful companions in Frida's solitude.`
+  },
+  'frida-monkeys': {
+    description: `The frontal gaze and lush tropical background of 〈Self-Portrait with Monkeys〉 have been applied.
+Amid dark green leaves, her intense eyes and connected eyebrows reveal her identity.
+
+〈Self-Portrait with Monkeys〉 is a self-portrait Frida painted with her pet monkeys.
+In Mexican mythology monkeys symbolize desire, but for Frida they were surrogates for the children she could never have.`
+  },
+
+  // ── Lichtenstein ──
+  'lichtenstein-inthecar': {
+    description: `The Ben-Day dots and thick black outlines of 〈In the Car〉 have been applied.
+Only pure primary colors—red, blue, and yellow—fill the canvas like a comic book panel.
+
+〈In the Car〉 was created by enlarging a panel from the comic Girls' Romances onto canvas.
+Lichtenstein deliberately removed the speech bubble from the original, leaving only the power of the image instead of narrative.`
+  },
+  'lichtenstein-mmaybe': {
+    description: `The Ben-Day dots and comic-book narrative of speech bubbles in 〈M-Maybe〉 have been applied.
+Primary colors fill flatly within thick outlines, recreating the texture of a printed page.
+
+〈M-Maybe〉 was a work Lichtenstein kept in his personal collection, which sold for $30,000—five times the going rate.
+It is now displayed as a centerpiece of the Pop Art collection at Museum Ludwig in Cologne, Germany.`
+  },
+  'lichtenstein-forgetit': {
+    description: `The Ben-Day dots and intense primary color contrasts of 〈Forget It!〉 have been applied.
+Thick black outlines fix the form like a comic panel, compressing emotion dramatically.
+
+〈Forget It!〉 is an early masterwork created just after Lichtenstein's first solo show in 1962.
+That same year, Life magazine ran the headline: "Is He the Worst Artist in the U.S.?"—about him.`
+  },
+  'lichtenstein-ohhhalright': {
+    description: `The Ben-Day dots and flat color plane composition of 〈Ohhh...Alright...〉 have been applied.
+Red, blue, and yellow separate cleanly within black outlines, as crisp as a printed page.
+
+〈Ohhh...Alright...〉 is a 1964 work borrowed from issue #88 of Secret Hearts.
+It sold for $42.6 million at Christie's in 2010, overturning the value of what he once called "used canvas."`
+  },
+  'lichtenstein-stilllife': {
+    description: `The Ben-Day dots and thick outlines creating flat expression in 〈Still Life〉 have been applied.
+Primary color planes simplify objects in a comic-like manner, recreating the texture of print.
+
+〈Still Life〉 is part of a 1970s series in which Lichtenstein reinterpreted a traditional genre as homage to Picasso.
+"There's no mood in my still lifes—it's just lemons and grapefruits," he said.`
+  },
+
+  // ===== Master-level fallback (when work match fails) =====
   'vangogh': {
     name: 'Van Gogh Style',
     description: `Thick impasto technique and swirling brushstrokes have been applied.
