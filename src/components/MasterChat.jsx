@@ -227,9 +227,9 @@ const MasterChat = ({
 
   return (
     <div className="master-chat-section" style={{ '--master-color': theme.primary }}>
-      {/* 헤더 (목업 준수: 이름 + AI 태그) */}
+      {/* 헤더 (이모지만, 원 제거) */}
       <div className="master-chat-header">
-        <div className="master-avatar" style={{ background: theme.gradient }}>
+        <div className="master-avatar-emoji">
           {theme.icon}
         </div>
         <div className="master-info">
@@ -242,36 +242,11 @@ const MasterChat = ({
         {messages.map((msg, idx) => (
           <div key={idx} className={`chat-message ${msg.role}`}>
             {msg.role === 'master' && (
-              <div className="avatar" style={{ background: theme.gradient }}>{theme.icon}</div>
+              <div className="avatar-emoji">{theme.icon}</div>
             )}
             {msg.role === 'system' ? (
               <div className="system-message">
                 {msg.content}
-                {/* 첫 시스템 메시지(idx 1)에만 추천 질문 표시 */}
-                {idx === 1 && (
-                  <div className="suggested-questions">
-                    {(chatText.suggestedQuestions[masterKey] || []).map((q, qIdx) => (
-                      <button
-                        key={qIdx}
-                        className="question-chip"
-                        onClick={() => {
-                          setInputValue(q);
-                          // 바로 전송
-                          setTimeout(() => {
-                            document.querySelector('.send-btn')?.click();
-                          }, 50);
-                        }}
-                        style={{ 
-                          background: `${theme.primary}20`,
-                          borderColor: `${theme.primary}50`,
-                          color: theme.primary
-                        }}
-                      >
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             ) : (
               <div>
@@ -290,7 +265,7 @@ const MasterChat = ({
         {/* 타이핑 인디케이터 */}
         {isLoading && (
           <div className="chat-message master">
-            <div className="avatar" style={{ background: theme.gradient }}>{theme.icon}</div>
+            <div className="avatar-emoji">{theme.icon}</div>
             <div className="bubble typing" style={{ 
               background: `${theme.primary}20`,
               borderColor: `${theme.primary}40`
@@ -300,6 +275,31 @@ const MasterChat = ({
           </div>
         )}
       </div>
+
+      {/* 추천 질문 - 대화 시작 전에만 표시, 가로 배치 */}
+      {messageCount === 0 && !isChatEnded && (
+        <div className="suggested-questions">
+          {(chatText.suggestedQuestions[masterKey] || []).map((q, qIdx) => (
+            <button
+              key={qIdx}
+              className="question-chip"
+              onClick={() => {
+                setInputValue(q);
+                setTimeout(() => {
+                  document.querySelector('.send-btn')?.click();
+                }, 50);
+              }}
+              style={{ 
+                background: `${theme.primary}10`,
+                borderColor: `${theme.primary}40`,
+                color: theme.primary
+              }}
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* 입력 영역 (먼저!) */}
       <div className="chat-input-area">
@@ -369,14 +369,9 @@ const MasterChat = ({
           margin-bottom: 12px;
         }
 
-        .master-avatar {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 18px;
+        .master-avatar-emoji {
+          font-size: 28px;
+          line-height: 1;
         }
 
         .master-info h3 {
@@ -415,14 +410,9 @@ const MasterChat = ({
           gap: 8px;
         }
 
-        .chat-message.master .avatar {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 10px;
+        .chat-message.master .avatar-emoji {
+          font-size: 18px;
+          line-height: 1;
           flex-shrink: 0;
         }
 
@@ -451,22 +441,22 @@ const MasterChat = ({
           text-align: center;
         }
 
-        /* 빠른 질문 버튼 (3줄 왼쪽 정렬) */
+        /* 추천 질문 (가로 wrap, 입력창 위) */
         .suggested-questions {
           display: flex;
-          flex-direction: column;
-          gap: 8px;
-          margin-top: 10px;
-          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 6px;
+          margin-bottom: 10px;
         }
 
         .question-chip {
-          border-radius: 20px;
-          padding: 8px 10px;
-          font-size: 11px;
+          border-radius: 14px;
+          padding: 5px 10px;
+          font-size: 10px;
           cursor: pointer;
           transition: all 0.2s;
           border: 1px solid;
+          white-space: nowrap;
         }
 
         .question-chip:hover {

@@ -382,7 +382,7 @@ const ResultScreen = ({
         // 갤러리에 자동 저장
         const category = styleToUse?.category;
         const rawName = displayArtist || styleToUse?.name || 'Converted Image';
-        const styleName = formatGalleryName(rawName, category, displayWork) + ' (AI 수정)';
+        const styleName = formatGalleryName(rawName, category, displayWork) + ' (Re.)';
         const categoryName = '거장';
         await saveToGallery(result.resultUrl, styleName, categoryName);
       }
@@ -2192,6 +2192,7 @@ const ResultScreen = ({
             retransformCost={100}
             savedChatData={masterChatData[currentMasterKey]}
             onChatDataChange={(data) => updateMasterChatData(currentMasterKey, data)}
+            lang={lang}
           />
         )}
 

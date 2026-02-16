@@ -354,10 +354,11 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
     }
   };
 
-  // 날짜 포맷
+  // 날짜 포맷 (언어별)
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('ko-KR', {
+    const locale = lang === 'ko' ? 'ko-KR' : lang === 'ja' ? 'ja-JP' : lang === 'zh' ? 'zh-CN' : 'en-US';
+    return date.toLocaleDateString(locale, {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
@@ -379,46 +380,47 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
 
   return (
     <div style={styles.container}>
-      {/* 헤더 */}
-      <div style={styles.header}>
-        <div style={styles.headerLeft}>
-          <button style={styles.backButton} onClick={onBack}>
-            ← {t.back}
+      {/* 헤더: 일반 모드 / 선택 모드 전환 */}
+      {selectMode ? (
+        <div className="select-header">
+          <button className="select-header-cancel" onClick={exitSelectMode}>
+            ←
           </button>
-          <button style={styles.homeButton} onClick={onHome}>
-            🏠 {t.home}
-          </button>
-        </div>
-        <h2 style={styles.title}>{t.title}</h2>
-        {galleryItems.length > 0 && !selectMode && (
-          <button style={styles.selectButton} onClick={() => setSelectMode(true)}>
-            {t.select}
-          </button>
-        )}
-      </div>
-
-      {/* 선택 모드 툴바 */}
-      {selectMode && (
-        <div className="select-toolbar">
-          <div className="select-toolbar-left">
-            <button className="select-action-btn" onClick={selectAll}>{t.selectAll}</button>
-            <button className="select-action-btn" onClick={deselectAll}>{t.deselectAll}</button>
-          </div>
-          <span className="select-count">
+          <span className="select-header-count">
             {t.selectedCount.replace('{count}', selectedIds.size)}
           </span>
-          <div className="select-toolbar-right">
+          <div className="select-header-actions">
             <button 
-              className="select-delete-btn" 
+              className="select-header-all"
+              onClick={selectedIds.size === galleryItems.length ? deselectAll : selectAll}
+            >
+              {selectedIds.size === galleryItems.length ? t.deselectAll : t.selectAll}
+            </button>
+            <button 
+              className="select-header-delete"
               onClick={handleDeleteSelected}
               disabled={selectedIds.size === 0}
             >
-              🗑️ {t.deleteSelected}
-            </button>
-            <button className="select-cancel-btn" onClick={exitSelectMode}>
-              {t.cancel}
+              🗑 {t.delete}
             </button>
           </div>
+        </div>
+      ) : (
+        <div style={styles.header}>
+          <div style={styles.headerLeft}>
+            <button style={styles.backButton} onClick={onBack}>
+              ← {t.back}
+            </button>
+            <button style={styles.homeButton} onClick={onHome}>
+              🏠 {t.home}
+            </button>
+          </div>
+          <h2 style={styles.title}>{t.title}</h2>
+          {galleryItems.length > 0 && (
+            <button style={styles.selectButton} onClick={() => setSelectMode(true)}>
+              {t.select}
+            </button>
+          )}
         </div>
       )}
 
@@ -551,13 +553,13 @@ const animationStyle = `
   
   .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
   }
   
   .gallery-item {
     background: rgba(255,255,255,0.05);
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -569,105 +571,95 @@ const animationStyle = `
   }
   
   .gallery-item.selected {
-    outline: 2px solid #a78bfa;
+    outline: 2px solid #667eea;
     outline-offset: -2px;
-    opacity: 0.85;
   }
   
   .select-checkbox {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 22px;
-    height: 22px;
+    top: 6px;
+    left: 6px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.7);
-    background: rgba(0,0,0,0.4);
+    border: 2px solid rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.3);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: bold;
-    color: white;
+    color: transparent;
     z-index: 1;
   }
   
   .select-checkbox.checked {
-    background: #a78bfa;
-    border-color: #a78bfa;
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
   }
   
-  .select-toolbar {
+  /* B안: 선택 모드 헤더 */
+  .select-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 10px 16px;
-    background: rgba(167, 139, 250, 0.1);
-    border-radius: 10px;
+    padding: 12px 0;
     margin-bottom: 12px;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 8px;
+    padding: 10px 14px;
   }
   
-  .select-toolbar-left, .select-toolbar-right {
+  .select-header-cancel {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  
+  .select-header-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: #667eea;
+  }
+  
+  .select-header-actions {
     display: flex;
     gap: 6px;
   }
   
-  .select-count {
-    font-size: 13px;
-    color: #a78bfa;
-    font-weight: 600;
-  }
-  
-  .select-action-btn {
-    padding: 6px 12px;
+  .select-header-all {
+    padding: 5px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.08);
-    color: #ddd;
-    font-size: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    font-size: 11px;
     cursor: pointer;
   }
   
-  .select-action-btn:hover {
-    background: rgba(255,255,255,0.15);
-  }
-  
-  .select-delete-btn {
-    padding: 6px 12px;
+  .select-header-delete {
+    padding: 5px 10px;
     border-radius: 6px;
-    border: none;
-    background: #dc3545;
-    color: white;
-    font-size: 12px;
+    border: 1px solid rgba(255, 107, 107, 0.4);
+    background: rgba(255, 107, 107, 0.1);
+    color: #ff6b6b;
+    font-size: 11px;
     cursor: pointer;
   }
   
-  .select-delete-btn:disabled {
-    opacity: 0.4;
+  .select-header-delete:disabled {
+    opacity: 0.3;
     cursor: not-allowed;
-  }
-  
-  .select-cancel-btn {
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: transparent;
-    color: #999;
-    font-size: 12px;
-    cursor: pointer;
   }
   
   @media (min-width: 768px) {
     .gallery-grid {
       grid-template-columns: repeat(4, 1fr);
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .gallery-grid {
-      grid-template-columns: repeat(6, 1fr);
     }
   }
 `;
@@ -870,9 +862,9 @@ const styles = {
     position: 'absolute',
     top: '10px',
     right: '10px',
-    background: 'rgba(255,255,255,0.2)',
+    background: 'rgba(0,0,0,0.5)',
     border: 'none',
-    color: 'white',
+    color: 'rgba(255,255,255,0.7)',
     width: '36px',
     height: '36px',
     borderRadius: '50%',
@@ -893,21 +885,21 @@ const styles = {
   },
   
   modalTitle: {
-    margin: '0 0 8px',
-    fontSize: '1.3rem',
-    color: '#a78bfa',
+    margin: '0 0 4px',
+    fontSize: '1.2rem',
+    color: '#fff',
   },
   
   modalDate: {
     margin: 0,
-    fontSize: '0.9rem',
-    opacity: 0.7,
+    fontSize: '0.8rem',
+    color: 'rgba(255,255,255,0.3)',
   },
   
   modalCategory: {
-    margin: '8px 0 0',
-    fontSize: '0.85rem',
-    color: '#67e8f9',
+    margin: '4px 0 0',
+    fontSize: '0.8rem',
+    color: 'rgba(255,255,255,0.4)',
   },
   
   modalActions: {
@@ -918,26 +910,28 @@ const styles = {
   
   saveShareButton: {
     flex: 1,
-    background: '#121212',
-    border: 'none',
-    color: 'white',
+    background: 'rgba(102,126,234,0.15)',
+    border: '1px solid rgba(102,126,234,0.3)',
+    color: '#667eea',
     padding: '14px',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
     fontWeight: '600',
+    textAlign: 'center',
   },
   
   deleteButton: {
     flex: 1,
-    background: 'rgba(255,100,100,0.2)',
-    border: '1px solid rgba(255,100,100,0.5)',
+    background: 'rgba(255,107,107,0.1)',
+    border: '1px solid rgba(255,107,107,0.3)',
     color: '#ff6b6b',
     padding: '14px',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
     fontWeight: '600',
+    textAlign: 'center',
   },
   
   // 저장/공유 팝업 스타일
@@ -955,37 +949,40 @@ const styles = {
   },
   
   saveShareMenu: {
-    background: '#1a1a1a',
-    borderRadius: '16px',
-    padding: '8px',
+    background: '#1e1e2e',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '14px',
+    padding: '6px',
     minWidth: '200px',
-    boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+    boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
   },
   
   menuItem: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
-    padding: '16px 20px',
+    padding: '14px 16px',
     border: 'none',
     background: 'transparent',
-    fontSize: '1rem',
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: '0.9rem',
     cursor: 'pointer',
     borderRadius: '8px',
     transition: 'background 0.2s',
   },
   
   menuIcon: {
-    marginRight: '12px',
-    fontSize: '1.2rem',
+    marginRight: '8px',
+    fontSize: '1.1rem',
   },
   
   menuCancel: {
-    color: '#999',
+    color: 'rgba(255,255,255,0.35)',
     justifyContent: 'center',
-    borderTop: '1px solid #eee',
-    marginTop: '8px',
-    paddingTop: '16px',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
+    marginTop: '4px',
+    paddingTop: '14px',
   },
 };
 

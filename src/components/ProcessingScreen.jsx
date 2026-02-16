@@ -768,12 +768,15 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
               </button>
             </div>
 
-            {/* 프로그레스 섹션 - 하단 (목업 준수) */}
+            {/* 프로그레스 섹션 - 하단 (단독변환 스타일 통일) */}
             <div className="progress-section">
+              <div className="progress-status">
+                <div className="spinner"></div>
+                <p>{statusText}</p>
+              </div>
               <div className="progress-bar">
                 <div className="progress-fill" style={{ width: `${(completedCount / totalCount) * 100}%` }}></div>
               </div>
-              <div className="progress-text">{statusText}</div>
             </div>
           </>
         )}
@@ -926,23 +929,31 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           flex-direction: column;
           align-items: flex-end;
         }
+        .progress-status {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 8px;
+        }
+        .progress-status p {
+          margin: 0;
+          color: rgba(255,255,255,0.5);
+          font-size: 11px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
         .progress-bar {
           width: 50%;
           height: 2px;
           background: rgba(255,255,255,0.1);
-          border-radius: 1px;
+          border-radius: 2px;
           overflow: hidden;
         }
         .progress-fill {
           height: 100%;
           background: linear-gradient(90deg, #667eea, #764ba2);
           transition: width 0.3s;
-        }
-        .progress-text {
-          text-align: right;
-          margin-top: 8px;
-          font-size: 11px;
-          color: rgba(255,255,255,0.4);
         }
         
         /* ===== 단일 변환 상태 (가운데 정렬) ===== */
@@ -1049,33 +1060,29 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .single-bottom-fixed {
           position: fixed;
           bottom: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 100%;
-          max-width: 340px;
+          right: 20px;
+          width: auto;
           display: flex;
           flex-direction: column;
-          align-items: center;
+          align-items: flex-end;
         }
         .single-status {
-          width: 100%;
-          max-width: 340px;
           display: flex;
           align-items: center;
           gap: 8px;
-          margin-bottom: 12px;
+          margin-bottom: 8px;
         }
         .single-status p {
           margin: 0;
-          color: rgba(255,255,255,0.6);
-          font-size: 13px;
+          color: rgba(255,255,255,0.5);
+          font-size: 11px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
         .single-progress-bar {
-          width: 100%;
-          max-width: 340px;
+          width: 50vw;
+          max-width: 170px;
           height: 2px;
           background: rgba(255,255,255,0.1);
           border-radius: 2px;
