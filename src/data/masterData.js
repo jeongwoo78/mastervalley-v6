@@ -150,16 +150,16 @@ export const MOVEMENTS = {
 
 // 20세기 모더니즘 세부 사조 (화가별 분류용)
 export const MODERNISM_SUB = {
-  cubism: { ko: '입체주의', en: 'Cubism', period: '20세기 초', periodEn: 'Early 20th Century' },
-  surrealism: { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반', periodEn: 'Early–Mid 20th Century' },
-  popArt: { ko: '팝아트', en: 'Pop Art', period: '20세기 중반', periodEn: 'Mid 20th Century' }
+  cubism: { ko: '입체주의', en: 'Cubism', period: '20세기 초', periodEn: 'Early 20th Century', description: '형태를 해체하고 재조립', descriptionEn: 'Deconstructing and reassembling form' },
+  surrealism: { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반', periodEn: 'Early–Mid 20th Century', description: '무의식과 꿈의 세계', descriptionEn: 'The world of dreams and the unconscious' },
+  popArt: { ko: '팝아트', en: 'Pop Art', period: '20세기 중반', periodEn: 'Mid 20th Century', description: '대중문화를 예술로', descriptionEn: 'Turning popular culture into art' }
 };
 
 // 19세기 세부 사조 (화가별 분류용)
 export const NINETEENTH_CENTURY_SUB = {
-  neoclassicism: { ko: '신고전주의', en: 'Neoclassicism', period: '18~19세기', periodEn: '18th–19th Century' },
-  romanticism: { ko: '낭만주의', en: 'Romanticism', period: '19세기', periodEn: '19th Century' },
-  realism: { ko: '사실주의', en: 'Realism', period: '19세기', periodEn: '19th Century' }
+  neoclassicism: { ko: '신고전주의', en: 'Neoclassicism', period: '18~19세기', periodEn: '18th–19th Century', description: '고대 그리스·로마의 이성과 균형', descriptionEn: 'Reason and balance of ancient Greece and Rome' },
+  romanticism: { ko: '낭만주의', en: 'Romanticism', period: '19세기', periodEn: '19th Century', description: '감정과 상상력의 해방', descriptionEn: 'Liberation of emotion and imagination' },
+  realism: { ko: '사실주의', en: 'Realism', period: '19세기', periodEn: '19th Century', description: '있는 그대로의 현실을 직시', descriptionEn: 'Confronting reality as it is' }
 };
 
 // 아르누보 (클림트용)
@@ -1199,6 +1199,20 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
   if (category === 'movements') {
     const movement = findMovement(styleId);
     
+    // 복합사조 세부 description 해결 헬퍼
+    const getSubDescription = (artist) => {
+      if (!artist) return null;
+      if (styleId === 'neoclassicism_vs_romanticism_vs_realism' && artist.movementId) {
+        const sub = NINETEENTH_CENTURY_SUB[artist.movementId];
+        if (sub) return isEn ? (sub.descriptionEn || sub.description) : sub.description;
+      }
+      if (styleId === 'modernism' && artist.sub) {
+        const sub = MODERNISM_SUB[artist.sub];
+        if (sub) return isEn ? (sub.descriptionEn || sub.description) : sub.description;
+      }
+      return null;
+    };
+    
     // 변환중 또는 결과-원본: 대표화가 + 사조 화풍
     if (mode === 'loading-single' || mode === 'result-original') {
       return [
@@ -1206,18 +1220,20 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
         isEn ? (movement?.descriptionEn || movement?.description || '') : (movement?.description || '')
       ];
     } 
-    // 결과-결과 또는 완료 미리보기: 매칭화가 + 매칭화가 화풍
+    // 결과-결과 또는 완료 미리보기: 매칭화가 + 세부사조 화풍
     else {
       const artist = findArtistByName(displayArtist);
       const artistDisplay = artist 
         ? (isEn ? (artist.en || artist.ko) : `${artist.ko}(${artist.en})`)
         : displayArtist || '';
-      const artistStyle = isEn 
-        ? (artist?.descriptionEn || movement?.descriptionEn || artist?.description || movement?.description || '')
-        : (artist?.description || movement?.description || '');
+      // 복합사조: 세부 SUB description 우선 → 화가 description → 부모 사조 description
+      const subDesc = getSubDescription(artist);
+      const artistStyle = subDesc 
+        || (isEn ? (artist?.descriptionEn || artist?.description || '') : (artist?.description || ''))
+        || (isEn ? (movement?.descriptionEn || movement?.description || '') : (movement?.description || ''));
       return [
         artistDisplay,  // 부제1: 매칭화가
-        artistStyle     // 부제2: 매칭화가 화풍
+        artistStyle     // 부제2: 세부사조 또는 화가 화풍
       ];
     }
   }

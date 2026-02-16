@@ -525,19 +525,11 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
   const getTitle = (result) => {
     const cat = result?.style?.category;
     const artist = result?.aiSelectedArtist;
+    const styleId = result?.style?.id;
     const styleName = result?.style?.name;
     
-    if (cat === 'masters' && artist) {
-      const masterInfo = getMasterInfo(artist);
-      return masterInfo.fullName;
-    } else if (cat === 'movements') {
-      const movementInfo = getMovementDisplayInfo(styleName, artist);
-      return movementInfo.title;
-    } else if (cat === 'oriental') {
-      const orientalInfo = getOrientalDisplayInfo(artist);
-      return orientalInfo.title;
-    }
-    return result?.style?.name || '';
+    // getStyleTitle과 동일 로직 사용 (복합사조 해결 + lang 지원)
+    return getStyleTitle(cat, styleId, artist || styleName, lang);
   };
 
   // 하위 호환성: getMasterFullName → getTitle 으로 대체
