@@ -1229,8 +1229,9 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
       // 복합사조: 세부 SUB description 우선 → 화가 description → 부모 사조 description
       const subDesc = getSubDescription(artist);
       const artistStyle = subDesc 
-        || (isEn ? (artist?.descriptionEn || artist?.description || '') : (artist?.description || ''))
-        || (isEn ? (movement?.descriptionEn || movement?.description || '') : (movement?.description || ''));
+        || (isEn 
+          ? (artist?.descriptionEn || movement?.descriptionEn || artist?.description || movement?.description || '')
+          : (artist?.description || movement?.description || ''));
       return [
         artistDisplay,  // 부제1: 매칭화가
         artistStyle     // 부제2: 세부사조 또는 화가 화풍
