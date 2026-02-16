@@ -34,7 +34,7 @@ import { processStyleTransfer } from '../utils/styleTransferAPI';
 import { normalizeKey, getDisplayInfo, getArtistName, getMovementDisplayInfo, getOrientalDisplayInfo, getMasterInfo, getStyleIcon, getStyleTitle, getStyleSubtitle, getStyleSubtitles } from '../utils/displayConfig';
 import { getEducationKey, getEducationContent, getMasterEducationKey } from '../utils/educationMatcher';
 // v74: 모바일 공유/저장 유틸리티
-import { saveImage, shareImage, isNativePlatform, addWatermark, WATERMARK_ON_SAVE } from '../utils/mobileShare';
+import { saveImage, shareImage, isNativePlatform, addWatermark } from '../utils/mobileShare';
 
 
 const ResultScreen = ({ 
@@ -1814,9 +1814,7 @@ const ResultScreen = ({
       const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
       const fileName = `mastervalley-${styleId || 'art'}-${Date.now()}.jpg`;
       
-      // 워터마크 적용 (WATERMARK_ON_SAVE 플래그로 제어)
-      const finalImage = WATERMARK_ON_SAVE ? await addWatermark(imageToSave) : imageToSave;
-      const result = await saveImage(finalImage, fileName);
+      const result = await saveImage(imageToSave, fileName);
       
       if (result.success) {
         if (result.gallery) {
@@ -2099,20 +2097,9 @@ const ResultScreen = ({
         {!isFullTransform && viewIndex >= 0 && (displayCategory !== 'masters' || showInfo) && (
           <div className="technique-card">
             
-            {/* Card Header */}
+            {/* Card Header - ProcessingScreen과 동일 구조 */}
             <div className="card-header">
-              <div className="technique-icon">
-                {/* v73: 통합 함수 사용 */}
-                {(() => {
-                  const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
-                  const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
-                  const artistName = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
-                  return getStyleIcon(category, styleId, artistName);
-                })()}
-              </div>
-              <div>
                 <h2>
-                  {/* v73: 통합 함수 사용 */}
                   {(() => {
                     const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
                     const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
@@ -2120,21 +2107,18 @@ const ResultScreen = ({
                     return getStyleTitle(category, styleId, artistName, lang);
                   })()}
                 </h2>
-                {/* v74: 결과 3줄 표기 */}
                 {(() => {
                   const category = isFullTransform ? currentResult?.style?.category : selectedStyle.category;
                   const styleId = isFullTransform ? currentResult?.style?.id : selectedStyle?.id;
                   const artistName = displayArtist || (isFullTransform ? currentResult?.style?.name : selectedStyle?.name);
-                  // v74: 결과-결과 모드 (result-transformed)
                   const [sub1, sub2] = getStyleSubtitles(category, styleId, 'result-transformed', displayArtist, displayWork, artistName, lang);
                   return (
                     <>
-                      {sub1 && <p className="technique-subtitle"><span className="artist-name">{sub1}</span></p>}
-                      {sub2 && <p className="technique-subtitle sub2"><span className="artist-name">{sub2}</span></p>}
+                      {sub1 && <div className="subtitle1">{sub1}</div>}
+                      {sub2 && <div className="subtitle2">{sub2}</div>}
                     </>
                   );
                 })()}
-              </div>
             </div>
 
             {/* Card Content */}
@@ -2546,11 +2530,6 @@ const ResultScreen = ({
           margin-bottom: 12px;
         }
 
-        .technique-icon {
-          font-size: 2rem;
-          display: none;
-        }
-
         .card-header h2 {
           margin: 0 0 6px 0;
           color: #fff;
@@ -2560,27 +2539,16 @@ const ResultScreen = ({
           text-align: center;
         }
 
-        .technique-subtitle {
-          color: rgba(255,255,255,0.8);
+        .card-header .subtitle1 {
           font-size: 14px;
-          margin: 0 0 4px 0;
-          display: block;
+          color: rgba(255,255,255,0.8);
+          margin-bottom: 4px;
           text-align: center;
         }
-        
-        .technique-subtitle.sub2 {
-          margin-top: 2px;
-        }
-        .technique-subtitle.sub2 .artist-name {
+        .card-header .subtitle2 {
           font-size: 12px;
-          font-weight: 400;
           color: rgba(255,255,255,0.5);
-        }
-
-        .artist-name {
-          font-weight: 400;
-          color: rgba(255,255,255,0.8);
-          font-size: 14px;
+          text-align: center;
         }
 
         .style-badge {

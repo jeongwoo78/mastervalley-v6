@@ -1238,8 +1238,18 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
         isEn ? (master.taglineEn || master.tagline || '') : (master.tagline || '')
       ];
     }
-    // 결과-결과 또는 완료 미리보기: 대표작 2개 + 화풍
+    // 결과-결과 또는 완료 미리보기: 매칭 작품 또는 대표작 + 화풍
     else {
+      // 작품 매칭 성공 시 해당 작품명만 표시
+      if (result?.workKey && master.works?.[result.workKey]) {
+        const workNames = master.works[result.workKey];
+        const workName = isEn ? (workNames[0] || '') : (workNames[1] || workNames[0] || '');
+        return [
+          workName,
+          isEn ? (master.taglineEn || master.tagline || '') : (master.tagline || '')
+        ];
+      }
+      // fallback: 전체 대표작
       return [
         isEn ? (master.featuredWorksEn || master.featuredWorks || '') : (master.featuredWorks || ''),
         isEn ? (master.taglineEn || master.tagline || '') : (master.tagline || '')
