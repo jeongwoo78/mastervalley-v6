@@ -1401,6 +1401,8 @@ export const masterworkNameMapping = {
   'forget it! forget me!': 'lichtenstein-forgetit',
   "oh, alright...": 'lichtenstein-ohhhalright',
   'still life with crystal bowl': 'lichtenstein-stilllife',
+  'still life with palette': 'lichtenstein-stilllife',
+  'still life': 'lichtenstein-stilllife',
   
   // 로마 모자이크
   'alexander mosaic': 'mosaic-alexander', '알렉산더 모자이크': 'mosaic-alexander',

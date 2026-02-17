@@ -267,10 +267,8 @@ const ARTIST_WEIGHTS = {
       { name: 'MAGRITTE', weight: 25 }
     ],
     portraitMale: [
-      { name: 'PICASSO', weight: 10 },
-      { name: 'CHAGALL', weight: 10 },
-      { name: 'LICHTENSTEIN', weight: 40 },
-      { name: 'MAGRITTE', weight: 40 }
+      { name: 'MAGRITTE', weight: 60 },
+      { name: 'LICHTENSTEIN', weight: 40 }
     ],
     portrait: [
       { name: 'LICHTENSTEIN', weight: 25 },
@@ -1348,7 +1346,7 @@ Available 20th Century Modernism Artists (6명):
 
 === POP ART 팝아트 ===
 5. LICHTENSTEIN (리히텐슈타인) - Ben-Day dots, comic book style
-   - Masterworks: "Drowning Girl", "Whaam!", "Hopeless" ← SELECT ONE ONLY!
+   - Masterworks: "In the Car", "M-Maybe", "Forget It! Forget Me!", "Oh, Alright...", "Still Life with Crystal Bowl" ← SELECT ONE ONLY!
    
 🎤 LICHTENSTEIN SPEECH BUBBLE RULE:
 If you select LICHTENSTEIN, you MUST select speech_bubble text ONLY from the EXACT list provided in the speech_bubble field below.
@@ -1364,8 +1362,8 @@ Do NOT create your own text. Do NOT modify the phrases. Copy EXACTLY as listed.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🧑‍♂️ MALE PORTRAIT (남성 단독):
-   LICHTENSTEIN 40%, MAGRITTE 40%, PICASSO 10%, CHAGALL 10%
-   ❌ MIRÓ 제외
+   MAGRITTE 60%, LICHTENSTEIN 40%
+   ❌ PICASSO, CHAGALL, MIRÓ 제외
 
 🧑‍♀️ FEMALE PORTRAIT (여성 단독):
    PICASSO 25%, CHAGALL 25%, LICHTENSTEIN 25%, MAGRITTE 25%
