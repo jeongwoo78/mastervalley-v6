@@ -75,9 +75,9 @@ export const ARTIST_CONFIG = {
   
   // === 모더니즘/팝아트 ===
   'picasso':             { control_strength: 0.10, brush_size: '75mm' },
-  'magritte':            { control_strength: 0.30, brush_size: '75mm' },
-  'miro':                { control_strength: 0.10, brush_size: '75mm' },
-  'chagall':             { control_strength: 0.30, brush_size: '75mm' },
+  'magritte':            { control_strength: 0.35, brush_size: '75mm' },
+  'miro':                { control_strength: 0.40, brush_size: '75mm' },
+  'chagall':             { control_strength: 0.40, brush_size: '75mm' },
   'lichtenstein':        { control_strength: 0.30, brush_size: null },
   
   // === 거장 ===

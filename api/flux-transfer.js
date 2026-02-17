@@ -2803,6 +2803,9 @@ export default async function handler(req, res) {
             photoAnalysisFromAI.count = 0;
             photoAnalysisFromAI.subject = visionAnalysis.subject_type;
             // console.log(`📸 [VISION-OVERRIDE] Subject is ${visionAnalysis.subject_type}, keeping count=0`);
+          } else if (visionAnalysis && visionAnalysis.person_count > 0) {
+            // Vision 결과 우선 사용
+            photoAnalysisFromAI.count = visionAnalysis.person_count;
           } else {
             // 인원수 추출 (인물 사진일 때만)
             if (analysisText.includes('group') || analysisText.includes('people') || analysisText.includes('family')) {
@@ -2815,8 +2818,10 @@ export default async function handler(req, res) {
             }
           }
           
-          // 성별 추출
-          if (analysisText.includes('woman') || analysisText.includes('female') || analysisText.includes('girl')) {
+          // 성별 추출 - Vision 결과 우선 사용
+          if (visionAnalysis && visionAnalysis.gender) {
+            photoAnalysisFromAI.gender = visionAnalysis.gender;
+          } else if (analysisText.includes('woman') || analysisText.includes('female') || analysisText.includes('girl')) {
             photoAnalysisFromAI.gender = 'female';
           } else if (analysisText.includes('man') || analysisText.includes('male') || analysisText.includes('boy')) {
             photoAnalysisFromAI.gender = 'male';
@@ -2843,7 +2848,7 @@ export default async function handler(req, res) {
           }
           
           if (weightSelectedArtist) {
-            // console.log(`🎲 [WEIGHT-OVERRIDE] Changing from "${selectedArtist}" to "${weightSelectedArtist}"`);
+            console.log(`🎲 [WEIGHT-OVERRIDE] ${selectedArtist} → ${weightSelectedArtist} (gender:${photoAnalysisFromAI.gender}, count:${photoAnalysisFromAI.count})`);
             // console.log(`   Photo analysis: count=${photoAnalysisFromAI.count}, gender=${photoAnalysisFromAI.gender}, age=${photoAnalysisFromAI.age}`);
             
             // 화가 교체
@@ -3578,17 +3583,15 @@ export default async function handler(req, res) {
     // v77: 간결한 로그 (한 줄) + Vision 분석 결과
     console.log(`📍 FLUX v77 | ${logData.selection.category} | ${logData.selection.artist} | ${logData.selection.masterwork || '-'} | ${logData.prompt.wordCount}w | ctrl:${logData.flux.control}`);
     
-    // Vision 분석 결과 (있을 때만)
-    if (logData.vision.gender || logData.vision.subjectType) {
-      const visionInfo = [
-        logData.vision.subjectType || 'unknown',
-        logData.vision.gender || '-',
-        logData.vision.age || '-',
-        logData.vision.count ? `${logData.vision.count}명` : '-',
-        logData.vision.speechBubble ? `💬"${logData.vision.speechBubble}"` : ''
-      ].filter(Boolean).join(', ');
-      console.log(`👤 Vision: ${visionInfo}`);
-    }
+    // Vision 분석 결과 (항상 출력)
+    const visionInfo = [
+      logData.vision.subjectType || '-',
+      logData.vision.gender || '-',
+      logData.vision.age || '-',
+      logData.vision.count !== undefined ? `${logData.vision.count}명` : '-',
+      logData.vision.speechBubble ? `💬"${logData.vision.speechBubble}"` : ''
+    ].filter(Boolean).join(', ');
+    console.log(`👤 Vision: ${visionInfo}`);
     
     // ========================================
     // v77: 비동기 폴링 방식 (504 타임아웃 해결)
