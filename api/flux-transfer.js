@@ -1363,9 +1363,13 @@ Do NOT create your own text. Do NOT modify the phrases. Copy EXACTLY as listed.
 📊 PHOTO TYPE WEIGHT GUIDE (사진 유형별 비중)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🧑 SINGLE PORTRAIT (단독 인물):
-   PICASSO 30%, MAGRITTE 35%, LICHTENSTEIN 35%
-   ❌ CHAGALL, MIRÓ 제외
+🧑‍♂️ MALE PORTRAIT (남성 단독):
+   LICHTENSTEIN 40%, MAGRITTE 40%, PICASSO 10%, CHAGALL 10%
+   ❌ MIRÓ 제외
+
+🧑‍♀️ FEMALE PORTRAIT (여성 단독):
+   PICASSO 25%, CHAGALL 25%, LICHTENSTEIN 25%, MAGRITTE 25%
+   ❌ MIRÓ 제외
 
 💑 COUPLE (커플 2인):
    PICASSO 25%, CHAGALL 30%, MAGRITTE 20%, LICHTENSTEIN 25%
