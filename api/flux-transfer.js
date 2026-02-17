@@ -1351,17 +1351,10 @@ Available 20th Century Modernism Artists (6명):
    - Masterworks: "Drowning Girl", "Whaam!", "Hopeless" ← SELECT ONE ONLY!
    
 🎤 LICHTENSTEIN SPEECH BUBBLE RULE:
-If you select LICHTENSTEIN, select a SHORT speech bubble text (1-5 words MAX) in 1960s romance comic style.
+If you select LICHTENSTEIN, you MUST select speech_bubble text ONLY from the EXACT list provided in the speech_bubble field below.
+Do NOT create your own text. Do NOT modify the phrases. Copy EXACTLY as listed.
 
-REAL LICHTENSTEIN EXAMPLES (use similar style):
-- "I Don't Care!" (Drowning Girl)
-- "Oh, Brad..." (Masterpiece)
-- "M-Maybe..." (M-Maybe)
-- "Oh, Jeff..." (Oh, Jeff)
-- "Why, Darling..."
-- "What?!", "Wow!", "Kiss Me!"
-
-⚠️ CRITICAL: Keep text SHORT (1-5 words) to prevent cropping!
+⚠️ CRITICAL: ONLY use phrases from the provided list per selected_work!
 ⚠️ If landscape/animal/object → speech_bubble = null
 
 ⚠️ CRITICAL: You MUST select a masterwork from the exact list above! Do NOT invent new titles!
@@ -1639,7 +1632,7 @@ Return ONLY valid JSON (no markdown):
   "selected_work": "exact title of the masterwork you selected",
   "reason": "why this masterwork matches this photo (mention gender/count compatibility)",
   "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by ${categoryName} in the style of [selected work title], [that work's distinctive techniques]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background'",
-  "speech_bubble": "If LICHTENSTEIN: select ONE phrase from list below based on selected_work and photo mood. STILLLIFE has no speech bubble.
+  "speech_bubble": "If LICHTENSTEIN: MUST select EXACTLY one phrase from the list below. Copy it EXACTLY as written - do NOT modify, do NOT create your own text, do NOT combine phrases. STILLLIFE has no speech bubble. If other artist: null.
 INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
 MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
 FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'
@@ -2058,7 +2051,7 @@ Return JSON only:
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "Artist Full Name",
   "selected_work": "EXACT masterwork title from the list above",
-  "speech_bubble": "If LICHTENSTEIN selected: select ONE phrase from list below based on selected_work and photo mood. STILLLIFE has no speech bubble.
+  "speech_bubble": "If LICHTENSTEIN selected: MUST select EXACTLY one phrase from the list below. Copy it EXACTLY as written - do NOT modify, do NOT create your own text, do NOT combine phrases. STILLLIFE has no speech bubble. If other artist: null.
 INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
 MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
 FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'
