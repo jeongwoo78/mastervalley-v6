@@ -2,6 +2,7 @@
 // 대용량 이미지 저장 + 그리드 UI + 저장/공유/삭제 기능
 import React, { useState, useEffect } from 'react';
 import { saveImage as saveToDevice, shareImage, addWatermark, isNativePlatform, WATERMARK_ON_SAVE } from '../utils/mobileShare';
+import { getMovementDisplayInfo, getOrientalDisplayInfo, getMasterInfo } from '../utils/displayConfig';
 
 // ========== IndexedDB 설정 ==========
 const DB_NAME = 'PicoArtGallery';
@@ -123,7 +124,7 @@ const urlToBase64 = async (url) => {
 
 
 // ========== 갤러리에 이미지 저장 (외부에서 사용) ==========
-export const saveToGallery = async (imageUrl, styleName, categoryName = '') => {
+export const saveToGallery = async (imageUrl, metadataOrStyleName, categoryNameLegacy = '') => {
   try {
     // URL을 Base64로 변환
     const base64Image = await urlToBase64(imageUrl);
@@ -136,22 +137,29 @@ export const saveToGallery = async (imageUrl, styleName, categoryName = '') => {
     const existingItems = await getAllImages();
     const alreadyExists = existingItems.some(item => item.imageData === base64Image);
     if (alreadyExists) {
-      // console.log('⏭️ 이미 갤러리에 있음, 스킵:', styleName);
       return true; // 이미 저장됨으로 처리
     }
+    
+    // 메타데이터 객체 또는 레거시 문자열 호환
+    const isMetadata = typeof metadataOrStyleName === 'object';
     
     const imageData = {
       id: `gallery_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       imageData: base64Image,
-      styleName,
-      categoryName,
+      // 신규 필드: i18n 갤러리 표시용
+      category: isMetadata ? metadataOrStyleName.category : '',
+      artistName: isMetadata ? metadataOrStyleName.artistName : '',
+      movementName: isMetadata ? (metadataOrStyleName.movementName || '') : '',
+      workName: isMetadata ? (metadataOrStyleName.workName || null) : null,
+      styleId: isMetadata ? (metadataOrStyleName.styleId || '') : '',
+      isRetransform: isMetadata ? (metadataOrStyleName.isRetransform || false) : false,
+      // 레거시 호환 필드
+      styleName: isMetadata ? (metadataOrStyleName.artistName || 'Converted Image') : metadataOrStyleName,
+      categoryName: isMetadata ? (metadataOrStyleName.category || '') : categoryNameLegacy,
       createdAt: new Date().toISOString()
     };
     
     const saved = await saveImage(imageData);
-    if (saved) {
-      // console.log('✅ 갤러리에 저장됨 (IndexedDB):', styleName);
-    }
     return saved;
   } catch (error) {
     console.error('갤러리 저장 실패:', error);
@@ -237,6 +245,43 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
     }
   };
   const t = texts[lang] || texts.en;
+
+  // i18n 갤러리 표시 함수 (displayConfig 활용)
+  const getGalleryDisplay = (item) => {
+    // 신규 포맷: category + artistName 있으면 i18n 표시
+    if (item.category && item.artistName) {
+      if (item.category === 'movements') {
+        const info = getMovementDisplayInfo(item.movementName || '', item.artistName, lang);
+        return { 
+          title: info.title, 
+          subtitle: info.subtitle,
+          badge: item.isRetransform ? 'Re.' : null
+        };
+      }
+      if (item.category === 'masters') {
+        const info = getMasterInfo(item.artistName, lang);
+        return { 
+          title: info.fullName, 
+          subtitle: info.movement,
+          badge: item.isRetransform ? 'Re.' : null
+        };
+      }
+      if (item.category === 'oriental') {
+        const info = getOrientalDisplayInfo(item.artistName, lang);
+        return { 
+          title: info.title, 
+          subtitle: info.subtitle,
+          badge: item.isRetransform ? 'Re.' : null
+        };
+      }
+    }
+    // 레거시 포맷: styleName 그대로 표시
+    return { 
+      title: item.styleName || 'Converted Image', 
+      subtitle: item.categoryName || '',
+      badge: null
+    };
+  };
 
   // 갤러리 로드
   useEffect(() => {
@@ -439,7 +484,9 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
         </div>
       ) : (
         <div className="gallery-grid">
-          {galleryItems.map((item) => (
+          {galleryItems.map((item) => {
+            const display = getGalleryDisplay(item);
+            return (
             <div
               key={item.id}
               className={`gallery-item ${selectMode && selectedIds.has(item.id) ? 'selected' : ''}`}
@@ -459,11 +506,15 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
                 )}
               </div>
               <div style={styles.itemLabel}>
-                <span style={styles.styleName}>{item.styleName}</span>
+                <span style={styles.styleName}>{display.title}</span>
+                {display.subtitle && (
+                  <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>{display.subtitle}</span>
+                )}
                 <span style={styles.date}>{formatDate(item.createdAt)}</span>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -485,11 +536,11 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
             />
             
             <div style={styles.modalInfo}>
-              <h3 style={styles.modalTitle}>{selectedItem.styleName}</h3>
-              <p style={styles.modalDate}>{formatDate(selectedItem.createdAt)}</p>
-              {selectedItem.categoryName && (
-                <p style={styles.modalCategory}>{selectedItem.categoryName}</p>
+              <h3 style={styles.modalTitle}>{getGalleryDisplay(selectedItem).title}</h3>
+              {getGalleryDisplay(selectedItem).subtitle && (
+                <p style={styles.modalCategory}>{getGalleryDisplay(selectedItem).subtitle}</p>
               )}
+              <p style={styles.modalDate}>{formatDate(selectedItem.createdAt)}</p>
             </div>
             
             <div style={styles.modalActions}>
@@ -659,7 +710,7 @@ const animationStyle = `
   
   @media (min-width: 768px) {
     .gallery-grid {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 `;
