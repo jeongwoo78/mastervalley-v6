@@ -1418,8 +1418,8 @@ const fallbackPrompts = {
   },
   
   renaissance: {
-    name: 'Leonardo da Vinci',
-    prompt: 'Renaissance painting by Leonardo da Vinci, Leonardo art style, EXTREME sfumato technique, PRESERVE original person face and features exactly, apply Leonardo PAINTING TECHNIQUE ONLY with sfumato haze, apply Leonardo STYLE not any specific portrait LIKENESS, apply very strong soft atmospheric haze throughout, all edges must be completely blurred, no sharp outlines anywhere in entire painting, mysterious smoky depth with sfumato technique, every boundary softly dissolved into atmosphere, warm golden Renaissance colors, harmonious balanced composition, unified composition all figures together NOT separated, preserve facial identity, Renaissance masterpiece quality'
+    name: 'Sandro Botticelli',
+    prompt: 'Old tempera painting of the subject by Sandro Botticelli. Thin translucent layers build up to create a smooth luminous surface. Precise delicate dark outlines define every form clearly. Elegant elongated figures hold graceful S-curved postures. Soft bright spring garden tone wraps the scene. Pale rose 30%, forest green 25%, gold 20%, ivory 25%. Skin luminous in pale ivory and soft pink. Gold accents glow softly on fabric edges. Soft even spring light illuminates throughout. Renaissance masterpiece quality'
   },
   
   baroque: {
@@ -1433,18 +1433,18 @@ const fallbackPrompts = {
   },
   
   neoclassicism_vs_romanticism_vs_realism: {
-    name: '신고전 vs 낭만 vs 사실주의',
-    prompt: 'Choose best style based on photo: if static balanced formal use Neoclassical style by Jacques-Louis David, David art style, with cold perfection and clear lines, if dynamic emotional landscape use Romantic style by J.M.W. Turner, Turner art style, with atmospheric sublime effects, if rural peaceful use Realist style by Gustave Courbet, Courbet art style, with honest rural reality, if urban modern use Realist style by Édouard Manet, Manet art style, with sophisticated Paris realism, masterpiece quality with single unified composition NOT separated'
+    name: 'Eugène Delacroix',
+    prompt: 'Hand-painted oil painting of the subject by Eugène Delacroix. Thick rich paint applied in agitated passionate strokes. Fiery reds and deep jewel tones clash with explosive energy. Outlines break apart in dynamic turbulent motion. The surface churns with visible vigorous brushwork. Smoky golden light cuts through thick haze and smoke. Warm ochre 30%, crimson red 25%, deep blue 25%, ivory 20%. Skin glows warm in ochre and ivory through the surrounding haze. Strong light breaks through from the upper left. Romantic masterpiece quality'
   },
   
   impressionism: {
-    name: 'Claude Monet',
-    prompt: 'Impressionist painting by Claude Monet, Monet art style, ROUGH VISIBLE BROKEN brushstrokes, SOFT HAZY atmospheric effects like morning mist, colors BLENDED and DISSOLVED into each other, NO sharp edges, dreamy blurred boundaries, dappled light filtering through atmosphere, Woman with a Parasol style atmospheric haze, everything slightly out of focus and impressionistic, Impressionist masterpiece quality'
+    name: 'Pierre-Auguste Renoir',
+    prompt: 'Hand-painted oil painting of the subject by Pierre-Auguste Renoir. Soft feathery brushstrokes build warm luminous layers of color. Rosy pink and golden tones glow with sensuous warmth. Outlines dissolve into shimmering dappled light. The surface shimmers with a pearly iridescent quality. Gold 30%, cobalt blue 25%, rosy pink 25%, olive green 20%. Skin glows in soft rosy pink and warm golden ivory. Warm dappled sunlight filters through the scene. Impressionist masterpiece quality'
   },
   
   postImpressionism: {
-    name: 'Vincent van Gogh',
-    prompt: 'Post-Impressionist painting, Post-Impressionist art style, bold expressive colors, personal artistic vision, emotional depth and symbolic meaning, visible distinctive brushwork, Post-Impressionist masterpiece quality'
+    name: 'Paul Gauguin',
+    prompt: 'Hand-painted oil painting of the subject by Paul Gauguin. Flat unmixed color areas spread broadly across the surface. Intense primary colors placed side by side decoratively. Outlines enclosed by thick dark contour lines. The surface is smooth and flat with minimal visible brushwork. Tropical orange 30%, turquoise 25%, chrome yellow 25%, crimson pink 20%. Skin filled flatly with warm ochre and orange color planes. Warm even light illuminates the entire scene. Post-Impressionist masterpiece quality'
   },
   
   fauvism: {
@@ -1459,9 +1459,8 @@ const fallbackPrompts = {
   },
   
   modernism: {
-    name: 'Pablo Picasso',
-    prompt: 'PICASSO_CUBIST',  // 기본값 - 실제로는 artistStyles.js에서 동적 생성
-    dynamicPrompt: true  // 동적 프롬프트 플래그
+    name: 'Roy Lichtenstein',
+    prompt: 'Pop art painting of the subject by Roy Lichtenstein. Solid black rectangular border 15px thick surrounding all four edges. Bold clean black outlines wrap every form like comic book printing. Primary colors fill flat and uniform. Uniform dot pattern creates light and shadow areas. Surface entirely smooth and machine-printed throughout. Vermilion red 30%, bright yellow 25%, black 25%, white 20%. Uniform Ben-Day dots packed densely on skin creating flesh tones. Flat lighting illuminates all surfaces uniformly. Primary colors applied pure and unmixed, separated by sharp clean boundaries.'
   },
   
   // ========================================
@@ -3296,6 +3295,29 @@ export default async function handler(req, res) {
           ai_error: aiResult.error
         };
         
+        // v78: fallback에서도 비중 기반 화가 랜덤 선택
+        if (selectedStyle.category === 'movements' && ARTIST_WEIGHTS[fallbackKey]) {
+          const defaultWeights = ARTIST_WEIGHTS[fallbackKey].default || ARTIST_WEIGHTS[fallbackKey].portrait;
+          if (defaultWeights) {
+            const randomArtist = weightedRandomSelect(defaultWeights);
+            if (randomArtist) {
+              const artistKey = randomArtist.toLowerCase().trim();
+              const masterworkList = getArtistMasterworkList(artistKey);
+              if (masterworkList && masterworkList.length > 0) {
+                const randomIndex = Math.floor(Math.random() * masterworkList.length);
+                const workKey = masterworkList[randomIndex];
+                const promptData = getPrompt(workKey);
+                if (promptData) {
+                  finalPrompt = promptData.prompt;
+                  selectedArtist = randomArtist;
+                  selectedWork = promptData.nameEn || workKey;
+                  console.log(`🎲 [FALLBACK-WEIGHT] 고정 ${fallback.name} → 랜덤 ${randomArtist}`);
+                }
+              }
+            }
+          }
+        }
+        
         // v68.3: fallback에서도 로그 데이터 설정
         logData.selection.category = selectedStyle.category || '';
         logData.selection.movement = selectedStyle.id || '';
@@ -3355,6 +3377,29 @@ export default async function handler(req, res) {
       selectedArtist = fallback.name;
       selectedWork = fallback.defaultWork || null;  // 거장 기본 작품
       selectionMethod = 'fallback_no_key';
+      
+      // v78: fallback(no key)에서도 비중 기반 화가 랜덤 선택
+      if (selectedStyle.category === 'movements' && ARTIST_WEIGHTS[fallbackKey]) {
+        const defaultWeights = ARTIST_WEIGHTS[fallbackKey].default || ARTIST_WEIGHTS[fallbackKey].portrait;
+        if (defaultWeights) {
+          const randomArtist = weightedRandomSelect(defaultWeights);
+          if (randomArtist) {
+            const artistKey = randomArtist.toLowerCase().trim();
+            const masterworkList = getArtistMasterworkList(artistKey);
+            if (masterworkList && masterworkList.length > 0) {
+              const randomIndex = Math.floor(Math.random() * masterworkList.length);
+              const workKey = masterworkList[randomIndex];
+              const promptData = getPrompt(workKey);
+              if (promptData) {
+                finalPrompt = promptData.prompt;
+                selectedArtist = randomArtist;
+                selectedWork = promptData.nameEn || workKey;
+                console.log(`🎲 [FALLBACK-WEIGHT-NOKEY] 고정 ${fallback.name} → 랜덤 ${randomArtist}`);
+              }
+            }
+          }
+        }
+      }
       
       // v68.3: fallback에서도 로그 데이터 설정
       logData.selection.category = selectedStyle.category || '';
