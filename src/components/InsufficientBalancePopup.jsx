@@ -1,6 +1,7 @@
 // InsufficientBalancePopup.jsx - Insufficient Balance Popup (Dark Theme)
 // Based on mockup: 09-charge-menu.html
 import React from 'react';
+import { getUi } from '../i18n';
 
 const InsufficientBalancePopup = ({ 
   requiredAmount = 0.25, 
@@ -10,26 +11,7 @@ const InsufficientBalancePopup = ({
   lang = 'en'
 }) => {
 
-  // i18n texts
-  const texts = {
-    ko: {
-      title: '잔액 부족',
-      requires: '이 변환에 필요한 금액:',
-      yourBalance: '현재 잔액:',
-      recommended: '💡 추천',
-      addFundsNow: '지금 충전하기',
-      maybeLater: '나중에'
-    },
-    en: {
-      title: 'Insufficient Balance',
-      requires: 'This conversion requires',
-      yourBalance: 'Your balance:',
-      recommended: '💡 Recommended',
-      addFundsNow: 'Add Funds Now',
-      maybeLater: 'Maybe Later'
-    }
-  };
-  const t = texts[lang] || texts.en;
+  const t = getUi(lang).insufficientBalance;
 
   // 추천 팩 계산 (최소 금액 충족하는 가장 저렴한 팩)
   const getRecommendedPack = () => {

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { saveImage as saveToDevice, shareImage, addWatermark, isNativePlatform, WATERMARK_ON_SAVE } from '../utils/mobileShare';
 import { getMovementDisplayInfo, getOrientalDisplayInfo, getMasterInfo } from '../utils/displayConfig';
+import { getUi } from '../i18n';
 
 // ========== IndexedDB 설정 ==========
 const DB_NAME = 'PicoArtGallery';
@@ -177,74 +178,8 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
 
-  // i18n texts
-  const texts = {
-    ko: {
-      title: '내 갤러리',
-      deleteAll: '전체 삭제',
-      saved: '저장됨',
-      empty: '아직 저장된 이미지가 없습니다',
-      emptySubtext: '사진을 변환하면 여기에 자동 저장됩니다',
-      saveShare: '💾 저장/공유',
-      save: '저장하기',
-      share: '공유하기',
-      close: '닫기',
-      confirmDelete: '이 이미지를 삭제할까요?',
-      confirmDeleteAll: '모든 이미지를 삭제할까요?\n이 작업은 취소할 수 없습니다.',
-      savedToGallery: '✅ 갤러리에 저장되었습니다!',
-      savedToFiles: '✅ 저장되었습니다!\n📁 파일 앱 → Documents → MasterValley',
-      saveFailed: '저장에 실패했습니다',
-      shareTitle: 'Master Valley 작품',
-      shareText: 'Master Valley로 만든 AI 명화를 확인해보세요!',
-      linkCopied: '링크가 클립보드에 복사되었습니다!',
-      loading: '갤러리 로딩 중...',
-      back: '뒤로',
-      home: '홈',
-      deviceNote: '💡 이미지는 기기에 저장됩니다.',
-      countUnit: '개',
-      delete: '삭제',
-      select: '선택',
-      selectAll: '전체 선택',
-      deselectAll: '전체 해제',
-      deleteSelected: '선택 삭제',
-      cancel: '취소',
-      confirmDeleteSelected: '선택한 {count}개 이미지를 삭제할까요?',
-      selectedCount: '{count}개 선택'
-    },
-    en: {
-      title: 'My Gallery',
-      deleteAll: 'Delete All',
-      saved: 'Saved',
-      empty: 'No saved images yet',
-      emptySubtext: 'Converted images will be saved here',
-      saveShare: '💾 Save/Share',
-      save: 'Save',
-      share: 'Share',
-      close: 'Close',
-      confirmDelete: 'Delete this image?',
-      confirmDeleteAll: 'Delete all images?\nThis cannot be undone.',
-      savedToGallery: '✅ Saved to Gallery!',
-      savedToFiles: '✅ Saved!\n📁 Files app → Documents → MasterValley',
-      saveFailed: 'Save failed',
-      shareTitle: 'Master Valley Art',
-      shareText: 'Check out my AI masterpiece from Master Valley!',
-      linkCopied: 'Link copied to clipboard!',
-      loading: 'Loading gallery...',
-      back: 'Back',
-      home: 'Home',
-      deviceNote: '💡 Images are saved on your device.',
-      countUnit: '',
-      delete: 'Delete',
-      select: 'Select',
-      selectAll: 'Select All',
-      deselectAll: 'Deselect All',
-      deleteSelected: 'Delete Selected',
-      cancel: 'Cancel',
-      confirmDeleteSelected: 'Delete {count} selected images?',
-      selectedCount: '{count} selected'
-    }
-  };
-  const t = texts[lang] || texts.en;
+  // i18n texts from ui.js
+  const t = getUi(lang).gallery;
 
   // i18n 갤러리 표시 함수 (displayConfig 활용)
   // 갤러리 카드용: 괄호 내용 제거 (간결한 표시)
@@ -254,7 +189,9 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
     // 신규 포맷: category + artistName 있으면 i18n 표시
     if (item.category && item.artistName) {
       if (item.category === 'movements') {
-        const info = getMovementDisplayInfo(item.movementName || '', item.artistName, lang);
+        // styleId 우선 → movementName 폴백 (기존 한국어 데이터 호환)
+        const movementKey = item.styleId || item.movementName || '';
+        const info = getMovementDisplayInfo(movementKey, item.artistName, lang);
         return { 
           title: stripParens(info.title), 
           subtitle: stripParens(info.subtitle),

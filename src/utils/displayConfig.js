@@ -1,6 +1,6 @@
 // ========================================
 // displayConfig.js - 매칭 시스템 컨트롤 타워
-// v72 - 2026-01-19
+// v75 - 2026-02-18
 // ========================================
 // 
 // 모든 키 정규화, 별칭 매핑, 표시 정보를 한 곳에서 관리
@@ -8,6 +8,7 @@
 //
 // v72: 화가 풀네임 별칭 추가 (Sandro Botticelli → botticelli 등)
 // v73: 통합 스타일 표시 함수 추가
+// v75: Phase 3 — getMovementDisplayInfo 영어/styleId 키 추가 (갤러리 i18n 호환)
 //
 // ========================================
 
@@ -823,47 +824,127 @@ export function detectCategory(key) {
  * @returns {{ title: string, subtitle: string }}
  */
 export function getMovementDisplayInfo(styleName, artistName, lang = 'en') {
-  // 사조 정보
+  // ===== 사조 정보 (공유 참조로 중복 제거) =====
+  const _grecoRoman    = { ko: '그리스·로마', en: 'Greco-Roman', period: 'BC~AD 4세기', periodEn: 'BC–AD 4th Century' };
+  const _medieval      = { ko: '중세 미술', en: 'Medieval', period: '5~15세기', periodEn: '5th–15th Century' };
+  const _renaissance   = { ko: '르네상스', en: 'Renaissance', period: '14~16세기', periodEn: '14th–16th Century' };
+  const _baroque       = { ko: '바로크', en: 'Baroque', period: '17~18세기', periodEn: '17th–18th Century' };
+  const _rococo        = { ko: '로코코', en: 'Rococo', period: '18세기', periodEn: '18th Century' };
+  const _neoRomReal    = { ko: '신고전·낭만·사실주의', en: 'Neoclassicism·Romanticism·Realism', period: '18~19세기', periodEn: '18th–19th Century' };
+  const _neoclassicism = { ko: '신고전주의', en: 'Neoclassicism', period: '18~19세기', periodEn: '18th–19th Century' };
+  const _romanticism   = { ko: '낭만주의', en: 'Romanticism', period: '19세기', periodEn: '19th Century' };
+  const _realism       = { ko: '사실주의', en: 'Realism', period: '19세기', periodEn: '19th Century' };
+  const _impressionism = { ko: '인상주의', en: 'Impressionism', period: '19세기 말', periodEn: 'Late 19th Century' };
+  const _postImpress   = { ko: '후기인상주의', en: 'Post-Impressionism', period: '19세기 말', periodEn: 'Late 19th Century' };
+  const _fauvism       = { ko: '야수파', en: 'Fauvism', period: '20세기 초', periodEn: 'Early 20th Century' };
+  const _expressionism = { ko: '표현주의', en: 'Expressionism', period: '20세기 초', periodEn: 'Early 20th Century' };
+  const _modernism     = { ko: '모더니즘', en: 'Modernism', period: '20세기', periodEn: '20th Century' };
+  const _cubism        = { ko: '입체주의', en: 'Cubism', period: '20세기 초', periodEn: 'Early 20th Century' };
+  const _surrealism    = { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반', periodEn: 'Early–Mid 20th Century' };
+  const _popArt        = { ko: '팝아트', en: 'Pop Art', period: '20세기 중반', periodEn: 'Mid 20th Century' };
+
   const movementData = {
-    '고대': { ko: '고대', en: 'Greco-Roman', period: 'BC~AD 4세기', periodEn: 'BC–AD 4th Century' },
-    '고대 그리스-로마': { ko: '그리스·로마', en: 'Greco-Roman', period: 'BC~AD 4세기', periodEn: 'BC–AD 4th Century' },
-    '그리스·로마': { ko: '그리스·로마', en: 'Greco-Roman', period: 'BC~AD 4세기', periodEn: 'BC–AD 4th Century' },
-    '중세': { ko: '중세 미술', en: 'Medieval', period: '5~15세기', periodEn: '5th–15th Century' },
-    '중세 미술': { ko: '중세 미술', en: 'Medieval', period: '5~15세기', periodEn: '5th–15th Century' },
-    '르네상스': { ko: '르네상스', en: 'Renaissance', period: '14~16세기', periodEn: '14th–16th Century' },
-    '바로크': { ko: '바로크', en: 'Baroque', period: '17~18세기', periodEn: '17th–18th Century' },
-    '로코코': { ko: '로코코', en: 'Rococo', period: '18세기', periodEn: '18th Century' },
-    '신고전 vs 낭만 vs 사실주의': { ko: '신고전·낭만·사실주의', en: 'Neoclassicism·Romanticism·Realism', period: '18~19세기', periodEn: '18th–19th Century' },
-    '신고전주의': { ko: '신고전주의', en: 'Neoclassicism', period: '18~19세기', periodEn: '18th–19th Century' },
-    '낭만주의': { ko: '낭만주의', en: 'Romanticism', period: '19세기', periodEn: '19th Century' },
-    '사실주의': { ko: '사실주의', en: 'Realism', period: '19세기', periodEn: '19th Century' },
-    '인상주의': { ko: '인상주의', en: 'Impressionism', period: '19세기 말', periodEn: 'Late 19th Century' },
-    '후기인상주의': { ko: '후기인상주의', en: 'Post-Impressionism', period: '19세기 말', periodEn: 'Late 19th Century' },
-    '야수파': { ko: '야수파', en: 'Fauvism', period: '20세기 초', periodEn: 'Early 20th Century' },
-    '표현주의': { ko: '표현주의', en: 'Expressionism', period: '20세기 초', periodEn: 'Early 20th Century' },
-    '모더니즘': { ko: '모더니즘', en: 'Modernism', period: '20세기', periodEn: '20th Century' },
-    '입체주의': { ko: '입체주의', en: 'Cubism', period: '20세기 초', periodEn: 'Early 20th Century' },
-    '초현실주의': { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반', periodEn: 'Early–Mid 20th Century' },
-    '팝아트': { ko: '팝아트', en: 'Pop Art', period: '20세기 중반', periodEn: 'Mid 20th Century' }
+    // ===== 한국어 키 (기존 — 하위 호환) =====
+    '고대': _grecoRoman,
+    '고대 그리스-로마': _grecoRoman,
+    '그리스·로마': _grecoRoman,
+    '중세': _medieval,
+    '중세 미술': _medieval,
+    '르네상스': _renaissance,
+    '바로크': _baroque,
+    '로코코': _rococo,
+    '신고전 vs 낭만 vs 사실주의': _neoRomReal,
+    '신고전주의': _neoclassicism,
+    '낭만주의': _romanticism,
+    '사실주의': _realism,
+    '인상주의': _impressionism,
+    '후기인상주의': _postImpress,
+    '야수파': _fauvism,
+    '표현주의': _expressionism,
+    '모더니즘': _modernism,
+    '입체주의': _cubism,
+    '초현실주의': _surrealism,
+    '팝아트': _popArt,
+
+    // ===== styleId 키 (masterData id — 갤러리 i18n용) =====
+    'ancient': _grecoRoman,
+    'greco-roman': _grecoRoman,
+    'medieval': _medieval,
+    'medieval-art': _medieval,
+    'renaissance': _renaissance,
+    'baroque': _baroque,
+    'rococo': _rococo,
+    'neoclassicism_vs_romanticism_vs_realism': _neoRomReal,
+    'neoclassicism-romanticism-realism': _neoRomReal,
+    'impressionism': _impressionism,
+    'postimpressionism': _postImpress,
+    'post-impressionism': _postImpress,
+    'fauvism': _fauvism,
+    'expressionism': _expressionism,
+    'modernism': _modernism,
+    // 세분화 styleId
+    'cubism': _cubism,
+    'surrealism': _surrealism,
+    'popart': _popArt,
+    'neoclassicism': _neoclassicism,
+    'romanticism': _romanticism,
+    'realism': _realism,
+
+    // ===== 영어 키 (en 이름 소문자 — 다국어 환경 대응) =====
+    'greco-roman art': _grecoRoman,
+    'greek & roman': _grecoRoman,
+    'medieval art': _medieval,
+    'baroque art': _baroque,
+    'rococo art': _rococo,
+    'neoclassicism·romanticism·realism': _neoRomReal,
+    'post-impressionism art': _postImpress,
+    'fauvism art': _fauvism,
+    'expressionism art': _expressionism,
+    'modernism art': _modernism,
+    'cubism art': _cubism,
+    'surrealism art': _surrealism,
+    'pop art': _popArt
+  };
+
+  // ===== 사조명 정규화: 입력이 어떤 형태든 movementData에서 찾기 =====
+  const resolveMovement = (name) => {
+    if (!name) return null;
+    // 1차: 원본 그대로
+    if (movementData[name]) return name;
+    // 2차: 소문자
+    const lower = name.toLowerCase().trim();
+    if (movementData[lower]) return lower;
+    // 3차: normalizeKey 경유 (ALIASES → 표준 키)
+    const normalized = normalizeKey(name);
+    if (movementData[normalized]) return normalized;
+    return null;
   };
   
   // 사조 결정 (신고전/낭만/사실, 모더니즘 세분화)
   let actualMovement = styleName;
+  const resolvedStyle = resolveMovement(styleName);
+
   if (artistName) {
     const key = normalizeKey(artistName);
-    if (styleName === '신고전 vs 낭만 vs 사실주의') {
+    // 복합 사조 세분화 — 한국어/영어/styleId 모두 대응
+    const isNeoRomReal = resolvedStyle && movementData[resolvedStyle] === _neoRomReal;
+    const isModernism = resolvedStyle && movementData[resolvedStyle] === _modernism;
+    
+    if (isNeoRomReal) {
       if (['david', 'ingres'].includes(key)) actualMovement = '신고전주의';
       else if (['delacroix', 'turner'].includes(key)) actualMovement = '낭만주의';
       else if (['courbet', 'manet'].includes(key)) actualMovement = '사실주의';
     }
-    if (styleName === '모더니즘') {
+    if (isModernism) {
       if (key === 'picasso') actualMovement = '입체주의';
       else if (['magritte', 'miro', 'chagall'].includes(key)) actualMovement = '초현실주의';
       else if (key === 'lichtenstein') actualMovement = '팝아트';
     }
   }
   
-  const mvInfo = movementData[actualMovement] || { ko: styleName, en: styleName, period: '' };
+  // movementData 조회 (정규화 적용)
+  const resolvedActual = resolveMovement(actualMovement);
+  const mvInfo = (resolvedActual ? movementData[resolvedActual] : null) || { ko: styleName, en: styleName, period: '' };
   const period = lang === 'ko' ? mvInfo.period : (mvInfo.periodEn || mvInfo.period);
   const title = lang === 'ko'
     ? (period ? `${mvInfo.ko}(${mvInfo.en}, ${period})` : `${mvInfo.ko}(${mvInfo.en})`)

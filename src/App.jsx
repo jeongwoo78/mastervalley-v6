@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { Preferences } from '@capacitor/preferences';
 import { auth } from './config/firebase';
-import { setLanguage, getLanguage, t } from './i18n';
+import { setLanguage, getLanguage, t, getUi } from './i18n';
 import LoginScreen from './components/LoginScreen';
 import CategorySelection from './components/CategorySelection';
 import PhotoStyleScreen from './components/PhotoStyleScreen';
@@ -206,7 +206,7 @@ const App = () => {
     return (
       <div className="auth-loading">
         <div className="loading-spinner"></div>
-        <p>{lang === 'ko' ? '로딩 중...' : 'Loading...'}</p>
+        <p>{getUi(lang).common.loading}</p>
         <style>{`
           .auth-loading {
             min-height: 100vh;

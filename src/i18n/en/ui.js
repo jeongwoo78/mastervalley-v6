@@ -10,7 +10,46 @@ export const ui = {
     masterCollection: 'Master Collection',
     masterCollectionDesc: '7 Masters Beyond Time',
     eastAsianArt: 'East Asian Art',
-    eastAsianArtDesc: '1000 Years of Eastern Beauty'
+    eastAsianArtDesc: '1000 Years of Eastern Beauty',
+    tagline: 'Your photo becomes a masterpiece'
+  },
+
+  // ===== PhotoStyleScreen =====
+  photoStyle: {
+    tapToSelectPhoto: 'Tap to select photo',
+    movementsName: 'Western Art',
+    mastersName: 'Master Collection',
+    orientalName: 'East Asian Art',
+    movementsFullTitle: 'Traveling 2500 years of art',
+    movementsFullDesc: '11 art movements / $2.00',
+    mastersFullTitle: 'Into the world of 7 masters',
+    mastersFullDesc: 'Connect with 7 masters / $1.50',
+    orientalFullTitle: 'Exploring East Asia',
+    orientalFullDesc: 'Korea · China · Japan / $0.60',
+    grecoRoman: 'Greco-Roman',
+    medieval: 'Medieval',
+    renaissance: 'Renaissance',
+    baroque: 'Baroque',
+    rococo: 'Rococo',
+    neoRomanReal: 'Neo·Roman·Real',
+    impressionism: 'Impressionism',
+    postImpressionism: 'Post-Impres.',
+    fauvism: 'Fauvism',
+    expressionism: 'Expressionism',
+    modernism: 'Modernism',
+    vanGogh: 'Van Gogh',
+    klimt: 'Klimt',
+    munch: 'Munch',
+    matisse: 'Matisse',
+    chagall: 'Chagall',
+    frida: 'Frida',
+    lichtenstein: 'Lichtenstein',
+    korean: 'Korean',
+    chinese: 'Chinese',
+    japanese: 'Japanese',
+    koreanSub: 'Minhwa · Pungsokdo',
+    chineseSub: 'Ink wash · Gongbi',
+    japaneseSub: 'Ukiyo-e · Rinpa'
   },
 
   // ===== Processing =====
@@ -24,7 +63,19 @@ export const ui = {
     nationsComplete: 'nations complete',
     fullTransform: '✨ Full Transform',
     processingTitle: '🎨 Processing',
-    tapToView: '👆 Tap to view completed results'
+    tapToView: '👆 Tap to view completed results',
+    error: 'Error',
+    movementsLabel: 'movements',
+    mastersLabel: 'masters',
+    nationsLabel: 'nations',
+    movementsSub1: 'From Greece to Modernism',
+    movementsSub2: 'Traversing 2,500 years of Western art',
+    mastersSub1: 'Seven worlds',
+    mastersSub2: 'Question, break, rebuild',
+    orientalSub1: 'Korea · China · Japan',
+    orientalSub2: 'Three nations, alike yet distinct',
+    prev: '◀ Prev',
+    next: 'Next ▶'
   },
 
   // ===== Result =====
@@ -47,22 +98,58 @@ export const ui = {
     saveFailedRetry: 'Save failed. Please try again.',
     noImageToShare: 'No image to share.',
     linkCopied: 'Link copied to clipboard!',
-    retrySuccess: 'Retry successful!'
+    retrySuccess: 'Retry successful!',
+    cancel: 'Cancel',
+    retryFailed: 'Retry failed',
+    saveToDevice: 'Save',
+    shareArt: 'Share',
+    original: 'Original',
+    tapToSwipe: '← Swipe to view results →',
+    hide: 'Hide',
+    show: 'Show',
+    shareTitle: 'Master Valley Art',
+    shareText: 'style artwork ✨',
+    loadingEducation: 'Loading artwork description...'
   },
 
   // ===== Gallery =====
   gallery: {
     title: 'My Gallery',
+    deleteAll: 'Delete All',
+    saved: 'Saved',
     empty: 'No saved images yet',
     emptySubtext: 'Converted images will be saved here',
-    delete: 'Delete',
-    deleteAll: 'Delete All',
     saveShare: '💾 Save/Share',
-    saveToDevice: 'Save'
+    save: 'Save',
+    share: 'Share',
+    close: 'Close',
+    confirmDelete: 'Delete this image?',
+    confirmDeleteAll: 'Delete all images?\nThis cannot be undone.',
+    savedToGallery: '✅ Saved to Gallery!',
+    savedToFiles: '✅ Saved!\n📁 Files app → Documents → MasterValley',
+    saveFailed: 'Save failed',
+    shareTitle: 'Master Valley Art',
+    shareText: 'Check out my AI masterpiece from Master Valley!',
+    linkCopied: 'Link copied to clipboard!',
+    loading: 'Loading gallery...',
+    back: 'Back',
+    home: 'Home',
+    deviceNote: '💡 Images are saved on your device.',
+    countUnit: '',
+    delete: 'Delete',
+    saveToDevice: 'Save',
+    select: 'Select',
+    selectAll: 'Select All',
+    deselectAll: 'Deselect All',
+    deleteSelected: 'Delete Selected',
+    cancel: 'Cancel',
+    confirmDeleteSelected: 'Delete {count} selected images?',
+    selectedCount: '{count} selected'
   },
 
   // ===== Menu =====
   menu: {
+    title: 'Menu',
     myGallery: 'My Gallery',
     language: 'Language',
     addFunds: 'Add Funds',
@@ -82,11 +169,24 @@ export const ui = {
     pro: 'Pro',
     bonus: 'Bonus',
     bestValue: 'Best Value',
-    insufficientBalance: 'Insufficient Balance',
-    requiredAmount: 'Required',
-    currentBalance: 'Balance',
+    info1: '💡 Credits never expire',
+    info2: 'No subscription required'
+  },
+
+  // ===== InsufficientBalance =====
+  insufficientBalance: {
+    title: 'Insufficient Balance',
+    requires: 'This conversion requires',
+    yourBalance: 'Your balance:',
+    recommended: '💡 Recommended',
     addFundsNow: 'Add Funds Now',
     maybeLater: 'Maybe Later'
+  },
+
+  // ===== Language =====
+  language: {
+    title: 'Language',
+    current: 'Current'
   },
 
   // ===== Login =====

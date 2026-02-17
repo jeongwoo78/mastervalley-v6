@@ -77,6 +77,11 @@ export const getEducation = (type, lang = currentLang) => {
   return languages[lang]?.[type] || languages['en']?.[type];
 };
 
+// UI 텍스트 가져오기 (fallback: en)
+export const getUi = (lang = currentLang) => {
+  return languages[lang]?.ui || languages['en']?.ui;
+};
+
 // MasterChat 텍스트 가져오기 (fallback: en)
 export const getMasterChat = (lang = currentLang) => {
   return languages[lang]?.masterChat || languages['en']?.masterChat;

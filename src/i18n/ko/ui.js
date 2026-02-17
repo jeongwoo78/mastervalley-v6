@@ -10,7 +10,46 @@ export const ui = {
     masterCollection: '거장 컬렉션',
     masterCollectionDesc: '시대를 초월한 7인의 거장',
     eastAsianArt: '동양화',
-    eastAsianArtDesc: '천 년 동양 미술의 향기'
+    eastAsianArtDesc: '천 년 동양 미학의 향기',
+    tagline: '당신의 사진이 명작이 됩니다'
+  },
+
+  // ===== PhotoStyleScreen =====
+  photoStyle: {
+    tapToSelectPhoto: '탭하여 사진 선택',
+    movementsName: '서양 미술사',
+    mastersName: '거장 컬렉션',
+    orientalName: '동양화',
+    movementsFullTitle: '2500년 미술 여행',
+    movementsFullDesc: '11개 사조 / $2.00',
+    mastersFullTitle: '7인 거장의 세계로',
+    mastersFullDesc: '7인 거장과의 만남 / $1.50',
+    orientalFullTitle: '동아시아 탐험',
+    orientalFullDesc: '한국 · 중국 · 일본 / $0.60',
+    grecoRoman: '그리스-로마',
+    medieval: '중세',
+    renaissance: '르네상스',
+    baroque: '바로크',
+    rococo: '로코코',
+    neoRomanReal: '신고전·낭만·사실',
+    impressionism: '인상주의',
+    postImpressionism: '후기인상주의',
+    fauvism: '야수파',
+    expressionism: '표현주의',
+    modernism: '모더니즘',
+    vanGogh: '반 고흐',
+    klimt: '클림트',
+    munch: '뭉크',
+    matisse: '마티스',
+    chagall: '샤갈',
+    frida: '프리다',
+    lichtenstein: '리히텐슈타인',
+    korean: '한국화',
+    chinese: '중국화',
+    japanese: '일본화',
+    koreanSub: '민화 · 풍속도',
+    chineseSub: '수묵화 · 공필화',
+    japaneseSub: '우키요에 · 린파'
   },
 
   // ===== Processing =====
@@ -24,7 +63,19 @@ export const ui = {
     nationsComplete: '개국 동양화 변환 완료',
     fullTransform: '✨ 전체 변환',
     processingTitle: '🎨 작업 중',
-    tapToView: '👆 완료된 결과를 확인하세요'
+    tapToView: '👆 완료된 결과를 확인하세요',
+    error: '오류',
+    movementsLabel: '개 사조',
+    mastersLabel: '명 거장',
+    nationsLabel: '개국 동양화',
+    movementsSub1: '그리스에서 모더니즘까지',
+    movementsSub2: '서양미술 2,500년을 관통하다',
+    mastersSub1: '일곱 개의 세계',
+    mastersSub2: '묻고, 부수고, 다시 세우다',
+    orientalSub1: '한국 · 중국 · 일본',
+    orientalSub2: '닮은 듯 다른 세 나라의 미학',
+    prev: '◀ 이전',
+    next: '다음 ▶'
   },
 
   // ===== Result =====
@@ -47,22 +98,58 @@ export const ui = {
     saveFailedRetry: '저장에 실패했습니다. 다시 시도해주세요.',
     noImageToShare: '공유할 이미지가 없습니다.',
     linkCopied: '링크가 클립보드에 복사되었습니다!',
-    retrySuccess: '다시 시도 성공!'
+    retrySuccess: '다시 시도 성공!',
+    cancel: '취소',
+    retryFailed: '다시 시도에 실패했습니다',
+    saveToDevice: '저장하기',
+    shareArt: '공유하기',
+    original: '원본',
+    tapToSwipe: '← 스와이프하여 결과 보기 →',
+    hide: '숨기기',
+    show: '보기',
+    shareTitle: 'Master Valley 작품',
+    shareText: '스타일 작품 ✨',
+    loadingEducation: '작품 설명을 생성하고 있습니다...'
   },
 
   // ===== Gallery =====
   gallery: {
     title: '내 갤러리',
+    deleteAll: '전체 삭제',
+    saved: '저장됨',
     empty: '아직 저장된 이미지가 없습니다',
     emptySubtext: '사진을 변환하면 여기에 자동 저장됩니다',
-    delete: '삭제',
-    deleteAll: '전체 삭제',
     saveShare: '💾 저장/공유',
-    saveToDevice: '저장하기'
+    save: '저장하기',
+    share: '공유하기',
+    close: '닫기',
+    confirmDelete: '이 이미지를 삭제할까요?',
+    confirmDeleteAll: '모든 이미지를 삭제할까요?\n이 작업은 취소할 수 없습니다.',
+    savedToGallery: '✅ 갤러리에 저장되었습니다!',
+    savedToFiles: '✅ 저장되었습니다!\n📁 파일 앱 → Documents → MasterValley',
+    saveFailed: '저장에 실패했습니다',
+    shareTitle: 'Master Valley 작품',
+    shareText: 'Master Valley로 만든 AI 명화를 확인해보세요!',
+    linkCopied: '링크가 클립보드에 복사되었습니다!',
+    loading: '갤러리 로딩 중...',
+    back: '뒤로',
+    home: '홈',
+    deviceNote: '💡 이미지는 기기에 저장됩니다.',
+    countUnit: '개',
+    delete: '삭제',
+    saveToDevice: '저장하기',
+    select: '선택',
+    selectAll: '전체 선택',
+    deselectAll: '전체 해제',
+    deleteSelected: '선택 삭제',
+    cancel: '취소',
+    confirmDeleteSelected: '선택한 {count}개 이미지를 삭제할까요?',
+    selectedCount: '{count}개 선택'
   },
 
   // ===== Menu =====
   menu: {
+    title: '메뉴',
     myGallery: '내 갤러리',
     language: '언어',
     addFunds: '크레딧 충전',
@@ -82,11 +169,24 @@ export const ui = {
     pro: 'Pro',
     bonus: '보너스',
     bestValue: '인기',
-    insufficientBalance: '잔액 부족',
-    requiredAmount: '필요 금액',
-    currentBalance: '현재 잔액',
+    info1: '💡 크레딧은 만료되지 않습니다',
+    info2: '구독 필요 없음'
+  },
+
+  // ===== InsufficientBalance =====
+  insufficientBalance: {
+    title: '잔액 부족',
+    requires: '이 변환에 필요한 금액:',
+    yourBalance: '현재 잔액:',
+    recommended: '💡 추천',
     addFundsNow: '지금 충전하기',
     maybeLater: '나중에'
+  },
+
+  // ===== Language =====
+  language: {
+    title: '언어',
+    current: '현재'
   },
 
   // ===== Login =====

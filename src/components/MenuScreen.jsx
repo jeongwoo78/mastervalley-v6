@@ -1,6 +1,7 @@
 // MenuScreen.jsx - Menu Screen (Dark Theme)
 // Based on mockup: 09-charge-menu.html
 import React, { useState } from 'react';
+import { getUi } from '../i18n';
 
 const MenuScreen = ({ 
   onBack, 
@@ -15,28 +16,7 @@ const MenuScreen = ({
 
   const [langOpen, setLangOpen] = useState(false);
 
-  // i18n texts
-  const texts = {
-    ko: {
-      menu: '메뉴',
-      myGallery: '내 갤러리',
-      language: '언어',
-      addFunds: '크레딧 충전',
-      support: '고객 지원',
-      logOut: '로그아웃',
-      deleteAccount: '계정 삭제'
-    },
-    en: {
-      menu: 'Menu',
-      myGallery: 'My Gallery',
-      language: 'Language',
-      addFunds: 'Add Funds',
-      support: 'Support',
-      logOut: 'Log Out',
-      deleteAccount: 'Delete Account'
-    }
-  };
-  const t = texts[lang] || texts.en;
+  const t = getUi(lang).menu;
 
   const languages = [
     { code: 'en', flag: '🇺🇸', name: 'English' },
@@ -68,7 +48,7 @@ const MenuScreen = ({
       {/* Header */}
       <header className="menu-header">
         <button className="back-btn" onClick={onBack}>←</button>
-        <span className="header-title">{t.menu}</span>
+        <span className="header-title">{t.title}</span>
         <span className="header-spacer"></span>
       </header>
 

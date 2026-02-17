@@ -1,5 +1,6 @@
 // LanguageScreen.jsx - Language Selection Screen (Dark Theme)
 import React from 'react';
+import { getUi } from '../i18n';
 
 const LanguageScreen = ({ onBack, onSelect, currentLang = 'en' }) => {
 
@@ -8,12 +9,7 @@ const LanguageScreen = ({ onBack, onSelect, currentLang = 'en' }) => {
     { code: 'ko', flag: '🇰🇷', name: 'Korean', nativeName: '한국어' },
   ];
 
-  // i18n texts
-  const texts = {
-    ko: { title: '언어', current: '현재' },
-    en: { title: 'Language', current: 'Current' }
-  };
-  const t = texts[currentLang] || texts.en;
+  const t = getUi(currentLang);
 
   const handleSelect = (langCode) => {
     if (onSelect) {
@@ -26,7 +22,7 @@ const LanguageScreen = ({ onBack, onSelect, currentLang = 'en' }) => {
       {/* Header */}
       <header className="language-header">
         <button className="back-btn" onClick={onBack}>←</button>
-        <span className="header-title">{t.title}</span>
+        <span className="header-title">{t.language.title}</span>
         <span className="header-spacer"></span>
       </header>
 

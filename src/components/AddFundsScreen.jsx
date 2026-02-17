@@ -1,28 +1,12 @@
 // AddFundsScreen.jsx - Add Funds Screen (Dark Theme)
 // Based on mockup: 09-charge-menu.html
 import React, { useState } from 'react';
+import { getUi } from '../i18n';
 
 const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' }) => {
   const [selectedPack, setSelectedPack] = useState(null);
 
-  // i18n texts
-  const texts = {
-    ko: {
-      title: '크레딧 충전',
-      balance: '잔액',
-      bonus: '보너스',
-      info1: '💡 크레딧은 만료되지 않습니다',
-      info2: '구독 필요 없음'
-    },
-    en: {
-      title: 'Add Funds',
-      balance: 'Balance',
-      bonus: 'Bonus',
-      info1: '💡 Credits never expire',
-      info2: 'No subscription required'
-    }
-  };
-  const t = texts[lang] || texts.en;
+  const t = getUi(lang).addFunds;
 
   const packs = [
     { id: 'mini', name: 'Mini', price: 0.99, value: 0.99, bonus: null },

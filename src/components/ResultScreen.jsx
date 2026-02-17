@@ -24,7 +24,8 @@ import {
   getOneclickMastersPrimary,
   getOneclickMastersSecondary,
   getOneclickOrientalPrimary,
-  getOneclickOrientalSecondary
+  getOneclickOrientalSecondary,
+  getUi
 } from '../i18n';
 // 단독변환용 교육자료
 import { educationContent } from '../data/educationContent';
@@ -58,64 +59,8 @@ const ResultScreen = ({
   lang = 'en'
 }) => {
 
-  // i18n texts
-  const texts = {
-    ko: {
-      save: '저장',
-      share: '공유',
-      gallery: '갤러리',
-      newPhoto: '새 사진',
-      modify: '수정',
-      retry: '다시 시도',
-      retryAll: '전체 다시 시도',
-      retrying: '다시 시도 중...',
-      conversionFailed: '변환에 실패하였습니다.',
-      aiRetrying: '🎨 AI가 다시 변환 중입니다...',
-      noImageToSave: '저장할 이미지가 없습니다.',
-      savedToGallery: '✅ 갤러리에 저장되었습니다!',
-      saved: '✅ 저장되었습니다!',
-      filesLocation: '📁 파일 앱 → Documents → MasterValley',
-      saveFailed: '저장에 실패했습니다',
-      saveFailedRetry: '저장에 실패했습니다. 다시 시도해주세요.',
-      noImageToShare: '공유할 이미지가 없습니다.',
-      linkCopied: '링크가 클립보드에 복사되었습니다!',
-      retrySuccess: '다시 시도 성공!',
-      cancel: '취소',
-      retryFailed: '다시 시도에 실패했습니다',
-      saveToDevice: '저장하기',
-      shareArt: '공유하기',
-      original: '원본',
-      tapToSwipe: '← 스와이프하여 결과 보기 →'
-    },
-    en: {
-      save: 'Save',
-      share: 'Share',
-      gallery: 'Gallery',
-      newPhoto: 'New',
-      modify: 'Modify',
-      retry: 'Retry',
-      retryAll: 'Retry All',
-      retrying: 'Retrying...',
-      conversionFailed: 'Conversion failed.',
-      aiRetrying: '🎨 AI is retrying...',
-      noImageToSave: 'No image to save.',
-      savedToGallery: '✅ Saved to Gallery!',
-      saved: '✅ Saved!',
-      filesLocation: '📁 Files app → Documents → MasterValley',
-      saveFailed: 'Save failed',
-      saveFailedRetry: 'Save failed. Please try again.',
-      noImageToShare: 'No image to share.',
-      linkCopied: 'Link copied to clipboard!',
-      retrySuccess: 'Retry successful!',
-      cancel: 'Cancel',
-      retryFailed: 'Retry failed',
-      saveToDevice: 'Save',
-      shareArt: 'Share',
-      original: 'Original',
-      tapToSwipe: '← Swipe to view results →'
-    }
-  };
-  const t = texts[lang] || texts.en;
+  // i18n texts from ui.js
+  const t = getUi(lang).result;
   
   // v77: i18n 교육 데이터 (lang에 따라 동적 로드)
   const movementsBasicInfo = getMovementsBasicInfo(lang);
@@ -1596,10 +1541,8 @@ const ResultScreen = ({
       // 워터마크 추가
       const watermarkedImage = await addWatermark(imageToShare);
       
-      const shareTitle = lang === 'ko' ? 'Master Valley 작품' : 'Master Valley Art';
-      const shareText = lang === 'ko' 
-        ? `${styleName || 'Art'} 스타일 작품 ✨`
-        : `${styleName || 'Art'} style artwork ✨`;
+      const shareTitle = t.shareTitle;
+      const shareText = `${styleName || 'Art'} ${t.shareText}`;
       
       const result = await shareImage(watermarkedImage, shareTitle, shareText);
       
@@ -1731,7 +1674,7 @@ const ResultScreen = ({
               <div className="oneclick-edu-section">
                 <div className="edu-header">
                   <button className="toggle-btn" onClick={() => setShowInfo(!showInfo)}>
-                    {showInfo ? '▼' : '▶'} {showInfo ? (lang === 'ko' ? '숨기기' : 'Hide') : (lang === 'ko' ? '보기' : 'Show')}
+                    {showInfo ? '▼' : '▶'} {showInfo ? t.hide : t.show}
                   </button>
                 </div>
                 {showInfo && educationText && (
@@ -1832,8 +1775,8 @@ const ResultScreen = ({
               onClick={() => setShowInfo(!showInfo)}
             >
               {showInfo 
-                ? (lang === 'ko' ? '▼ 숨기기' : '▼ Hide')
-                : (lang === 'ko' ? '▶ 보기' : '▶ Show')
+                ? `▼ ${t.hide}`
+                : `▶ ${t.show}`
               }
             </button>
           </div>
@@ -1883,7 +1826,7 @@ const ResultScreen = ({
               {isLoadingEducation ? (
                 <div className="loading-education">
                   <div className="spinner"></div>
-                  <p>{lang === 'ko' ? '작품 설명을 생성하고 있습니다...' : 'Loading artwork description...'}</p>
+                  <p>{t.loadingEducation}</p>
                 </div>
               ) : (
                 <div className="technique-explanation">
@@ -1961,7 +1904,7 @@ const ResultScreen = ({
               className="nav-btn"
               style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
-              ◀ Prev
+              {getUi(lang).processing.prev}
             </button>
             <div className="nav-dots">
               <button
@@ -2000,7 +1943,7 @@ const ResultScreen = ({
               className="nav-btn"
               style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
-              Next ▶
+              {getUi(lang).processing.next}
             </button>
           </div>
         )}

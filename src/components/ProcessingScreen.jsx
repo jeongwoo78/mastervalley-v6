@@ -14,43 +14,16 @@ import {
   getOneclickMastersSecondary,
   getOneclickOrientalPrimary,
   getOneclickOrientalSecondary,
-  getMastersResultEducation
+  getMastersResultEducation,
+  getUi
 } from '../i18n';
 // v73: displayConfig 통합 함수
 import { normalizeKey, getDisplayInfo, getArtistName, getMovementDisplayInfo, getOrientalDisplayInfo, getMasterInfo, getCategoryIcon, getStyleIcon, getStyleTitle, getStyleSubtitle, getStyleSubtitles } from '../utils/displayConfig';
 import { getEducationKey, getEducationContent } from '../utils/educationMatcher';
 
 const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => {
-  // i18n texts
-  const texts = {
-    ko: {
-      analyzing: '사진 분석 중...',
-      inProgress: '변환 중...',
-      checking: '작품 확인 중...',
-      done: '완료!',
-      movementsComplete: '개 사조 변환 완료',
-      mastersComplete: '명 거장 변환 완료',
-      nationsComplete: '개국 동양화 변환 완료',
-      fullTransform: '✨ 전체 변환',
-      processing: '🎨 작업 중',
-      tapToView: '👆 완료된 결과를 확인하세요',
-      error: '오류'
-    },
-    en: {
-      analyzing: 'Analyzing photo...',
-      inProgress: 'in progress...',
-      checking: 'Checking artwork...',
-      done: 'Done!',
-      movementsComplete: 'movements complete',
-      mastersComplete: 'masters complete',
-      nationsComplete: 'nations complete',
-      fullTransform: '✨ Full Transform',
-      processing: '🎨 Processing',
-      tapToView: '👆 Tap to view completed results',
-      error: 'Error'
-    }
-  };
-  const t = texts[lang] || texts.en;
+  // i18n texts from ui.js
+  const t = getUi(lang).processing;
   
   // v77: 원클릭 교육 데이터 (i18n)
   const oneclickMovementsPrimary = getOneclickMovementsPrimary(lang);
@@ -86,9 +59,9 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
     if (isFullTransform) {
       // 원클릭: 1차 교육 표시 후 순차 변환
       setShowEducation(true);
-      const categoryLabel = category === 'movements' ? (lang === 'ko' ? '개 사조' : 'movements') : 
-                           category === 'masters' ? (lang === 'ko' ? '명 거장' : 'masters') : 
-                           (lang === 'ko' ? '개국 동양화' : 'nations');
+      const categoryLabel = category === 'movements' ? t.movementsLabel : 
+                           category === 'masters' ? t.mastersLabel : 
+                           t.nationsLabel;
       setStatusText(`${totalCount} ${categoryLabel} ${t.inProgress}`);
       await sleep(1500);
       
@@ -107,7 +80,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         setCompletedResults([...results]);
         
         if (i < styles.length - 1) {
-          setStatusText(t.checking);
+          setStatusText(t.checkingArtwork);
           await sleep(2000);
         }
       }
@@ -667,14 +640,14 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                 <div className="oneclick-style-info">
                   <h3>{getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}</h3>
                   <div className="subtitle1">
-                    {category === 'movements' ? (lang === 'ko' ? '그리스에서 모더니즘까지' : 'From Greece to Modernism') :
-                     category === 'masters' ? (lang === 'ko' ? '일곱 개의 세계' : 'Seven worlds') :
-                     (lang === 'ko' ? '한국 · 중국 · 일본' : 'Korea · China · Japan')}
+                    {category === 'movements' ? t.movementsSub1 :
+                     category === 'masters' ? t.mastersSub1 :
+                     t.orientalSub1}
                   </div>
                   <div className="subtitle2">
-                    {category === 'movements' ? (lang === 'ko' ? '서양미술 2,500년을 관통하다' : 'Traversing 2,500 years of Western art') :
-                     category === 'masters' ? (lang === 'ko' ? '묻고, 부수고, 다시 세우다' : 'Question, break, rebuild') :
-                     (lang === 'ko' ? '닮은 듯 다른 세 나라의 미학' : 'Three nations, alike yet distinct')}
+                    {category === 'movements' ? t.movementsSub2 :
+                     category === 'masters' ? t.mastersSub2 :
+                     t.orientalSub2}
                   </div>
                 </div>
                 
@@ -737,7 +710,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                 }}
                 disabled={viewIndex === -1 && completedCount === 0}
               >
-                ◀ Prev
+                {t.prev}
               </button>
               
               <div className="dots">
@@ -764,7 +737,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                 }}
                 disabled={viewIndex >= completedCount - 1 || completedCount === 0}
               >
-                Next ▶
+                {t.next}
               </button>
             </div>
 

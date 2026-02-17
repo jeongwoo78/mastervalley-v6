@@ -1,6 +1,7 @@
 // CategorySelection.jsx - Main Screen (Dark Theme)
 // Based on mockup: 02-main(썸네일).jpg
 import React from 'react';
+import { getUi } from '../i18n';
 
 // Thumbnail imports
 import movementsThumbnail from '../assets/thumbnails/categories/movements.webp';
@@ -9,40 +10,26 @@ import orientalThumbnail from '../assets/thumbnails/categories/oriental.webp';
 
 const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, lang = 'en' }) => {
 
-  // i18n texts
-  const texts = {
-    ko: {
-      tagline: '당신의 사진이 명작이 됩니다',
-      movements: { name: '서양 미술사', desc: '2500년 서양 미술의 여정' },
-      masters: { name: '거장 컬렉션', desc: '시대를 초월한 7인의 거장' },
-      oriental: { name: '동양화', desc: '천 년 동양 미학의 향기' }
-    },
-    en: {
-      tagline: 'Your photo becomes a masterpiece',
-      movements: { name: 'Western Art', desc: '2500 Years of Western Art' },
-      masters: { name: 'Master Collection', desc: '7 Masters Beyond Time' },
-      oriental: { name: 'East Asian Art', desc: '1000 Years of Eastern Beauty' }
-    }
-  };
-  const t = texts[lang] || texts.en;
+  const ui = getUi(lang);
+  const t = ui.category;
 
   const categories = [
     {
       id: 'movements',
-      name: t.movements.name,
-      description: t.movements.desc,
+      name: t.westernArt,
+      description: t.westernArtDesc,
       thumbnail: movementsThumbnail
     },
     {
       id: 'masters',
-      name: t.masters.name,
-      description: t.masters.desc,
+      name: t.masterCollection,
+      description: t.masterCollectionDesc,
       thumbnail: mastersThumbnail
     },
     {
       id: 'oriental',
-      name: t.oriental.name,
-      description: t.oriental.desc,
+      name: t.eastAsianArt,
+      description: t.eastAsianArtDesc,
       thumbnail: orientalThumbnail
     }
   ];

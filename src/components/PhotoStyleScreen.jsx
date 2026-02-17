@@ -1,6 +1,7 @@
 // PhotoStyleScreen.jsx - Style Selection Screen (Dark Theme)
 // Based on mockup: 03-style-select.html
 import React, { useRef, useState, useEffect } from 'react';
+import { getUi } from '../i18n';
 
 // Thumbnail imports - Movements
 import grecoRoman from '../assets/thumbnails/movements/greco-roman.webp';
@@ -35,69 +36,72 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
   const [photoPreview, setPhotoPreview] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState(null);
 
-  // Category data with thumbnails
+  const ui = getUi(lang);
+  const ps = ui.photoStyle;
+
+  // Category data with thumbnails (i18n via ui.js)
   const categoryData = {
     movements: {
-      name: 'Western Art',
+      name: ps.movementsName,
       price: '$0.20',
       fullTransform: {
         id: 'movements-all',
-        title: 'Traveling 2500 years of art',
-        desc: '11 art movements / $2.00',
+        title: ps.movementsFullTitle,
+        desc: ps.movementsFullDesc,
         count: 11,
         isFullTransform: true,
         category: 'movements'
       },
       styles: [
-        { id: 'ancient', name: 'Greco-Roman', period: 'BC 800 - AD 500', thumbnail: grecoRoman, category: 'movements' },
-        { id: 'medieval', name: 'Medieval', period: '400 - 1400', thumbnail: medieval, category: 'movements' },
-        { id: 'renaissance', name: 'Renaissance', period: '1400 - 1600', thumbnail: renaissance, category: 'movements' },
-        { id: 'baroque', name: 'Baroque', period: '1600 - 1750', thumbnail: baroque, category: 'movements' },
-        { id: 'rococo', name: 'Rococo', period: '1700 - 1800', thumbnail: rococo, category: 'movements' },
-        { id: 'neoclassicism_vs_romanticism_vs_realism', name: 'Neo·Roman·Real', period: '1750 - 1880', thumbnail: neoclassicism, category: 'movements' },
-        { id: 'impressionism', name: 'Impressionism', period: '1860 - 1890', thumbnail: impressionism, category: 'movements' },
-        { id: 'postImpressionism', name: 'Post-Impres.', period: '1880 - 1910', thumbnail: postImpressionism, category: 'movements' },
-        { id: 'fauvism', name: 'Fauvism', period: '1905 - 1910', thumbnail: fauvism, category: 'movements' },
-        { id: 'expressionism', name: 'Expressionism', period: '1905 - 1930', thumbnail: expressionism, category: 'movements' },
-        { id: 'modernism', name: 'Modernism', period: '1907 - 1970', thumbnail: modernism, category: 'movements' }
+        { id: 'ancient', name: ps.grecoRoman, period: 'BC 800 - AD 500', thumbnail: grecoRoman, category: 'movements' },
+        { id: 'medieval', name: ps.medieval, period: '400 - 1400', thumbnail: medieval, category: 'movements' },
+        { id: 'renaissance', name: ps.renaissance, period: '1400 - 1600', thumbnail: renaissance, category: 'movements' },
+        { id: 'baroque', name: ps.baroque, period: '1600 - 1750', thumbnail: baroque, category: 'movements' },
+        { id: 'rococo', name: ps.rococo, period: '1700 - 1800', thumbnail: rococo, category: 'movements' },
+        { id: 'neoclassicism_vs_romanticism_vs_realism', name: ps.neoRomanReal, period: '1750 - 1880', thumbnail: neoclassicism, category: 'movements' },
+        { id: 'impressionism', name: ps.impressionism, period: '1860 - 1890', thumbnail: impressionism, category: 'movements' },
+        { id: 'postImpressionism', name: ps.postImpressionism, period: '1880 - 1910', thumbnail: postImpressionism, category: 'movements' },
+        { id: 'fauvism', name: ps.fauvism, period: '1905 - 1910', thumbnail: fauvism, category: 'movements' },
+        { id: 'expressionism', name: ps.expressionism, period: '1905 - 1930', thumbnail: expressionism, category: 'movements' },
+        { id: 'modernism', name: ps.modernism, period: '1907 - 1970', thumbnail: modernism, category: 'movements' }
       ]
     },
     masters: {
-      name: 'Master Collection',
+      name: ps.mastersName,
       price: '$0.25',
       fullTransform: {
         id: 'masters-all',
-        title: 'Into the world of 7 masters',
-        desc: 'Connect with 7 masters / $1.50',
+        title: ps.mastersFullTitle,
+        desc: ps.mastersFullDesc,
         count: 7,
         isFullTransform: true,
         category: 'masters'
       },
       styles: [
-        { id: 'vangogh-master', name: 'Van Gogh', period: '1853 - 1890', thumbnail: vangogh, category: 'masters' },
-        { id: 'klimt-master', name: 'Klimt', period: '1862 - 1918', thumbnail: klimt, category: 'masters' },
-        { id: 'munch-master', name: 'Munch', period: '1863 - 1944', thumbnail: munch, category: 'masters' },
-        { id: 'matisse-master', name: 'Matisse', period: '1869 - 1954', thumbnail: matisse, category: 'masters' },
-        { id: 'chagall-master', name: 'Chagall', period: '1887 - 1985', thumbnail: chagall, category: 'masters' },
-        { id: 'frida-master', name: 'Frida', period: '1907 - 1954', thumbnail: frida, category: 'masters' },
-        { id: 'lichtenstein-master', name: 'Lichtenstein', period: '1923 - 1997', thumbnail: lichtenstein, category: 'masters' }
+        { id: 'vangogh-master', name: ps.vanGogh, period: '1853 - 1890', thumbnail: vangogh, category: 'masters' },
+        { id: 'klimt-master', name: ps.klimt, period: '1862 - 1918', thumbnail: klimt, category: 'masters' },
+        { id: 'munch-master', name: ps.munch, period: '1863 - 1944', thumbnail: munch, category: 'masters' },
+        { id: 'matisse-master', name: ps.matisse, period: '1869 - 1954', thumbnail: matisse, category: 'masters' },
+        { id: 'chagall-master', name: ps.chagall, period: '1887 - 1985', thumbnail: chagall, category: 'masters' },
+        { id: 'frida-master', name: ps.frida, period: '1907 - 1954', thumbnail: frida, category: 'masters' },
+        { id: 'lichtenstein-master', name: ps.lichtenstein, period: '1923 - 1997', thumbnail: lichtenstein, category: 'masters' }
       ]
     },
     oriental: {
-      name: 'East Asian Art',
+      name: ps.orientalName,
       price: '$0.20',
       fullTransform: {
         id: 'oriental-all',
-        title: 'Exploring East Asia',
-        desc: 'Korea · China · Japan / $0.60',
+        title: ps.orientalFullTitle,
+        desc: ps.orientalFullDesc,
         count: 3,
         isFullTransform: true,
         category: 'oriental'
       },
       styles: [
-        { id: 'korean', name: 'Korean', period: 'Minhwa · Pungsokdo', thumbnail: korean, category: 'oriental' },
-        { id: 'chinese', name: 'Chinese', period: 'Ink wash · Gongbi', thumbnail: chinese, category: 'oriental' },
-        { id: 'japanese', name: 'Japanese', period: 'Ukiyo-e · Rinpa', thumbnail: japanese, category: 'oriental' }
+        { id: 'korean', name: ps.korean, period: ps.koreanSub, thumbnail: korean, category: 'oriental' },
+        { id: 'chinese', name: ps.chinese, period: ps.chineseSub, thumbnail: chinese, category: 'oriental' },
+        { id: 'japanese', name: ps.japanese, period: ps.japaneseSub, thumbnail: japanese, category: 'oriental' }
       ]
     }
   };
@@ -171,7 +175,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         ) : (
           <div className="photo-placeholder">
             <span className="photo-icon">📷</span>
-            <span className="photo-text">Tap to select photo</span>
+            <span className="photo-text">{ps.tapToSelectPhoto}</span>
           </div>
         )}
       </div>
