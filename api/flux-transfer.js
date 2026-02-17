@@ -2067,36 +2067,51 @@ If other artist: null",
       }
     }
     
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json'
-      },
-      signal: controller.signal,
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',  // Claude Sonnet 4.5 (최신)
-        max_tokens: 1000,  // 500 → 1000 (JSON 잘림 방지)
-        messages: [{
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: 'image/jpeg',
-                data: imageBase64.split(',')[1]
+    // Claude API 호출 (529/502/503 재시도 포함)
+    let response;
+    const API_MAX_RETRIES = 3;
+    for (let attempt = 1; attempt <= API_MAX_RETRIES; attempt++) {
+      response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json'
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-5',  // Claude Sonnet 4.5 (최신)
+          max_tokens: 1000,  // 500 → 1000 (JSON 잘림 방지)
+          messages: [{
+            role: 'user',
+            content: [
+              {
+                type: 'image',
+                source: {
+                  type: 'base64',
+                  media_type: 'image/jpeg',
+                  data: imageBase64.split(',')[1]
+                }
+              },
+              {
+                type: 'text',
+                text: promptText
               }
-            },
-            {
-              type: 'text',
-              text: promptText
-            }
-          ]
-        }]
-      })
-    });
+            ]
+          }]
+        })
+      });
+      
+      // 529/502/503 재시도
+      if (response.status === 529 || response.status === 502 || response.status === 503) {
+        console.log(`🔄 Claude API 재시도 (${attempt}/${API_MAX_RETRIES})... ${response.status} 에러`);
+        if (attempt < API_MAX_RETRIES) {
+          await new Promise(r => setTimeout(r, 2000 * attempt));
+          continue;
+        }
+      }
+      break;
+    }
     
     clearTimeout(timeout);
     
