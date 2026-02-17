@@ -260,6 +260,18 @@ function detectPhotoType(photoAnalysis) {
 const ARTIST_WEIGHTS = {
   // 모더니즘 (5명) - v71: 초상화/커플 비중 균등화
   modernism: {
+    portraitFemale: [
+      { name: 'PICASSO', weight: 25 },
+      { name: 'CHAGALL', weight: 25 },
+      { name: 'LICHTENSTEIN', weight: 25 },
+      { name: 'MAGRITTE', weight: 25 }
+    ],
+    portraitMale: [
+      { name: 'PICASSO', weight: 10 },
+      { name: 'CHAGALL', weight: 10 },
+      { name: 'LICHTENSTEIN', weight: 40 },
+      { name: 'MAGRITTE', weight: 40 }
+    ],
     portrait: [
       { name: 'LICHTENSTEIN', weight: 25 },
       { name: 'CHAGALL', weight: 25 },
@@ -267,10 +279,9 @@ const ARTIST_WEIGHTS = {
       { name: 'MAGRITTE', weight: 25 }
     ],
     couple: [
-      { name: 'CHAGALL', weight: 30 },
-      { name: 'LICHTENSTEIN', weight: 30 },
-      { name: 'PICASSO', weight: 20 },
-      { name: 'MAGRITTE', weight: 20 }
+      { name: 'PICASSO', weight: 15 },
+      { name: 'CHAGALL', weight: 40 },
+      { name: 'LICHTENSTEIN', weight: 45 }
     ],
     group: [
       { name: 'CHAGALL', weight: 35 },
@@ -603,6 +614,15 @@ function selectArtistByWeight(category, photoAnalysis) {
     }
     if (photoAnalysis.gender === 'male' && photoType === 'portrait') {
       return weightedRandomSelect(weights.maleFace);
+    }
+  }
+  
+  if (category === 'modernism') {
+    if (photoAnalysis.gender === 'female' && photoType === 'portrait') {
+      return weightedRandomSelect(weights.portraitFemale);
+    }
+    if (photoAnalysis.gender === 'male' && photoType === 'portrait') {
+      return weightedRandomSelect(weights.portraitMale);
     }
   }
   
@@ -1619,7 +1639,7 @@ Return ONLY valid JSON (no markdown):
   "selected_work": "exact title of the masterwork you selected",
   "reason": "why this masterwork matches this photo (mention gender/count compatibility)",
   "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by ${categoryName} in the style of [selected work title], [that work's distinctive techniques]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background'",
-  "speech_bubble": "If LICHTENSTEIN: select ONE phrase from list below based on selected_work and photo mood. First option is ORIGINAL artwork text (preferred). STILLLIFE has no speech bubble.
+  "speech_bubble": "If LICHTENSTEIN: select ONE phrase from list below based on selected_work and photo mood. STILLLIFE has no speech bubble.
 INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
 MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
 FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'
@@ -2038,7 +2058,7 @@ Return JSON only:
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "Artist Full Name",
   "selected_work": "EXACT masterwork title from the list above",
-  "speech_bubble": "If LICHTENSTEIN selected: select ONE phrase from list below based on selected_work and photo mood. First option is ORIGINAL artwork text (preferred). STILLLIFE has no speech bubble.
+  "speech_bubble": "If LICHTENSTEIN selected: select ONE phrase from list below based on selected_work and photo mood. STILLLIFE has no speech bubble.
 INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
 MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
 FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'

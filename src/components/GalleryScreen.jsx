@@ -247,30 +247,33 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   const t = texts[lang] || texts.en;
 
   // i18n 갤러리 표시 함수 (displayConfig 활용)
+  // 갤러리 카드용: 괄호 내용 제거 (간결한 표시)
+  const stripParens = (text) => text ? text.replace(/\s*\(.*?\)/g, '').trim() : '';
+
   const getGalleryDisplay = (item) => {
     // 신규 포맷: category + artistName 있으면 i18n 표시
     if (item.category && item.artistName) {
       if (item.category === 'movements') {
         const info = getMovementDisplayInfo(item.movementName || '', item.artistName, lang);
         return { 
-          title: info.title, 
-          subtitle: info.subtitle,
+          title: stripParens(info.title), 
+          subtitle: stripParens(info.subtitle),
           badge: item.isRetransform ? 'Re.' : null
         };
       }
       if (item.category === 'masters') {
         const info = getMasterInfo(item.artistName, lang);
         return { 
-          title: info.fullName, 
-          subtitle: info.movement,
+          title: stripParens(info.fullName), 
+          subtitle: stripParens(info.movement),
           badge: item.isRetransform ? 'Re.' : null
         };
       }
       if (item.category === 'oriental') {
         const info = getOrientalDisplayInfo(item.artistName, lang);
         return { 
-          title: info.title, 
-          subtitle: info.subtitle,
+          title: stripParens(info.title), 
+          subtitle: stripParens(info.subtitle),
           badge: item.isRetransform ? 'Re.' : null
         };
       }

@@ -511,7 +511,7 @@ Picasso deconstructed form, Miró played with symbols, Magritte inverted reality
 Lichtenstein put comics on canvas, Chagall painted love and dreams.
 
 Cubism, Surrealism, Pop Art — an era of boundless experimentation.
-A century where the question "What is art?" itself became art.`
+The question 'What is art?' itself became art.`
   }
 };
 
