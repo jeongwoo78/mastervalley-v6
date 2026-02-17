@@ -924,23 +924,10 @@ export function getMovementDisplayInfo(styleName, artistName, lang = 'en') {
   let actualMovement = styleName;
   const resolvedStyle = resolveMovement(styleName);
 
-  if (artistName) {
-    const key = normalizeKey(artistName);
-    // 복합 사조 세분화 — 한국어/영어/styleId 모두 대응
-    const isNeoRomReal = resolvedStyle && movementData[resolvedStyle] === _neoRomReal;
-    const isModernism = resolvedStyle && movementData[resolvedStyle] === _modernism;
-    
-    if (isNeoRomReal) {
-      if (['david', 'ingres'].includes(key)) actualMovement = '신고전주의';
-      else if (['delacroix', 'turner'].includes(key)) actualMovement = '낭만주의';
-      else if (['courbet', 'manet'].includes(key)) actualMovement = '사실주의';
-    }
-    if (isModernism) {
-      if (key === 'picasso') actualMovement = '입체주의';
-      else if (['magritte', 'miro', 'chagall'].includes(key)) actualMovement = '초현실주의';
-      else if (key === 'lichtenstein') actualMovement = '팝아트';
-    }
-  }
+  // v78: 복합 사조 세분화 제거 → 갤러리에서 통일된 사조명 표시
+  // 모더니즘 → 모더니즘 (입체주의/초현실주의/팝아트로 나누지 않음)
+  // 신고전·낭만·사실 → 신고전·낭만·사실주의 (개별 분리하지 않음)
+  // 부제(화가명)에서 세부 정보 확인 가능
   
   // movementData 조회 (정규화 적용)
   const resolvedActual = resolveMovement(actualMovement);
