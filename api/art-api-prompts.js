@@ -75,9 +75,9 @@ export const ARTIST_CONFIG = {
   
   // === 모더니즘/팝아트 ===
   'picasso':             { control_strength: 0.10, brush_size: '75mm' },
-  'magritte':            { control_strength: 0.40, brush_size: '75mm' },
-  'miro':                { control_strength: 0.40, brush_size: '75mm' },
-  'chagall':             { control_strength: 0.40, brush_size: '75mm' },
+  'magritte':            { control_strength: 0.30, brush_size: '75mm' },
+  'miro':                { control_strength: 0.10, brush_size: '75mm' },
+  'chagall':             { control_strength: 0.30, brush_size: '75mm' },
   'lichtenstein':        { control_strength: 0.30, brush_size: null },
   
   // === 거장 ===
@@ -1163,7 +1163,7 @@ export const MODERNISM_PROMPTS = {
   'magritte-golconda': {
     name: '골콩다',
     nameEn: 'Golconda',
-    prompt: `Hand-painted oil painting of the subject by René Magritte. Ordinary objects placed in impossible arrangements. Colors are muted and naturalistic with clear even lighting. Dark grey 30%, pale blue 30%, beige 20%, crimson red 20%. A new background is added with pale blue sky and red-roofed buildings. 40+ identical full-body standing figures of the subject are added floating weightlessly in a grid pattern, densely filling the entire sky and screen. Figures are detailed in the foreground, becoming smaller and hazier with distance. All surfaces show visible oil paint texture. Soft light from the left brightens one side of the face. Blue fills the sky, red fills rooftops, beige fills buildings.`
+    prompt: `Hand-painted oil painting by René Magritte. Muted naturalistic colors with even lighting. Dark grey 30%, pale blue 30%, beige 20%, crimson red 20%. Background of pale blue sky and red-roofed buildings. 40+ identical full-body standing figures of the subject are added floating weightlessly in a grid pattern, densely filling the entire sky and screen. Figures detailed in foreground, smaller and hazier with distance. Visible oil paint texture on all surfaces. Soft light from left. Blue sky, red rooftops, beige buildings.`
   },
 
   // ─────────────────────────────────────────

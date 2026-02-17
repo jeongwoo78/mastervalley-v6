@@ -267,8 +267,8 @@ const ARTIST_WEIGHTS = {
       { name: 'MAGRITTE', weight: 25 }
     ],
     portraitMale: [
-      { name: 'MAGRITTE', weight: 60 },
-      { name: 'LICHTENSTEIN', weight: 40 }
+      { name: 'MAGRITTE', weight: 50 },
+      { name: 'LICHTENSTEIN', weight: 50 }
     ],
     portrait: [
       { name: 'LICHTENSTEIN', weight: 25 },
@@ -1362,7 +1362,7 @@ Do NOT create your own text. Do NOT modify the phrases. Copy EXACTLY as listed.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🧑‍♂️ MALE PORTRAIT (남성 단독):
-   MAGRITTE 60%, LICHTENSTEIN 40%
+   MAGRITTE 50%, LICHTENSTEIN 50%
    ❌ PICASSO, CHAGALL, MIRÓ 제외
 
 🧑‍♀️ FEMALE PORTRAIT (여성 단독):
