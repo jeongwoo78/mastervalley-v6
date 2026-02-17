@@ -1163,7 +1163,7 @@ export const MODERNISM_PROMPTS = {
   'magritte-golconda': {
     name: '골콩다',
     nameEn: 'Golconda',
-    prompt: `Hand-painted oil painting of the subject by René Magritte. Ordinary objects placed in impossible arrangements. Colors are muted and naturalistic with clear even lighting. Dark grey 30%, pale blue 30%, beige 20%, crimson red 20%. A new background is added with pale blue sky and red-roofed buildings. 40+ identical full-body standing figures of the subject are added floating weightlessly in a grid pattern, densely filling the entire sky and screen. Figures are detailed in the foreground, becoming smaller and hazier with distance. All surfaces show visible oil paint texture. Soft light from the left brightens one side of the face. Blue fills the sky, red fills rooftops, beige fills buildings.`
+    prompt: `Hand-painted oil painting of the subject by René Magritte. Ordinary objects placed in impossible arrangements. Colors are muted and naturalistic with clear even lighting. Dark grey 30%, pale blue 30%, beige 20%, crimson red 20%. A new background is added with pale blue sky and red-roofed buildings. The subject is repeated as 40+ identical full-body standing figures floating weightlessly in a grid pattern, densely filling the entire sky and screen. Figures are detailed in the foreground, becoming smaller and hazier with distance. All surfaces show visible oil paint texture. Soft light from the left brightens one side of the face. Blue fills the sky, red fills rooftops, beige fills buildings.`
   },
 
   // ─────────────────────────────────────────
