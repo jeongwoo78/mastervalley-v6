@@ -19,7 +19,7 @@ const StyleSelection = ({ onSelect }) => {
     postImpressionism: { name: '후기인상주의', period: '1880-1910' },
     fauvism: { name: '야수파', period: '1905-1908' },
     expressionism: { name: '표현주의', period: '1905-1920' },
-    modernism: { name: '20세기 모더니즘', period: '1907-1970' },
+    modernism: { name: '모더니즘', period: '1907-1970' },
     
     // 거장 (대 카테고리와 소 카테고리 이름 통일)
     masters: { name: '거장', period: '시대를 초월한 거장들' },
@@ -41,7 +41,7 @@ const StyleSelection = ({ onSelect }) => {
     { id: 'postImpressionism', name: '후기인상주의', category: 'movements', icon: '🌻', description: '감정과 구조의 탐구' },
     { id: 'fauvism', name: '야수파', category: 'movements', icon: '🎨', description: '순수 색채의 해방' },
     { id: 'expressionism', name: '표현주의', category: 'movements', icon: '😱', description: '내면의 불안과 고독' },
-    { id: 'modernism', name: '20세기 모더니즘', category: 'movements', icon: '🔮', description: '전통을 부수는 실험' },
+    { id: 'modernism', name: '모더니즘', category: 'movements', icon: '🔮', description: '전통을 부수는 실험' },
     
     // 거장 7명 (시간순: 출생연도) - v70: 피카소→샤갈
     { id: 'vangogh-master', name: '빈센트 반 고흐', nameEn: 'Vincent van Gogh', category: 'masters', icon: '🌻', description: '1853-1890 | 후기인상주의' },

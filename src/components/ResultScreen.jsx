@@ -1381,7 +1381,7 @@ const ResultScreen = ({
     return null; // 매칭 안 되면 null
   };
 
-  // ========== 20세기 모더니즘: 세부 사조 매핑 ==========
+  // ========== 모더니즘: 세부 사조 매핑 ==========
   const getModernismMovement = (artistName) => {
     const artist = artistName.toLowerCase();
     

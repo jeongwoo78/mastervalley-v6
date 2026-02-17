@@ -841,7 +841,7 @@ export function getMovementDisplayInfo(styleName, artistName, lang = 'en') {
     '후기인상주의': { ko: '후기인상주의', en: 'Post-Impressionism', period: '19세기 말', periodEn: 'Late 19th Century' },
     '야수파': { ko: '야수파', en: 'Fauvism', period: '20세기 초', periodEn: 'Early 20th Century' },
     '표현주의': { ko: '표현주의', en: 'Expressionism', period: '20세기 초', periodEn: 'Early 20th Century' },
-    '20세기 모더니즘': { ko: '모더니즘', en: 'Modernism', period: '20세기', periodEn: '20th Century' },
+    '모더니즘': { ko: '모더니즘', en: 'Modernism', period: '20세기', periodEn: '20th Century' },
     '입체주의': { ko: '입체주의', en: 'Cubism', period: '20세기 초', periodEn: 'Early 20th Century' },
     '초현실주의': { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반', periodEn: 'Early–Mid 20th Century' },
     '팝아트': { ko: '팝아트', en: 'Pop Art', period: '20세기 중반', periodEn: 'Mid 20th Century' }
@@ -856,7 +856,7 @@ export function getMovementDisplayInfo(styleName, artistName, lang = 'en') {
       else if (['delacroix', 'turner'].includes(key)) actualMovement = '낭만주의';
       else if (['courbet', 'manet'].includes(key)) actualMovement = '사실주의';
     }
-    if (styleName === '20세기 모더니즘') {
+    if (styleName === '모더니즘') {
       if (key === 'picasso') actualMovement = '입체주의';
       else if (['magritte', 'miro', 'chagall'].includes(key)) actualMovement = '초현실주의';
       else if (key === 'lichtenstein') actualMovement = '팝아트';
@@ -1008,14 +1008,7 @@ export function getStyleTitle(category, styleId, artistName, lang = 'en') {
     const masterInfo = getMasterInfo(artistName || styleId, lang);
     return masterInfo.fullName;
   } else if (category === 'movements') {
-    // 복합사조 해결: artistName으로 세부 사조 특정
-    if (artistName && (styleId === 'neoclassicism_vs_romanticism_vs_realism' || styleId === 'modernism')) {
-      const info = getMovementDisplayInfo(
-        styleId === 'neoclassicism_vs_romanticism_vs_realism' ? '신고전 vs 낭만 vs 사실주의' : '20세기 모더니즘',
-        artistName, lang
-      );
-      return info.title;
-    }
+    // 복합사조도 부모 카테고리 제목 유지 (세부사조는 부제2에서 표시)
     const m = MOVEMENTS[styleId];
     if (!m) return lang === 'ko' ? '미술사조' : 'Art Movement';
     const period = lang === 'ko' ? m.period : (m.periodEn || m.period);

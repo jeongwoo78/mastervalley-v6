@@ -3571,7 +3571,7 @@ export default async function handler(req, res) {
         'fauvism': '야수파',
         'expressionism': '표현주의', 
         'artNouveau': '아르누보',
-        'modernism': '20세기 모더니즘'
+        'modernism': '모더니즘'
       };
       logData.selection.movement = movementMap[selectedStyle.id] || selectedStyle.name || '';
     }

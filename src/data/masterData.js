@@ -136,7 +136,7 @@ export const MOVEMENTS = {
   },
   modernism: {
     id: 'modernism',
-    ko: '20세기 모더니즘',
+    ko: '모더니즘',
     en: 'Modernism',
     period: '20세기',
     periodEn: '20th Century',
@@ -148,7 +148,7 @@ export const MOVEMENTS = {
   }
 };
 
-// 20세기 모더니즘 세부 사조 (화가별 분류용)
+// 모더니즘 세부 사조 (화가별 분류용)
 export const MODERNISM_SUB = {
   cubism: { ko: '입체주의', en: 'Cubism', period: '20세기 초', periodEn: 'Early 20th Century', description: '형태를 해체하고 재조립', descriptionEn: 'Deconstructing and reassembling form' },
   surrealism: { ko: '초현실주의', en: 'Surrealism', period: '20세기 초중반', periodEn: 'Early–Mid 20th Century', description: '무의식과 꿈의 세계', descriptionEn: 'The world of dreams and the unconscious' },
@@ -1101,8 +1101,8 @@ export const getMovementDisplayInfo = (styleName, artistName) => {
     }
   }
   
-  // "20세기 모더니즘" 특수 처리
-  if (styleName === '20세기 모더니즘' && artistName) {
+  // "모더니즘" 특수 처리
+  if (styleName === '모더니즘' && artistName) {
     const artist = findArtistByName(artistName);
     if (artist?.sub) {
       const subInfo = MODERNISM_SUB?.[artist.sub];
@@ -1220,7 +1220,7 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
         isEn ? (movement?.descriptionEn || movement?.description || '') : (movement?.description || '')
       ];
     } 
-    // 결과-결과 또는 완료 미리보기: 매칭화가 + 세부사조 화풍
+    // 결과-결과 또는 완료 미리보기: 매칭화가 + 세부사조명 · 화풍
     else {
       const artist = findArtistByName(displayArtist);
       const artistDisplay = artist 
@@ -1232,9 +1232,27 @@ export const getStyleSubtitles = (category, styleId, mode, displayArtist, displa
         || (isEn 
           ? (artist?.descriptionEn || movement?.descriptionEn || artist?.description || movement?.description || '')
           : (artist?.description || movement?.description || ''));
+      
+      // 복합사조: 부제2에 세부사조명 접두 (예: "Cubism · Deconstructing...")
+      let sub2 = artistStyle;
+      if (styleId === 'modernism' && artist?.sub) {
+        const sub = MODERNISM_SUB[artist.sub];
+        if (sub) {
+          const subName = isEn ? sub.en : sub.ko;
+          sub2 = `${subName} · ${artistStyle}`;
+        }
+      }
+      if (styleId === 'neoclassicism_vs_romanticism_vs_realism' && artist?.movementId) {
+        const sub = NINETEENTH_CENTURY_SUB[artist.movementId];
+        if (sub) {
+          const subName = isEn ? sub.en : sub.ko;
+          sub2 = `${subName} · ${artistStyle}`;
+        }
+      }
+      
       return [
         artistDisplay,  // 부제1: 매칭화가
-        artistStyle     // 부제2: 세부사조 또는 화가 화풍
+        sub2            // 부제2: [세부사조명 · ] 화풍 설명
       ];
     }
   }
