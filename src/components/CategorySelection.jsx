@@ -43,7 +43,10 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
       {/* Header */}
       <header className="main-header">
         <button className="menu-btn" onClick={handleMenuClick}>
-          <span className="menu-icon">👤</span>
+          <svg className="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="28" height="28">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M20 21a8 8 0 1 0-16 0"/>
+          </svg>
           <span className="menu-label">MY</span>
         </button>
         <span className="credits">${userCredits.toFixed(2)}</span>
@@ -105,14 +108,13 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           padding: 4px 8px;
         }
 
-        .menu-icon {
-          font-size: 28px;
-          filter: grayscale(1) brightness(2);
+        .menu-icon-svg {
+          display: block;
         }
 
         .menu-label {
           font-size: 10px;
-          color: rgba(255,255,255,0.7);
+          color: #fff;
           font-weight: 600;
           letter-spacing: 0.5px;
         }

@@ -19,8 +19,8 @@ const MenuScreen = ({
   const t = getUi(lang).menu;
 
   const languages = [
-    { code: 'en', flag: '🇺🇸', name: 'English' },
-    { code: 'ko', flag: '🇰🇷', name: '한국어' },
+    { code: 'en', name: 'English' },
+    { code: 'ko', name: '한국어' },
   ];
 
   const currentLangName = languages.find(l => l.code === lang)?.name || 'English';
@@ -80,7 +80,7 @@ const MenuScreen = ({
                 className={`lang-option ${lang === l.code ? 'active' : ''}`}
                 onClick={() => handleLanguageSelect(l.code)}
               >
-                <span className="lang-flag">{l.flag}</span>
+                <span className="lang-dash">-</span>
                 <span className="lang-name">{l.name}</span>
                 {lang === l.code && <span className="lang-check">✓</span>}
               </div>
@@ -244,7 +244,7 @@ const menuStyles = `
   .lang-option {
     display: flex;
     align-items: center;
-    padding: 12px 16px 12px 48px;
+    padding: 12px 16px 12px 50px;
     cursor: pointer;
     transition: background 0.2s;
   }
@@ -257,15 +257,16 @@ const menuStyles = `
     background: rgba(139, 92, 246, 0.1);
   }
 
-  .lang-flag {
-    font-size: 18px;
-    margin-right: 12px;
+  .lang-dash {
+    color: rgba(255,255,255,0.3);
+    font-size: 14px;
+    margin-right: 10px;
   }
 
   .lang-name {
-    flex: 1;
     color: rgba(255,255,255,0.85);
     font-size: 14px;
+    flex: 1;
   }
 
   .lang-check {

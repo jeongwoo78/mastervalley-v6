@@ -12,7 +12,7 @@ import ResultScreen from './components/ResultScreen';
 import GalleryScreen from './components/GalleryScreen';
 import AddFundsScreen from './components/AddFundsScreen';
 import MenuScreen from './components/MenuScreen';
-import LanguageScreen from './components/LanguageScreen';
+// LanguageScreen removed - 메뉴 아코디언에서 직접 변경
 import InsufficientBalancePopup from './components/InsufficientBalancePopup';
 import './styles/App.css';
 
@@ -24,7 +24,7 @@ const App = () => {
   // 언어 상태 (기본: 영어)
   const [lang, setLang] = useState('en');
 
-  // 화면 상태: 'category' | 'photoStyle' | 'processing' | 'result' | 'addFunds' | 'menu' | 'language'
+  // 화면 상태: 'category' | 'photoStyle' | 'processing' | 'result' | 'addFunds' | 'menu'
   const [currentScreen, setCurrentScreen] = useState('category');
   const [showGallery, setShowGallery] = useState(false);
   
@@ -298,22 +298,11 @@ const App = () => {
               onBack={() => setCurrentScreen('category')}
               onGallery={() => setShowGallery(true)}
               onAddFunds={handleGoToAddFunds}
-              onLanguage={() => setCurrentScreen('language')}
+              onLanguage={handleLanguageChange}
               onSupport={() => console.log('Support')}
               onLogout={handleLogout}
               onDeleteAccount={handleDeleteAccount}
               lang={lang}
-            />
-          )}
-
-          {currentScreen === 'language' && (
-            <LanguageScreen
-              onBack={() => setCurrentScreen('menu')}
-              onSelect={(newLang) => {
-                handleLanguageChange(newLang);
-                setCurrentScreen('menu');
-              }}
-              currentLang={lang}
             />
           )}
 
