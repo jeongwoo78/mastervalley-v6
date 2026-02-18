@@ -154,7 +154,6 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         <span className="header-title">{currentCategory.name}</span>
         <div className="header-right">
           <span className="header-price">{currentCategory.price}</span>
-          <span className="header-balance">${userCredits.toFixed(2)}</span>
         </div>
       </header>
 
@@ -343,6 +342,10 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           box-shadow: 0 4px 16px rgba(102,126,234,0.4);
         }
 
+        .full-transform-btn:focus {
+          outline: none;
+        }
+
         .ft-title {
           color: #fff;
           font-size: 15px;
@@ -378,6 +381,10 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         .style-card.selected {
           border-color: #7c3aed;
           box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+        }
+
+        .style-card:focus {
+          outline: none;
         }
 
         .style-thumb {

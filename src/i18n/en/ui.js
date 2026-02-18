@@ -155,7 +155,7 @@ export const ui = {
 
   // ===== Menu =====
   menu: {
-    title: 'Menu',
+    title: 'MY',
     myGallery: 'My Gallery',
     language: 'Language',
     addFunds: 'Add Funds',

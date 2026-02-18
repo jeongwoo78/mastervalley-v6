@@ -155,10 +155,10 @@ export const ui = {
 
   // ===== Menu =====
   menu: {
-    title: '메뉴',
+    title: 'MY',
     myGallery: '내 갤러리',
     language: '언어',
-    addFunds: '크레딧 충전',
+    addFunds: '충전',
     support: '고객 지원',
     logOut: '로그아웃',
     deleteAccount: '계정 삭제'
@@ -166,7 +166,7 @@ export const ui = {
 
   // ===== AddFunds =====
   addFunds: {
-    title: '크레딧 충전',
+    title: '충전',
     balance: '잔액',
     mini: 'Mini',
     basic: 'Basic',
@@ -175,7 +175,7 @@ export const ui = {
     pro: 'Pro',
     bonus: '보너스',
     bestValue: '인기',
-    info1: '💡 크레딧은 만료되지 않습니다',
+    info1: '💡 잔액은 만료되지 않습니다',
     info2: '구독 필요 없음'
   },
 
