@@ -1455,31 +1455,24 @@ const ResultScreen = ({
                   setCurrentIndex(i => i - 1);
                 }
               }}
-              disabled={viewIndex === -1 || isRetrying}
+              disabled={viewIndex === -1}
               className="nav-btn"
-              style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
               {getUi(lang).processing.prev}
             </button>
             <div className="nav-dots">
               <button
                 className={`nav-dot edu ${viewIndex === -1 ? 'active' : ''}`}
-                onClick={() => !isRetrying && setViewIndex(-1)}
-                disabled={isRetrying}
-                style={{ opacity: isRetrying ? 0.5 : 1 }}
+                onClick={() => setViewIndex(-1)}
               >📚</button>
               {fullTransformResults.map((_, idx) => (
                 <button
                   key={idx}
                   className={`nav-dot ${viewIndex === idx ? 'active' : ''}`}
                   onClick={() => {
-                    if (!isRetrying) {
-                      setViewIndex(idx);
-                      setCurrentIndex(idx);
-                    }
+                    setViewIndex(idx);
+                    setCurrentIndex(idx);
                   }}
-                  disabled={isRetrying}
-                  style={{ opacity: isRetrying ? 0.5 : 1 }}
                 />
               ))}
               <span className="nav-count">[{viewIndex === -1 ? 0 : viewIndex + 1}/{fullTransformResults.length}]</span>
@@ -1494,9 +1487,8 @@ const ResultScreen = ({
                   setCurrentIndex(i => i + 1);
                 }
               }}
-              disabled={viewIndex === fullTransformResults.length - 1 || isRetrying}
+              disabled={viewIndex === fullTransformResults.length - 1}
               className="nav-btn"
-              style={{ opacity: isRetrying ? 0.5 : 1 }}
             >
               {getUi(lang).processing.next}
             </button>
