@@ -177,6 +177,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   const [showSaveShareMenu, setShowSaveShareMenu] = useState(false);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
+  const [isBatchSaving, setIsBatchSaving] = useState(false);
 
   // i18n texts from ui.js
   const t = getUi(lang).gallery;
@@ -282,6 +283,46 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
     setSelectedIds(new Set());
   };
 
+  // 선택 이미지 일괄 저장
+  const handleSaveSelected = async () => {
+    if (selectedIds.size === 0) return;
+    setIsBatchSaving(true);
+    let successCount = 0;
+    let failCount = 0;
+    
+    try {
+      const selectedItems = galleryItems.filter(item => selectedIds.has(item.id));
+      
+      for (const item of selectedItems) {
+        try {
+          const fileName = `mastervalley_${item.styleName.replace(/\s+/g, '_')}_${Date.now()}.jpg`;
+          const finalImage = WATERMARK_ON_SAVE ? await addWatermark(item.imageData) : item.imageData;
+          const result = await saveToDevice(finalImage, fileName);
+          if (result.success) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+          // 연속 저장 간 짧은 딜레이 (OS 부담 방지)
+          await new Promise(r => setTimeout(r, 300));
+        } catch {
+          failCount++;
+        }
+      }
+      
+      if (failCount === 0) {
+        alert(t.batchSaveComplete.replace('{count}', successCount));
+      } else {
+        alert(t.batchSavePartial.replace('{success}', successCount).replace('{fail}', failCount));
+      }
+    } catch (error) {
+      console.error('일괄 저장 실패:', error);
+      alert(t.saveFailed);
+    } finally {
+      setIsBatchSaving(false);
+    }
+  };
+
   // 이미지 저장 (mobileShare 사용)
   const handleDownload = async (item) => {
     try {
@@ -380,6 +421,13 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
               onClick={selectedIds.size === galleryItems.length ? deselectAll : selectAll}
             >
               {selectedIds.size === galleryItems.length ? t.deselectAll : t.selectAll}
+            </button>
+            <button 
+              className="select-header-save"
+              onClick={handleSaveSelected}
+              disabled={selectedIds.size === 0 || isBatchSaving}
+            >
+              {isBatchSaving ? '⏳' : '💾'} {isBatchSaving ? t.saving : t.save}
             </button>
             <button 
               className="select-header-delete"
@@ -570,8 +618,8 @@ const animationStyle = `
     position: absolute;
     top: 6px;
     left: 6px;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     border: 2px solid rgba(255,255,255,0.5);
     background: rgba(0,0,0,0.3);
@@ -631,6 +679,21 @@ const animationStyle = `
     color: #667eea;
     font-size: 11px;
     cursor: pointer;
+  }
+  
+  .select-header-save {
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(76, 175, 80, 0.4);
+    background: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  
+  .select-header-save:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
   
   .select-header-delete {

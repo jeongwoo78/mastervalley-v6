@@ -144,7 +144,10 @@ export const ui = {
     deleteSelected: 'Delete Selected',
     cancel: 'Cancel',
     confirmDeleteSelected: 'Delete {count} selected images?',
-    selectedCount: '{count} selected'
+    selectedCount: '{count} selected',
+    saving: 'Saving...',
+    batchSaveComplete: '✅ {count} images saved!',
+    batchSavePartial: '✅ {success} saved, ❌ {fail} failed'
   },
 
   // ===== Menu =====

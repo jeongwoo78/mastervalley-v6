@@ -144,7 +144,10 @@ export const ui = {
     deleteSelected: '선택 삭제',
     cancel: '취소',
     confirmDeleteSelected: '선택한 {count}개 이미지를 삭제할까요?',
-    selectedCount: '{count}개 선택'
+    selectedCount: '{count}개 선택',
+    saving: '저장 중...',
+    batchSaveComplete: '✅ {count}개 이미지 저장 완료!',
+    batchSavePartial: '✅ {success}개 저장, ❌ {fail}개 실패'
   },
 
   // ===== Menu =====
