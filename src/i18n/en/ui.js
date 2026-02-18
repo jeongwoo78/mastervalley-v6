@@ -75,7 +75,8 @@ export const ui = {
     orientalSub1: 'Korea · China · Japan',
     orientalSub2: 'Three nations, alike yet distinct',
     prev: '◀ Prev',
-    next: 'Next ▶'
+    next: 'Next ▶',
+    downloading: 'Downloading...'
   },
 
   // ===== Result =====
@@ -109,7 +110,9 @@ export const ui = {
     show: 'Show',
     shareTitle: 'Master Valley Art',
     shareText: 'style artwork ✨',
-    loadingEducation: 'Loading artwork description...'
+    loadingEducation: 'Loading artwork description...',
+    conversionFailedRetry: 'Conversion failed. Please tap Retry below.',
+    convertedInStyle: 'This artwork was converted in {style} style.'
   },
 
   // ===== Gallery =====

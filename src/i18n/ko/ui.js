@@ -75,7 +75,8 @@ export const ui = {
     orientalSub1: '한국 · 중국 · 일본',
     orientalSub2: '닮은 듯 다른 세 나라의 미학',
     prev: '◀ 이전',
-    next: '다음 ▶'
+    next: '다음 ▶',
+    downloading: '다운로드 중...'
   },
 
   // ===== Result =====
@@ -109,7 +110,9 @@ export const ui = {
     show: '보기',
     shareTitle: 'Master Valley 작품',
     shareText: '스타일 작품 ✨',
-    loadingEducation: '작품 설명을 생성하고 있습니다...'
+    loadingEducation: '작품 설명을 생성하고 있습니다...',
+    conversionFailedRetry: '변환에 실패하였습니다. 아래 다시 시도를 눌러주세요.',
+    convertedInStyle: '{style} 스타일로 변환된 작품입니다.'
   },
 
   // ===== Gallery =====

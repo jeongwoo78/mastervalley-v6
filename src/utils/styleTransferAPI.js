@@ -86,7 +86,7 @@ const getModelForStyle = (style) => {
 };
 
 const callFluxAPI = async (photoBase64, stylePrompt, onProgress) => {
-  if (onProgress) onProgress('Processing...');
+  if (onProgress) onProgress({ status: 'processing' });
 
   const response = await fetch(`${API_BASE_URL}/api/flux-transfer`, {
     method: 'POST',
@@ -111,10 +111,9 @@ const callFluxAPI = async (photoBase64, stylePrompt, onProgress) => {
 };
 
 const callFluxWithAI = async (photoBase64, selectedStyle, onProgress, correctionPrompt = null) => {
-  // 동적 이름으로 진행 메시지
+  // 진행 상태 전달
   if (onProgress) {
-    const styleName = selectedStyle?.name || 'Master';
-    onProgress(`${styleName} in progress...`);
+    onProgress({ status: 'processing' });
   }
 
   const requestBody = {
@@ -178,7 +177,7 @@ const pollPrediction = async (predictionId, modelConfig, onProgress) => {
 
     if (onProgress) {
       const progress = Math.min(95, 10 + (attempts * 1.0));
-      onProgress(`Processing... ${Math.floor(progress)}%`);
+      onProgress({ status: 'processing', progress: Math.floor(progress) });
     }
   }
 
@@ -192,7 +191,7 @@ export const processStyleTransfer = async (photoFile, selectedStyle, correctionP
     const modelConfig = getModelForStyle(selectedStyle);
     
     if (onProgress) {
-      onProgress('Analyzing photo...');
+      onProgress({ status: 'analyzing' });
     }
 
     let prediction;
@@ -256,7 +255,7 @@ export const processStyleTransfer = async (photoFile, selectedStyle, correctionP
       throw new Error('No result image');
     }
 
-    if (onProgress) onProgress('Downloading...');
+    if (onProgress) onProgress({ status: 'downloading' });
     
     const imageResponse = await fetch(resultUrl);
     const blob = await imageResponse.blob();
@@ -299,7 +298,7 @@ export const mockStyleTransfer = async (photoFile, selectedStyle, onProgress) =>
     const interval = setInterval(() => {
       progress += 10;
       if (onProgress) {
-        onProgress(`${modelConfig.label} Processing... ${progress}%`);
+        onProgress({ status: 'processing', progress });
       }
       
       if (progress >= 100) {
