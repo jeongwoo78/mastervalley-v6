@@ -123,7 +123,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           background: transparent;
           padding: 8px 0;
           color: #fff;
-          font-size: 15px;
+          font-size: 17px;
           font-weight: 600;
         }
 

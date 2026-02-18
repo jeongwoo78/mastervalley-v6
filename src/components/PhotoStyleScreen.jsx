@@ -153,7 +153,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         <button className="back-btn" onClick={onBack}>←</button>
         <span className="header-title">{currentCategory.name}</span>
         <div className="header-right">
-          <span className="header-price">{currentCategory.price}</span>
+          <span className="header-price">{currentCategory.price} each</span>
         </div>
       </header>
 
@@ -243,7 +243,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
 
         .header-price {
           color: rgba(255,255,255,0.5);
-          font-size: 14px;
+          font-size: 15px;
         }
 
         .header-right {
