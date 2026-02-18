@@ -243,7 +243,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
 
         .header-price {
           color: rgba(255,255,255,0.5);
-          font-size: 15px;
+          font-size: 17px;
         }
 
         .header-right {
@@ -360,7 +360,6 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
 
         /* Style Grid */
         .style-grid {
-          flex: 1;
           padding: 4px 28px 24px;
           display: grid;
           grid-template-columns: repeat(2, 1fr);
