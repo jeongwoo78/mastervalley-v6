@@ -55,8 +55,8 @@ export const ARTIST_CONFIG = {
   // === 인상주의 ===
   'renoir':              { control_strength: 0.30, brush_size: '75mm' },
   'monet':               { control_strength: 0.30, brush_size: '75mm' },
-  'degas':               { control_strength: 0.50, brush_size: '75mm' },
-  'caillebotte':         { control_strength: 0.50, brush_size: '75mm' },
+  'degas':               { control_strength: 0.40, brush_size: '75mm' },
+  'caillebotte':         { control_strength: 0.40, brush_size: '75mm' },
   
   // === 후기인상주의 ===
   'vangogh':             { control_strength: 0.45, brush_size: '75mm' },
@@ -69,20 +69,20 @@ export const ARTIST_CONFIG = {
   'vlaminck':            { control_strength: 0.45, brush_size: '100mm' },
   
   // === 표현주의 ===
-  'munch':               { control_strength: 0.40, brush_size: '100mm' },
+  'munch':               { control_strength: 0.20, brush_size: '100mm' },
   'kirchner':            { control_strength: 0.10, brush_size: '100mm' },
   'kokoschka':           { control_strength: 0.10, brush_size: '100mm' },
   
   // === 모더니즘/팝아트 ===
   'picasso':             { control_strength: 0.10, brush_size: '75mm' },
-  'magritte':            { control_strength: 0.35, brush_size: '75mm' },
-  'miro':                { control_strength: 0.40, brush_size: '75mm' },
-  'chagall':             { control_strength: 0.40, brush_size: '75mm' },
+  'magritte':            { control_strength: 0.20, brush_size: '75mm' },
+  'miro':                { control_strength: 0.10, brush_size: '75mm' },
+  'chagall':             { control_strength: 0.20, brush_size: '75mm' },
   'lichtenstein':        { control_strength: 0.30, brush_size: null },
   
   // === 거장 ===
-  'klimt':               { control_strength: 0.65, brush_size: '40mm' },
-  'frida':               { control_strength: 0.80, brush_size: '25mm' },
+  'klimt':               { control_strength: 0.60, brush_size: '40mm' },
+  'frida':               { control_strength: 0.70, brush_size: '25mm' },
   
   // === 동양화 ===
   'korean':              { control_strength: 0.75, brush_size: null },
@@ -1199,21 +1199,21 @@ export const MODERNISM_PROMPTS = {
   'chagall-lovers': {
     name: '꽃과 연인들',
     nameEn: 'Lovers with Flowers',
-    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Bright bouquet radiates warmth against a dark background. Deep green 30%, dark blue 25%, vermilion red 20%, white pink 25%. Deep green and dark blue blend darkly filling the background in soft haze. Add large bouquet with red, white, pink flowers to decorate the scene. Face painted in soft ivory tones, outlines melt and dissolve softly. Bright red and white of the bouquet glow vividly against the dark background. Fluid soft brushstrokes overflow along figures and flower contours. Soft light illuminates bouquet and face gently from center. Deep green and dark blue sink deep behind figures and toward edges. Green and blue claim the background, red and pink fill the flowers, ivory remains on skin.`
+    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Thick rough brushstrokes with visible impasto texture shift boundaries between solid forms and open space. Outlines are simple and childlike, forms float and tilt freely. Colors are bold saturated jewel tones layered thickly. Bright bouquet radiates warmth against a dark background. Deep green 30%, dark blue 25%, vermilion red 20%, white pink 25%. Deep green and dark blue blend darkly filling the background. Add large bouquet with red, white, pink flowers to decorate the scene. Face painted in naïve folk art style with simplified features, flat planes of color, childlike proportions. Bright red and white of the bouquet glow vividly against the dark background. Thick bold brushstrokes follow figures and flower contours. Warm glowing light radiates from bouquet and face at center. Deep green and dark blue sink deep behind figures and toward edges. Green and blue claim the background, red and pink fill the flowers, ivory remains on skin.`
   },
 
   // ★ 신부 — ~149w
   'chagall-lamariee': {
     name: '신부',
     nameEn: 'La Mariée',
-    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Massive red veil swirls in the night sky. Crimson red 30%, deep navy blue 30%, white cream 20%, dark green 20%. Deep navy blue night sky fills the background. Add dreamlike soft violin, candelabra and moon floating in the background. Face painted in soft ivory tones, outlines melt and dissolve softly. White dress and red veil glow vividly against the dark night sky. Fluid soft brushstrokes overflow along veil and dress flow. Soft light illuminates the bride from center outward gently. Deep blue sinks deep into background and edges. Blue claims the night sky, red fills the veil, white fills the dress, green remains in village and figures.`
+    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Thick rough brushstrokes with visible impasto texture shift boundaries between solid forms and open space. Outlines are simple and childlike, forms float and tilt freely. Colors are bold saturated jewel tones layered thickly. Massive red veil swirls in the night sky. Crimson red 30%, deep navy blue 30%, white cream 20%, dark green 20%. Deep navy blue night sky fills the background. Add dreamlike violin, candelabra and moon floating in the background. Face painted in naïve folk art style with simplified features, flat planes of color, childlike proportions. White dress and red veil glow vividly against the dark night sky. Thick bold brushstrokes follow veil and dress flow. Warm glowing light radiates from the bride outward. Deep blue sinks deep into background and edges. Blue claims the night sky, red fills the veil, white fills the dress, green remains in village and figures.`
   },
 
   // ★ 나와 마을 — ~148w
   'chagall-village': {
     name: '나와 마을',
     nameEn: 'I and the Village',
-    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Fluid soft brushstrokes dissolve boundaries between solid forms and open space. Outlines are soft and forms overflow freely. Colors layer transparently glowing. Jewel-like primary colors layer on geometric planes. Emerald green 30%, vermilion red 25%, deep blue 25%, white yellow 20%. Emerald green and deep blue divide into geometric planes filling the background. Add dreamlike soft village houses and church floating in the background. Face painted in emerald green, outlines dissolve softly. White blends softly over green and blue planes glowing like jewels. Soft brushstrokes flow fluidly along geometric plane edges. Diffused light illuminates everything evenly making colors glow. Deep blue sinks toward the top and edges. Green claims figure and background planes, red fills accents, blue fills sky and shadows, white remains on bright planes.`
+    prompt: `Hand-painted oil painting of the subject by Marc Chagall. Intense deep blue and red fill the scene in floating fantasy. Thick rough brushstrokes with visible impasto texture shift boundaries between solid forms and open space. Outlines are simple and childlike, forms float and tilt freely. Colors are bold saturated jewel tones layered thickly. Jewel-like primary colors layer on geometric planes. Emerald green 30%, vermilion red 25%, deep blue 25%, white yellow 20%. Emerald green and deep blue divide into geometric planes filling the background. Add dreamlike village houses and church floating in the background. Face painted in naïve folk art style with emerald green skin, simplified features, flat planes of color, childlike proportions. Bold saturated colors glow like jewels across geometric planes. Thick bold brushstrokes follow geometric plane edges. Warm glowing light radiates evenly making colors glow. Deep blue sinks toward the top and edges. Green claims figure and background planes, red fills accents, blue fills sky and shadows, white remains on bright planes.`
   },
 
   // ─────────────────────────────────────────
@@ -1611,9 +1611,9 @@ KLIMT - SELECT ONE:
 
   'munch': `
 MUNCH - SELECT ONE:
-1. "The Scream" → anxiety, distress, MALE portrait, FEMALE portrait | Style: wavy lines, blood-red sky
-2. "Madonna" → sensual, mysterious, FEMALE portrait ONLY | Style: flowing hair, dark aura
-3. "The Dance of Life" → GROUP, celebration | Style: pale figures, dark shore`,
+1. "The Scream" → anxiety, fear, distress, tension, surprise → MALE or FEMALE | Style: wavy lines, blood-red sky
+2. "Madonna" → calm, dreamy, mysterious, sensual → FEMALE ONLY | Style: flowing hair, dark aura
+3. "The Dance of Life" → GROUP (2+ people), celebration | Style: pale figures, dark shore`,
 
   'matisse': `
 MATISSE - SELECT ONE:
