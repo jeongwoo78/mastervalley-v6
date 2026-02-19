@@ -11,7 +11,8 @@ export const ui = {
     masterCollectionDesc: '시대를 초월한 7인의 거장',
     eastAsianArt: '동양화',
     eastAsianArtDesc: '천 년 동양 미학의 향기',
-    tagline: '당신의 사진이 명작이 됩니다'
+    tagline: '당신의 아름다움을, 명화로 남기세요',
+    subTagline: '세기의 거장이 당신을 담습니다'
   },
 
   // ===== PhotoStyleScreen =====

@@ -11,7 +11,8 @@ export const ui = {
     masterCollectionDesc: '7 Masters Beyond Time',
     eastAsianArt: 'East Asian Art',
     eastAsianArtDesc: '1000 Years of Eastern Beauty',
-    tagline: 'Your photo becomes a masterpiece'
+    tagline: 'Turn Your Beauty into a Masterpiece',
+    subTagline: 'Captured through the eyes of a master'
   },
 
   // ===== PhotoStyleScreen =====

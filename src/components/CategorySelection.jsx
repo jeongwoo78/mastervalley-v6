@@ -57,6 +57,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
         <div className="brand-icon">🎨</div>
         <h1 className="brand-title">Master Valley</h1>
         <p className="brand-tagline">{t.tagline}</p>
+        <p className="brand-sub-tagline">{t.subTagline}</p>
       </div>
 
       {/* Category Grid */}
@@ -150,6 +151,12 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           color: rgba(255,255,255,0.5);
           font-size: 14px;
           margin: 0;
+        }
+
+        .brand-sub-tagline {
+          color: rgba(255,255,255,0.35);
+          font-size: 13px;
+          margin: 6px 0 0;
         }
 
         /* Category Grid - 목업: 좌우 padding 20px */
