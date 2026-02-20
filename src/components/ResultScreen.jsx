@@ -100,9 +100,6 @@ const ResultScreen = ({
   // ========== Save/Share 메뉴 ==========
   const [showSaveShareMenu, setShowSaveShareMenu] = useState(false);
   
-  // ========== Fullscreen 팝업 ==========
-  const [showFullscreen, setShowFullscreen] = useState(false);
-  
   // v75: Original 이미지 URL 캐싱 (깜빡임 방지)
   const [originalPhotoUrl, setOriginalPhotoUrl] = useState(null);
   
@@ -1192,7 +1189,7 @@ const ResultScreen = ({
         {isFullTransform && viewIndex >= 0 && results[viewIndex] && (
           <div className="oneclick-result-section">
             {/* 결과 이미지만 (목업: 248×248, 원본 없음) */}
-            <div className="oneclick-image" onClick={() => setShowFullscreen(true)} style={{cursor:'pointer'}}>
+            <div className="oneclick-image">
               <img src={masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl} alt="Result" />
             </div>
             
@@ -1293,7 +1290,7 @@ const ResultScreen = ({
               <div className="ba-image">
                 <img src={originalPhotoUrl} alt="Before" />
               </div>
-              <div className="ba-image" onClick={() => setShowFullscreen(true)} style={{cursor:'pointer'}}>
+              <div className="ba-image">
                 <img src={finalDisplayImage} alt="After" />
               </div>
             </div>
@@ -1310,13 +1307,13 @@ const ResultScreen = ({
               </div>
             ) : (
               <div className="retry-prompt">
-                <div className="retry-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+                <div className="retry-icon">🎨</div>
                 <p className="fail-message">{t.conversionFailed}</p>
                 <button 
                   className="btn btn-retry"
                   onClick={handleSingleModeRetry}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:4}}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                  <span className="btn-icon">✨</span>
                   {t.retry}
                 </button>
               </div>
@@ -1417,14 +1414,14 @@ const ResultScreen = ({
               </div>
             ) : (
               <div className="retry-prompt">
-                <div className="retry-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/><circle cx="6.5" cy="12.5" r="1.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
+                <div className="retry-icon">🎨</div>
                 <p className="fail-message">{t.conversionFailed}</p>
                 <button 
                   className="btn btn-retry"
                   onClick={handleRetry}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:4}}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-                  {t.retry}
+                  <span className="btn-icon">✨</span>
+                  {failedCount > 1 ? t.retryAll : t.retry}
                 </button>
               </div>
             )}
@@ -1447,7 +1444,6 @@ const ResultScreen = ({
 
         {/* 원클릭 네비게이션 (Prev/Next 제거 — 스와이프 + dot 탭만) */}
         {isFullTransform && (
-          <>
           <div className="fullTransform-nav">
             <div className="nav-dots">
               <button
@@ -1469,7 +1465,6 @@ const ResultScreen = ({
               <span className="nav-count">[{viewIndex === -1 ? 0 : viewIndex + 1}/{fullTransformResults.length}]</span>
             </div>
           </div>
-          </>
         )}
 
         {/* 단독 변환 네비게이션 - 목업 준수: 제거됨 */}
@@ -1481,9 +1476,7 @@ const ResultScreen = ({
             className="btn btn-save-share" 
             onClick={() => setShowSaveShareMenu(true)}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
+            <span className="btn-icon">💾</span>
             {t.save}/{t.share}
           </button>
           
@@ -1496,9 +1489,7 @@ const ResultScreen = ({
               cursor: (isAnyMasterRetransforming || isRetrying) ? 'not-allowed' : 'pointer'
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
-            </svg>
+            <span className="btn-icon">🖼️</span>
             {t.gallery}
           </button>
           
@@ -1506,18 +1497,15 @@ const ResultScreen = ({
             className="btn btn-reset" 
             onClick={onReset}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-            </svg>
+            <span className="btn-icon">🔄</span>
             {t.newPhoto}
           </button>
         </div>
         
-        {/* Save/Share 바텀시트 (통일 스펙) */}
+        {/* Save/Share 팝업 메뉴 */}
         {showSaveShareMenu && (
           <div className="save-share-overlay" onClick={() => setShowSaveShareMenu(false)}>
             <div className="save-share-menu" onClick={(e) => e.stopPropagation()}>
-              <div className="bottom-sheet-handle"></div>
               <button 
                 className="menu-item"
                 onClick={() => {
@@ -1525,9 +1513,7 @@ const ResultScreen = ({
                   handleDownload();
                 }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
+                <span className="menu-icon">💾</span>
                 {t.saveToDevice}
               </button>
               <button 
@@ -1537,9 +1523,7 @@ const ResultScreen = ({
                   handleShare();
                 }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
-                </svg>
+                <span className="menu-icon">📤</span>
                 {t.shareArt}
               </button>
               <button 
@@ -1552,45 +1536,6 @@ const ResultScreen = ({
           </div>
         )}
         
-        {/* Fullscreen 팝업 (이미지 탭 → 풀스크린) */}
-        {showFullscreen && (
-          <div className="fullscreen-overlay">
-            <div className="fullscreen-content">
-              <div className="fullscreen-image-area">
-                <div className="fullscreen-image-inner">
-                  <button className="fullscreen-close" onClick={() => setShowFullscreen(false)}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                  </button>
-                  <img 
-                    src={isFullTransform 
-                      ? (masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl)
-                      : finalDisplayImage
-                    } 
-                    alt="Fullscreen Result" 
-                    className="fullscreen-img"
-                  />
-                </div>
-              </div>
-              <div className="fullscreen-buttons">
-                <button className="btn btn-save-share" onClick={() => { setShowFullscreen(false); setShowSaveShareMenu(true); }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                  {t.save}/{t.share}
-                </button>
-                <button className="btn btn-gallery" onClick={() => { setShowFullscreen(false); onGallery(); }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
-                  </svg>
-                  {t.gallery}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
       </div>
 
       {/* Styles */}
@@ -1874,7 +1819,7 @@ const ResultScreen = ({
           width: 50px;
           height: 50px;
           border: 4px solid #f3f3f3;
-          border-top: 4px solid #7c3aed;
+          border-top: 4px solid #667eea;
           border-radius: 50%;
           animation: spin 1s linear infinite;
           margin: 0 auto 1rem auto;
@@ -1937,105 +1882,41 @@ const ResultScreen = ({
           gap: 6px;
         }
 
+        .btn-icon {
+          font-size: 1rem;
+        }
+
         .btn-save-share {
-          background: #7c3aed;
+          background: linear-gradient(135deg, #667eea, #764ba2);
           color: white;
           border: none;
         }
 
         .btn-save-share:hover {
-          background: #6d28d9;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
         }
 
         .btn-gallery {
-          background: #374151;
+          background: rgba(255,255,255,0.1);
           color: white;
         }
 
         .btn-gallery:hover {
-          background: #4b5563;
+          background: rgba(255,255,255,0.15);
         }
 
         .btn-reset {
-          background: #374151;
-          color: white;
+          background: rgba(255,255,255,0.05);
+          color: rgba(255,255,255,0.7);
           border: none;
         }
 
         .btn-reset:hover {
-          background: #4b5563;
+          background: rgba(255,255,255,0.1);
         }
 
-        /* Fullscreen 팝업 */
-        .fullscreen-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: #000;
-          z-index: 9999;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .fullscreen-content {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-        }
-
-        .fullscreen-image-area {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          position: relative;
-        }
-
-        .fullscreen-image-inner {
-          width: 92%;
-          position: relative;
-        }
-
-        .fullscreen-img {
-          width: 100%;
-          border-radius: 4px;
-          display: block;
-        }
-
-        .fullscreen-close {
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          z-index: 5;
-          background: rgba(0,0,0,0.5);
-          border: none;
-          border-radius: 50%;
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-        }
-
-        .fullscreen-buttons {
-          display: flex;
-          justify-content: center;
-          gap: 12px;
-          padding: 24px 20px 0;
-        }
-
-        .fullscreen-buttons .btn {
-          padding: 10px 20px;
-        }
-
-        /* Save/Share 바텀시트 (통일 스펙) */
+        /* Save/Share 팝업 메뉴 */
         .save-share-overlay {
           position: fixed;
           top: 0;
@@ -2044,25 +1925,35 @@ const ResultScreen = ({
           bottom: 0;
           background: rgba(0, 0, 0, 0.6);
           display: flex;
-          align-items: flex-end;
+          align-items: center;
           justify-content: center;
           z-index: 9999;
+          animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
 
         .save-share-menu {
           background: #1a1a1a;
-          border-radius: 16px 16px 0 0;
+          border-radius: 16px;
           padding: 8px;
-          width: 100%;
-          max-width: 400px;
+          min-width: 200px;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          animation: slideUp 0.2s ease;
         }
 
-        .bottom-sheet-handle {
-          width: 36px;
-          height: 4px;
-          background: #444;
-          border-radius: 2px;
-          margin: 4px auto 8px;
+        @keyframes slideUp {
+          from { 
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .menu-item {
@@ -2218,11 +2109,11 @@ const ResultScreen = ({
           display: flex;
           align-items: center;
           justify-content: center;
-          margin-bottom: 4px;
+          gap: 8px;
+          margin-bottom: 12px;
           max-width: 340px;
           margin-left: auto;
           margin-right: auto;
-          padding: 12px 0 4px;
         }
         .nav-btn {
           background: rgba(255,255,255,0.1);
@@ -2359,7 +2250,7 @@ const ResultScreen = ({
           background: transparent;
         }
         .preview-card .edu-card h3 {
-          color: #7c3aed;
+          color: #667eea;
           margin: 0 0 10px;
           font-size: 15px;
         }
