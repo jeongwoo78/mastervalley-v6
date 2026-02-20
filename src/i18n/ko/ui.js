@@ -89,7 +89,7 @@ export const ui = {
     save: '저장',
     share: '공유',
     gallery: '갤러리',
-    newPhoto: '홈',
+    newPhoto: '새 사진',
     modify: '수정',
     retry: '다시 시도',
     retryAll: '전체 다시 시도',
@@ -122,7 +122,7 @@ export const ui = {
 
   // ===== Gallery =====
   gallery: {
-    title: '갤러리',
+    title: '내 갤러리',
     deleteAll: '전체 삭제',
     saved: '저장됨',
     empty: '아직 저장된 이미지가 없습니다',
@@ -147,8 +147,8 @@ export const ui = {
     delete: '삭제',
     saveToDevice: '저장하기',
     select: '선택',
-    selectAll: 'All',
-    deselectAll: 'None',
+    selectAll: '전체 선택',
+    deselectAll: '전체 해제',
     deleteSelected: '선택 삭제',
     cancel: '취소',
     confirmDeleteSelected: '선택한 {count}개 이미지를 삭제할까요?',
