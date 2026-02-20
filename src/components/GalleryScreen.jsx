@@ -451,8 +451,10 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
               {t.back}
             </button>
-            <h2 style={styles.title}>{t.title}</h2>
-            <button style={styles.homeButton} onClick={onHome}>
+            {/* 타이틀: absolute center (Back/Home과 무관하게 정중앙) */}
+            <h2 style={styles.titleCenter}>{t.title}</h2>
+            {/* Home 버튼: 원형 배경 제거, 아이콘만 */}
+            <button style={styles.homeButtonClean} onClick={onHome}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
               </svg>
@@ -467,7 +469,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
           <button style={styles.selectButton} onClick={() => setSelectMode(true)}>
             {t.select}
           </button>
-          <span style={{fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)'}}>{galleryItems.length}</span>
+          <span style={{fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)'}}>Total {galleryItems.length}</span>
         </div>
       )}
 
@@ -773,6 +775,7 @@ const styles = {
     justifyContent: 'space-between',
     marginBottom: '16px',
     gap: '10px',
+    position: 'relative',
   },
   
   backButton: {
@@ -785,25 +788,31 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '4px',
+    zIndex: 1,
   },
   
-  homeButton: {
-    background: 'rgba(255,255,255,0.1)',
+  // 타이틀 정중앙 (absolute center)
+  titleCenter: {
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    margin: 0,
+    fontSize: '1.2rem',
+    fontWeight: '600',
+    whiteSpace: 'nowrap',
+  },
+  
+  // Home 버튼: 원형 배경 제거, 아이콘만
+  homeButtonClean: {
+    background: 'none',
     border: 'none',
     color: 'rgba(255,255,255,0.7)',
-    width: '36px',
-    height: '36px',
-    borderRadius: '50%',
+    padding: '8px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  
-  title: {
-    margin: 0,
-    fontSize: '1.2rem',
-    fontWeight: '600',
+    zIndex: 1,
   },
   
   clearButton: {

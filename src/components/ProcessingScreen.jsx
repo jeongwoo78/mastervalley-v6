@@ -720,11 +720,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .single-bottom-fixed {
           position: fixed;
           bottom: 20px;
-          right: 20px;
+          left: 50%;
+          transform: translateX(-50%);
           width: auto;
           display: flex;
           flex-direction: column;
-          align-items: flex-end;
+          align-items: center;
         }
         .single-status {
           display: flex;

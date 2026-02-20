@@ -275,6 +275,7 @@ const App = () => {
               onSelect={handleCategorySelect}
               onGallery={() => setShowGallery(true)}
               onMenu={handleGoToMenu}
+              onAddFunds={handleGoToAddFunds}
               userCredits={userCredits}
               lang={lang}
             />

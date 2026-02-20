@@ -8,7 +8,7 @@ import movementsThumbnail from '../assets/thumbnails/categories/movements.webp';
 import mastersThumbnail from '../assets/thumbnails/categories/masters.webp';
 import orientalThumbnail from '../assets/thumbnails/categories/oriental.webp';
 
-const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, lang = 'en' }) => {
+const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredits = 2.50, lang = 'en' }) => {
 
   const ui = getUi(lang);
   const t = ui.category;
@@ -49,12 +49,21 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           </svg>
           <span className="menu-label">MY</span>
         </button>
-        <span className="credits">${userCredits.toFixed(2)}</span>
+        <button className="credits-btn" onClick={() => onAddFunds?.()}>${userCredits.toFixed(2)}</button>
       </header>
 
-      {/* Branding */}
+      {/* Branding - ①번: 팔레트 왼쪽, 텍스트 정중앙 */}
       <div className="branding">
-        <div className="brand-icon">🎨</div>
+        <div className="brand-icon-left">
+          <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5"/>
+            <circle cx="16" cy="18" r="3" fill="#e8d5b7"/>
+            <circle cx="28" cy="14" r="2.5" fill="#a78bfa"/>
+            <circle cx="32" cy="22" r="2" fill="#6ee7b7"/>
+            <circle cx="28" cy="30" r="2.5" fill="#fbbf24"/>
+            <path d="M14 32 C14 32 18 20 24 18 C30 16 34 28 34 28" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+          </svg>
+        </div>
         <h1 className="brand-title">Master Valley</h1>
         <p className="brand-tagline">{t.tagline}</p>
         <p className="brand-sub-tagline">{t.subTagline}</p>
@@ -120,23 +129,30 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           letter-spacing: 0.5px;
         }
 
-        .credits {
+        .credits-btn {
           background: transparent;
+          border: none;
           padding: 8px 0;
           color: #fff;
           font-size: 17px;
           font-weight: 600;
+          cursor: pointer;
+        }
+
+        .credits-btn:active {
+          opacity: 0.7;
         }
 
         /* Branding */
         .branding {
           text-align: center;
-          padding: 28px 20px 20px;
+          padding: 20px 20px 8px;
         }
 
-        .brand-icon {
-          font-size: 42px;
-          margin-bottom: 10px;
+        .brand-icon-left {
+          text-align: left;
+          padding-left: 12px;
+          margin-bottom: 12px;
         }
 
         .brand-title {
@@ -162,7 +178,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
         /* Category Grid - 목업: 좌우 padding 20px */
         .category-grid {
           flex: 1;
-          padding: 16px 20px 32px;
+          padding: 8px 20px 32px;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -240,7 +256,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           }
 
           .branding {
-            padding: 20px 16px 16px;
+            padding: 14px 16px 6px;
           }
 
           .brand-title {
@@ -248,7 +264,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, userCredits = 2.50, la
           }
 
           .category-grid {
-            padding: 12px 16px 24px;
+            padding: 6px 16px 24px;
             gap: 10px;
           }
 
