@@ -122,7 +122,7 @@ export const ui = {
 
   // ===== Gallery =====
   gallery: {
-    title: 'My Gallery',
+    title: 'Gallery',
     deleteAll: 'Delete All',
     saved: 'Saved',
     empty: 'No saved images yet',
@@ -147,8 +147,8 @@ export const ui = {
     delete: 'Delete',
     saveToDevice: 'Save',
     select: 'Select',
-    selectAll: 'Select All',
-    deselectAll: 'Deselect All',
+    selectAll: 'All',
+    deselectAll: 'None',
     deleteSelected: 'Delete Selected',
     cancel: 'Cancel',
     confirmDeleteSelected: 'Delete {count} selected images?',
@@ -161,7 +161,7 @@ export const ui = {
   // ===== Menu =====
   menu: {
     title: 'MY',
-    myGallery: 'My Gallery',
+    myGallery: 'Gallery',
     language: 'Language',
     addFunds: 'Add Funds',
     support: 'Support',

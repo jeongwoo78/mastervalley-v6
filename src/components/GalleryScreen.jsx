@@ -410,7 +410,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {selectMode ? (
         <div className="select-header">
           <button className="select-header-cancel" onClick={exitSelectMode}>
-            ←
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
           <span className="select-header-count">
             {t.selectedCount.replace('{count}', selectedIds.size)}
@@ -445,31 +445,29 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
           </div>
         </div>
       ) : (
-        <div style={styles.header}>
-          <div style={styles.headerLeft}>
+        <>
+          <div style={styles.header}>
             <button style={styles.backButton} onClick={onBack}>
-              ← {t.back}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              {t.back}
             </button>
+            <h2 style={styles.title}>{t.title}</h2>
             <button style={styles.homeButton} onClick={onHome}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:4}}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
               </svg>
-              {t.home}
             </button>
           </div>
-          <h2 style={styles.title}>{t.title}</h2>
-          {galleryItems.length > 0 && (
-            <button style={styles.selectButton} onClick={() => setSelectMode(true)}>
-              {t.select}
-            </button>
-          )}
-        </div>
+        </>
       )}
 
-      {/* 갤러리 카운트 */}
-      {galleryItems.length > 0 && (
-        <div style={{padding: '0 0 12px', textAlign: 'right'}}>
-          <span style={{fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)'}}>{galleryItems.length} {t.countUnit}</span>
+      {/* 카운트 + Select 버튼 */}
+      {galleryItems.length > 0 && !selectMode && (
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 0 12px'}}>
+          <button style={styles.selectButton} onClick={() => setSelectMode(true)}>
+            {t.select}
+          </button>
+          <span style={{fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)'}}>{galleryItems.length}</span>
         </div>
       )}
 
@@ -510,7 +508,10 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
                 )}
               </div>
               <div style={styles.itemLabel}>
-                <span style={styles.styleName}>{display.title}</span>
+                <span style={styles.styleName}>
+                  {display.badge && <span style={styles.reBadge}>{display.badge}</span>}
+                  {display.title}
+                </span>
                 {display.subtitle && (
                   <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>{display.subtitle}</span>
                 )}
@@ -542,7 +543,10 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
             />
             
             <div style={styles.modalInfo}>
-              <h3 style={styles.modalTitle}>{getGalleryDisplay(selectedItem).title}</h3>
+              <h3 style={styles.modalTitle}>
+                {getGalleryDisplay(selectedItem).badge && <span style={styles.reBadgeModal}>{getGalleryDisplay(selectedItem).badge}</span>}
+                {getGalleryDisplay(selectedItem).title}
+              </h3>
               {getGalleryDisplay(selectedItem).subtitle && (
                 <p style={styles.modalCategory}>{getGalleryDisplay(selectedItem).subtitle}</p>
               )}
@@ -639,7 +643,7 @@ const animationStyle = `
   }
   
   .gallery-item.selected {
-    outline: 2px solid #667eea;
+    outline: 2px solid #7c3aed;
     outline-offset: -2px;
   }
   
@@ -662,8 +666,8 @@ const animationStyle = `
   }
   
   .select-checkbox.checked {
-    background: #667eea;
-    border-color: #667eea;
+    background: #7c3aed;
+    border-color: #7c3aed;
     color: white;
   }
   
@@ -674,8 +678,8 @@ const animationStyle = `
     justify-content: space-between;
     padding: 12px 0;
     margin-bottom: 12px;
-    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
-    background: rgba(102, 126, 234, 0.05);
+    border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+    background: rgba(124, 58, 237, 0.05);
     border-radius: 8px;
     padding: 10px 14px;
   }
@@ -684,15 +688,16 @@ const animationStyle = `
     background: none;
     border: none;
     color: rgba(255,255,255,0.6);
-    font-size: 13px;
     cursor: pointer;
-    padding: 4px 0;
+    padding: 4px;
+    display: flex;
+    align-items: center;
   }
   
   .select-header-count {
     font-size: 14px;
     font-weight: 600;
-    color: #667eea;
+    color: #a78bfa;
   }
   
   .select-header-actions {
@@ -703,9 +708,9 @@ const animationStyle = `
   .select-header-all {
     padding: 5px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    background: rgba(102, 126, 234, 0.1);
-    color: #667eea;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(124, 58, 237, 0.1);
+    color: #a78bfa;
     font-size: 11px;
     cursor: pointer;
   }
@@ -713,11 +718,13 @@ const animationStyle = `
   .select-header-save {
     padding: 5px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(76, 175, 80, 0.4);
-    background: rgba(76, 175, 80, 0.1);
-    color: #4caf50;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: rgba(124, 58, 237, 0.1);
+    color: #a78bfa;
     font-size: 11px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
   }
   
   .select-header-save:disabled {
@@ -733,6 +740,8 @@ const animationStyle = `
     color: #ff6b6b;
     font-size: 11px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
   }
   
   .select-header-delete:disabled {
@@ -762,39 +771,39 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: '20px',
-    flexWrap: 'wrap',
-    gap: '10px',
-  },
-  
-  headerLeft: {
-    display: 'flex',
+    marginBottom: '16px',
     gap: '10px',
   },
   
   backButton: {
-    background: 'rgba(255,255,255,0.1)',
+    background: 'none',
     border: 'none',
-    color: 'white',
-    padding: '10px 20px',
-    borderRadius: '8px',
+    color: 'rgba(255,255,255,0.7)',
+    padding: '8px',
     cursor: 'pointer',
-    fontSize: '1rem',
+    fontSize: '0.9rem',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
   },
   
   homeButton: {
-    background: 'rgba(255,255,255,0.2)',
+    background: 'rgba(255,255,255,0.1)',
     border: 'none',
-    color: 'white',
-    padding: '10px 20px',
-    borderRadius: '8px',
+    color: 'rgba(255,255,255,0.7)',
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
     cursor: 'pointer',
-    fontSize: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   
   title: {
     margin: 0,
-    fontSize: '1.5rem',
+    fontSize: '1.2rem',
+    fontWeight: '600',
   },
   
   clearButton: {
@@ -808,13 +817,13 @@ const styles = {
   },
   
   selectButton: {
-    background: 'rgba(167, 139, 250, 0.2)',
-    border: '1px solid rgba(167, 139, 250, 0.4)',
-    color: '#a78bfa',
-    padding: '10px 20px',
-    borderRadius: '8px',
+    background: 'none',
+    border: '1px solid rgba(255,255,255,0.2)',
+    color: 'rgba(255,255,255,0.6)',
+    padding: '6px 14px',
+    borderRadius: '20px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '0.8rem',
   },
   
   notice: {
@@ -915,7 +924,31 @@ const styles = {
     fontSize: '0.75rem',
     opacity: 0.6,
   },
-  
+
+  reBadge: {
+    display: 'inline-block',
+    background: 'rgba(124, 58, 237, 0.2)',
+    color: '#a78bfa',
+    fontSize: '0.6rem',
+    fontWeight: '700',
+    padding: '1px 5px',
+    borderRadius: '4px',
+    marginRight: '4px',
+    verticalAlign: 'middle',
+  },
+
+  reBadgeModal: {
+    display: 'inline-block',
+    background: 'rgba(124, 58, 237, 0.2)',
+    color: '#a78bfa',
+    fontSize: '0.7rem',
+    fontWeight: '700',
+    padding: '2px 6px',
+    borderRadius: '4px',
+    marginRight: '6px',
+    verticalAlign: 'middle',
+  },
+
   // 모달 스타일
   modal: {
     position: 'fixed',
