@@ -427,14 +427,20 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
               onClick={handleSaveSelected}
               disabled={selectedIds.size === 0 || isBatchSaving}
             >
-              {isBatchSaving ? '⏳' : '💾'} {isBatchSaving ? t.saving : t.save}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:2}}>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              {isBatchSaving ? t.saving : t.save}
             </button>
             <button 
               className="select-header-delete"
               onClick={handleDeleteSelected}
               disabled={selectedIds.size === 0}
             >
-              🗑 {t.delete}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:2}}>
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              {t.delete}
             </button>
           </div>
         </div>
@@ -445,7 +451,10 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
               ← {t.back}
             </button>
             <button style={styles.homeButton} onClick={onHome}>
-              🏠 {t.home}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:4}}>
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              {t.home}
             </button>
           </div>
           <h2 style={styles.title}>{t.title}</h2>
@@ -457,16 +466,23 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
         </div>
       )}
 
-      {/* 안내 메시지 */}
-      <div style={styles.notice}>
-        <p style={{ margin: 0 }}>{t.deviceNote}</p>
-        <p style={styles.countText}>{t.saved}: {galleryItems.length}{t.countUnit}</p>
-      </div>
+      {/* 갤러리 카운트 */}
+      {galleryItems.length > 0 && (
+        <div style={{padding: '0 0 12px', textAlign: 'right'}}>
+          <span style={{fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)'}}>{galleryItems.length} {t.countUnit}</span>
+        </div>
+      )}
 
       {/* 갤러리 그리드 */}
       {galleryItems.length === 0 ? (
         <div style={styles.empty}>
-          <p style={styles.emptyIcon}>🎨</p>
+          <div style={styles.emptyIcon}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/>
+              <circle cx="6.5" cy="12.5" r="1.5"/>
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+            </svg>
+          </div>
           <p style={styles.emptyText}>{t.empty}</p>
           <p style={styles.emptySubtext}>{t.emptySubtext}</p>
         </div>
@@ -514,7 +530,9 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
               style={styles.closeButton}
               onClick={() => setSelectedItem(null)}
             >
-              ✕
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
             </button>
             
             <img
@@ -536,36 +554,47 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
                 style={styles.saveShareButton}
                 onClick={() => setShowSaveShareMenu(true)}
               >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6}}>
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
                 {t.saveShare}
               </button>
               <button
                 style={styles.deleteButton}
                 onClick={() => handleDelete(selectedItem.id)}
               >
-                🗑️ {t.delete}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6}}>
+                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                {t.delete}
               </button>
             </div>
             
-            {/* 저장/공유 팝업 메뉴 */}
+            {/* Save/Share 바텀시트 (통일 스펙) */}
             {showSaveShareMenu && (
-              <div style={styles.saveShareOverlay} onClick={() => setShowSaveShareMenu(false)}>
-                <div style={styles.saveShareMenu} onClick={(e) => e.stopPropagation()}>
+              <div style={styles.bottomSheetOverlay} onClick={() => setShowSaveShareMenu(false)}>
+                <div style={styles.bottomSheetMenu} onClick={(e) => e.stopPropagation()}>
+                  <div style={styles.bottomSheetHandle}></div>
                   <button 
-                    style={styles.menuItem}
+                    style={styles.bottomSheetItem}
                     onClick={() => handleDownload(selectedItem)}
                   >
-                    <span style={styles.menuIcon}>💾</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
                     {t.save}
                   </button>
                   <button 
-                    style={styles.menuItem}
+                    style={styles.bottomSheetItem}
                     onClick={() => handleShare(selectedItem)}
                   >
-                    <span style={styles.menuIcon}>📤</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
                     {t.share}
                   </button>
                   <button 
-                    style={{...styles.menuItem, ...styles.menuCancel}}
+                    style={styles.bottomSheetCancel}
                     onClick={() => setShowSaveShareMenu(false)}
                   >
                     {t.close}
@@ -914,17 +943,19 @@ const styles = {
   
   closeButton: {
     position: 'absolute',
-    top: '10px',
-    right: '10px',
+    top: '8px',
+    right: '8px',
     background: 'rgba(0,0,0,0.5)',
     border: 'none',
-    color: 'rgba(255,255,255,0.7)',
+    color: '#fff',
     width: '36px',
     height: '36px',
     borderRadius: '50%',
     cursor: 'pointer',
-    fontSize: '1.2rem',
     zIndex: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   
   modalImage: {
@@ -964,79 +995,90 @@ const styles = {
   
   saveShareButton: {
     flex: 1,
-    background: 'rgba(102,126,234,0.15)',
-    border: '1px solid rgba(102,126,234,0.3)',
-    color: '#667eea',
-    padding: '14px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: '#7c3aed',
+    border: 'none',
+    color: '#fff',
+    padding: '11px 0',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '13px',
     fontWeight: '600',
-    textAlign: 'center',
   },
   
   deleteButton: {
     flex: 1,
-    background: 'rgba(255,107,107,0.1)',
-    border: '1px solid rgba(255,107,107,0.3)',
-    color: '#ff6b6b',
-    padding: '14px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'rgba(239,68,68,0.15)',
+    border: '1px solid rgba(239,68,68,0.3)',
+    color: '#ef4444',
+    padding: '11px 0',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '13px',
     fontWeight: '600',
-    textAlign: 'center',
   },
   
-  // 저장/공유 팝업 스타일
-  saveShareOverlay: {
+  // 바텀시트 통일 스펙
+  bottomSheetOverlay: {
     position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0,0,0,0.7)',
+    background: 'rgba(0,0,0,0.6)',
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'center',
-    zIndex: 2000,
+    zIndex: 9999,
   },
   
-  saveShareMenu: {
-    background: '#1e1e2e',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '14px',
-    padding: '6px',
-    minWidth: '200px',
-    boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
-  },
-  
-  menuItem: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  bottomSheetMenu: {
+    background: '#1a1a1a',
+    borderRadius: '16px 16px 0 0',
+    padding: '8px',
     width: '100%',
-    padding: '14px 16px',
+    maxWidth: '400px',
+  },
+  
+  bottomSheetHandle: {
+    width: '36px',
+    height: '4px',
+    background: '#444',
+    borderRadius: '2px',
+    margin: '4px auto 8px',
+  },
+  
+  bottomSheetItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    width: '100%',
+    padding: '14px 20px',
     border: 'none',
     background: 'transparent',
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: '0.9rem',
+    color: '#fff',
+    fontSize: '15px',
+    fontWeight: '500',
     cursor: 'pointer',
-    borderRadius: '8px',
-    transition: 'background 0.2s',
+    borderRadius: '12px',
   },
   
-  menuIcon: {
-    marginRight: '8px',
-    fontSize: '1.1rem',
-  },
-  
-  menuCancel: {
-    color: 'rgba(255,255,255,0.35)',
-    justifyContent: 'center',
+  bottomSheetCancel: {
+    width: '100%',
+    padding: '14px 20px',
+    border: 'none',
+    background: 'transparent',
+    color: '#555',
+    fontSize: '15px',
+    textAlign: 'center',
+    cursor: 'pointer',
     borderTop: '1px solid rgba(255,255,255,0.08)',
     marginTop: '4px',
-    paddingTop: '14px',
   },
 };
 
