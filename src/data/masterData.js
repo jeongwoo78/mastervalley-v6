@@ -187,11 +187,11 @@ export const MASTERS = {
     featuredWorksEn: 'The Starry Night · Sunflowers · Self-Portrait',
     aliases: ['van gogh', 'gogh', 'vincent', '고흐', '반 고흐'],
     works: {
-      'starrynight': ['The Starry Night', '별이 빛나는 밤', 'Starry Night'],
-      'cafe': ['Café Terrace at Night', '밤의 카페 테라스', 'Cafe Terrace'],
-      'sunflowers': ['Sunflowers', '해바라기'],
-      'selfportrait': ['Self-Portrait with Grey Felt Hat', '회색 펠트 모자 자화상', 'Grey Felt Hat'],
-      'wheatfield': ['Wheat Field with Cypresses', '사이프러스 밀밭', 'Cypresses']
+      'starrynight': ['The Starry Night, 1889', '별이 빛나는 밤, 1889', 'Starry Night'],
+      'cafe': ['Café Terrace at Night, 1888', '밤의 카페 테라스, 1888', 'Cafe Terrace'],
+      'sunflowers': ['Sunflowers, 1888', '해바라기, 1888'],
+      'selfportrait': ['Self-Portrait with Grey Felt Hat, 1887', '회색 펠트 모자 자화상, 1887', 'Grey Felt Hat'],
+      'wheatfield': ['Wheat Field with Cypresses, 1889', '사이프러스 밀밭, 1889', 'Cypresses']
     }
   },
   'klimt-master': {
@@ -210,9 +210,9 @@ export const MASTERS = {
     featuredWorksEn: 'The Kiss · Judith · The Tree of Life',
     aliases: ['gustav', 'gustav klimt', '클림트'],
     works: {
-      'kiss': ['The Kiss', '키스', 'Kiss'],
-      'treeoflife': ['The Tree of Life', '생명의 나무', 'Tree of Life'],
-      'judith': ['Judith I', 'Judith', '유디트']
+      'kiss': ['The Kiss, 1907', '키스, 1907', 'Kiss'],
+      'treeoflife': ['The Tree of Life, 1909', '생명의 나무, 1909', 'Tree of Life'],
+      'judith': ['Judith I, 1901', '유디트, 1901', 'Judith']
     }
   },
   'munch-master': {
@@ -231,9 +231,9 @@ export const MASTERS = {
     featuredWorksEn: 'The Scream · Madonna · The Dance of Life',
     aliases: ['edvard', 'edvard munch', '뭉크'],
     works: {
-      'scream': ['The Scream', '절규', 'Scream'],
-      'madonna': ['Madonna', '마돈나', 'Munch Madonna'],
-      'danceoflife': ['The Dance of Life', '생의 춤', 'Dance of Life']
+      'scream': ['The Scream, 1893', '절규, 1893', 'Scream'],
+      'madonna': ['Madonna, 1894', '마돈나, 1894', 'Munch Madonna'],
+      'danceoflife': ['The Dance of Life, 1899', '생의 춤, 1899', 'Dance of Life']
     }
   },
   'matisse-master': {
@@ -252,10 +252,10 @@ export const MASTERS = {
     featuredWorksEn: 'The Dance · The Red Room · The Green Stripe',
     aliases: ['henri', 'henri matisse', '마티스'],
     works: {
-      'greenstripe': ['The Green Stripe', '초록 줄무늬', 'Green Stripe', 'Portrait of Madame Matisse'],
-      'purplecoat': ['Woman in a Purple Coat', '보라색 코트', 'Purple Coat'],
-      'redroom': ['The Red Room', '붉은 방', 'Red Room', 'Harmony in Red'],
-      'derain': ['Portrait of André Derain', '드랭의 초상', 'Portrait of Derain']
+      'greenstripe': ['The Green Stripe, 1905', '초록 줄무늬, 1905', 'Green Stripe', 'Portrait of Madame Matisse'],
+      'purplecoat': ['Woman in a Purple Coat, 1937', '보라색 코트, 1937', 'Purple Coat'],
+      'redroom': ['The Red Room, 1908', '붉은 방, 1908', 'Red Room', 'Harmony in Red'],
+      'derain': ['Portrait of André Derain, 1905', '드랭의 초상, 1905', 'Portrait of Derain']
     }
   },
   'chagall-master': {
@@ -274,9 +274,9 @@ export const MASTERS = {
     featuredWorksEn: 'The Birthday · I and the Village · La Mariée',
     aliases: ['marc', 'marc chagall', '샤갈', '마르크 샤갈'],
     works: {
-      'lovers': ['The Birthday', '생일', 'Lovers with Flowers', '꽃다발과 연인들'],
-      'lamariee': ['La Mariée', 'La Mariee', '신부', 'The Bride'],
-      'village': ['I and the Village', '나와 마을', 'Village']
+      'lovers': ['The Birthday, 1915', '생일, 1915', 'Lovers with Flowers', '꽃다발과 연인들'],
+      'lamariee': ['La Mariée, 1950', 'La Mariee', '신부, 1950', 'The Bride'],
+      'village': ['I and the Village, 1911', '나와 마을, 1911', 'Village']
     }
   },
   'frida-master': {
@@ -295,8 +295,8 @@ export const MASTERS = {
     featuredWorksEn: 'Me and My Parrots · The Broken Column · Self-Portrait with Monkeys',
     aliases: ['kahlo', 'frida kahlo', '프리다', '프리다 칼로'],
     works: {
-      'parrots': ['Me and My Parrots', '나와 앵무새들', 'Self-Portrait with Parrots'],
-      'monkeys': ['Self-Portrait with Monkeys', '원숭이와 자화상', 'Monkeys']
+      'parrots': ['Me and My Parrots, 1941', '나와 앵무새들, 1941', 'Self-Portrait with Parrots'],
+      'monkeys': ['Self-Portrait with Monkeys, 1943', '원숭이와 자화상, 1943', 'Monkeys']
     }
   },
   'picasso-master': {
@@ -315,7 +315,7 @@ export const MASTERS = {
     featuredWorksEn: "Les Demoiselles d'Avignon · Guernica · Portrait of Dora Maar",
     aliases: ['pablo', 'pablo picasso', '피카소'],
     works: {
-      'doramaar': ['Portrait of Dora Maar', '도라 마르의 초상', 'Dora Maar']
+      'doramaar': ['Portrait of Dora Maar, 1937', '도라 마르의 초상, 1937', 'Dora Maar']
     }
   },
   'lichtenstein-master': {
@@ -334,11 +334,11 @@ export const MASTERS = {
     featuredWorksEn: 'In the Car · M-Maybe · Forget It!',
     aliases: ['roy', 'roy lichtenstein', '리히텐슈타인', '로이 리히텐슈타인'],
     works: {
-      'inthecar': ['In the Car', '차 안에서', 'In Car'],
-      'mmaybe': ['M-Maybe', '아마도', 'Maybe'],
-      'forgetit': ['Forget It!', 'Forget It', '날 잊어'],
-      'ohhhalright': ['Ohhh...Alright...', 'Ohhh Alright', '오 알았어'],
-      'stilllife': ['Still Life with Crystal Bowl', 'Still Life', '정물화']
+      'inthecar': ['In the Car, 1963', '차 안에서, 1963', 'In Car'],
+      'mmaybe': ['M-Maybe, 1965', '아마도, 1965', 'Maybe'],
+      'forgetit': ['Forget It!, 1962', 'Forget It', '날 잊어, 1962'],
+      'ohhhalright': ['Ohhh...Alright..., 1964', 'Ohhh Alright', '오 알았어, 1964'],
+      'stilllife': ['Still Life with Crystal Bowl, 1973', 'Still Life', '정물화, 1973']
     }
   }
 };

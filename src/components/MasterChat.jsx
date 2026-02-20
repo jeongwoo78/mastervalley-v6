@@ -54,6 +54,14 @@ const MasterChat = ({
     return hasJongsung ? '이' : '가';
   };
 
+  // 한글 조사 와/과 (받침 있으면 "과", 없으면 "와")
+  const getWithParticle = (name) => {
+    if (lang !== 'ko') return '';
+    const lastChar = name[name.length - 1];
+    const hasJongsung = (lastChar.charCodeAt(0) - 0xAC00) % 28 !== 0;
+    return hasJongsung ? '과' : '와';
+  };
+
   // 대화 데이터 변경 시 부모에게 알림
   useEffect(() => {
     if (onChatDataChange) {
@@ -313,7 +321,9 @@ const MasterChat = ({
             ? chatText.common.placeholderEnded
             : isRetransforming 
               ? chatText.common.placeholderConverting
-              : chatText.common.placeholderDefault}
+              : chatText.common.placeholderDefault
+                  .replace('{masterName}', masterName)
+                  .replace('{withParticle}', getWithParticle(masterName))}
           disabled={isLoading || isRetransforming || isChatEnded}
           style={{ borderColor: inputValue ? theme.primary : undefined }}
         />
@@ -321,9 +331,8 @@ const MasterChat = ({
           className="send-btn"
           onClick={sendMessage}
           disabled={!inputValue.trim() || isLoading || isRetransforming || isChatEnded}
-          style={{ background: theme.gradient }}
         >
-          ➤
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
 
@@ -333,7 +342,7 @@ const MasterChat = ({
         onClick={handleRetransform}
         disabled={!pendingCorrection || isRetransforming || isChatEnded}
         style={{ 
-          background: pendingCorrection && !isRetransforming && !isChatEnded ? theme.gradient : undefined,
+          background: theme.gradient,
           opacity: !pendingCorrection || isRetransforming || isChatEnded ? 0.5 : 1
         }}
       >
@@ -346,7 +355,13 @@ const MasterChat = ({
             }
           </>
         ) : (
-          chatText.common.requestModify
+          <>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 4}}>
+              <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            {chatText.common.requestModify}
+          </>
         )}
       </button>
 
@@ -552,22 +567,21 @@ const MasterChat = ({
         }
 
         .send-btn {
-          background: linear-gradient(135deg, #F5A623, #e8941a);
+          background: rgba(255,255,255,0.12);
           border: none;
-          border-radius: 20px;
-          padding: 10px 16px;
-          color: #fff;
-          font-size: 13px;
-          font-weight: 600;
-          cursor: pointer;
+          border-radius: 50%;
+          width: 36px;
+          height: 36px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.2s, opacity 0.2s;
+          cursor: pointer;
+          flex-shrink: 0;
+          transition: background 0.2s;
         }
 
         .send-btn:hover:not(:disabled) {
-          transform: scale(1.02);
+          background: rgba(255,255,255,0.2);
         }
 
         .send-btn:disabled {
@@ -578,7 +592,6 @@ const MasterChat = ({
         /* 수정 버튼 (입력창 아래) */
         .retransform-btn {
           width: 100%;
-          background: linear-gradient(135deg, #667eea, #764ba2);
           border: none;
           border-radius: 12px;
           padding: 12px;
@@ -596,7 +609,7 @@ const MasterChat = ({
 
         .retransform-btn:hover:not(:disabled) {
           transform: translateY(-1px);
-          box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
 
         .retransform-btn:disabled {

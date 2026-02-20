@@ -44,6 +44,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     movements: {
       name: ps.movementsName,
       price: '$0.20',
+      fullPrice: '$2.00',
+      emojis: '🏎️⚡🕰️',
+      selectLabel: ps.selectMovement,
+      priceLabel: '$0.20/transform',
+      gradient: 'linear-gradient(135deg, #e9d5ff 0%, #a855f7 100%)',
+      boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)',
+      color: '#2e1065',
       fullTransform: {
         id: 'movements-all',
         title: ps.movementsFullTitle,
@@ -69,6 +76,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     masters: {
       name: ps.mastersName,
       price: '$0.25',
+      fullPrice: '$1.50',
+      emojis: '🔥🎨💥',
+      selectLabel: ps.selectMaster,
+      priceLabel: '$0.25/transform',
+      gradient: 'linear-gradient(135deg, #f5deb3 0%, #daa520 100%)',
+      boxShadow: '0 4px 15px rgba(218, 165, 32, 0.3)',
+      color: '#3a2a10',
       fullTransform: {
         id: 'masters-all',
         title: ps.mastersFullTitle,
@@ -90,6 +104,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     oriental: {
       name: ps.orientalName,
       price: '$0.20',
+      fullPrice: '$0.60',
+      emojis: '🐅🐼🌸',
+      selectLabel: ps.selectStyle,
+      priceLabel: '$0.20/transform',
+      gradient: 'linear-gradient(135deg, #ffe4e6 0%, #f472b6 100%)',
+      boxShadow: '0 4px 15px rgba(244, 114, 182, 0.3)',
+      color: '#1e293b',
       fullTransform: {
         id: 'oriental-all',
         title: ps.orientalFullTitle,
@@ -152,9 +173,6 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
       <header className="style-header">
         <button className="back-btn" onClick={onBack}>←</button>
         <span className="header-title">{currentCategory.name}</span>
-        <div className="header-right">
-          <span className="header-price">{currentCategory.price} each</span>
-        </div>
       </header>
 
       {/* Photo Section */}
@@ -183,10 +201,35 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
       <button
         className={`full-transform-btn ${selectedStyle?.isFullTransform ? 'selected' : ''}`}
         onClick={handleFullTransform}
+        style={{
+          background: currentCategory.gradient,
+          boxShadow: currentCategory.boxShadow,
+          color: currentCategory.color
+        }}
       >
-        <div className="ft-title">{currentCategory.fullTransform.title}</div>
-        <div className="ft-desc">{currentCategory.fullTransform.desc}</div>
+        <span className="ft-sparkles">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+            <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+          </svg>
+        </span>
+        <div className="ft-content">
+          <div className="ft-row-1">
+            <span className="ft-label">{ps.fullTransform}</span>
+            <span className="ft-price">{currentCategory.fullPrice}</span>
+          </div>
+          <div className="ft-row-2">
+            <span className="ft-desc">{currentCategory.fullTransform.title}</span>
+            <span className="ft-emojis">{currentCategory.emojis}</span>
+          </div>
+        </div>
       </button>
+
+      {/* Select label + per-transform price */}
+      <div className="select-price-row">
+        <span className="select-label">{currentCategory.selectLabel}</span>
+        <span className="per-transform-price">{currentCategory.priceLabel}</span>
+      </div>
 
       {/* Style Grid */}
       <div className="style-grid">
@@ -238,23 +281,6 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           flex: 1;
           color: #fff;
           font-size: 17px;
-          font-weight: 600;
-        }
-
-        .header-price {
-          color: rgba(255,255,255,0.5);
-          font-size: 17px;
-        }
-
-        .header-right {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .header-balance {
-          color: #fff;
-          font-size: 15px;
           font-weight: 600;
         }
 
@@ -316,45 +342,90 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           border-radius: 12px;
         }
 
-        /* Full Transform Button - 목업 준수: 더 눈에 띄는 디자인 */
+        /* Full Transform Button */
         .full-transform-btn {
-          margin: 0 28px 16px;
-          padding: 16px 20px;
-          background: linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.25));
-          border: 2px solid rgba(102,126,234,0.5);
-          border-radius: 14px;
-          text-align: center;
+          margin: 0 28px 6px;
+          padding: 14px 18px;
+          border: none;
+          border-radius: 12px;
           cursor: pointer;
           transition: all 0.2s;
-          box-shadow: 0 2px 8px rgba(102,126,234,0.2);
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          text-align: left;
         }
 
         .full-transform-btn:hover {
-          background: linear-gradient(135deg, rgba(102,126,234,0.35), rgba(118,75,162,0.35));
-          border-color: rgba(102,126,234,0.7);
           transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+          filter: brightness(1.05);
         }
 
         .full-transform-btn.selected {
-          border-color: #667eea;
-          background: linear-gradient(135deg, rgba(102,126,234,0.4), rgba(118,75,162,0.4));
-          box-shadow: 0 4px 16px rgba(102,126,234,0.4);
+          outline: 2px solid #fff;
+          outline-offset: 2px;
         }
 
         .full-transform-btn:focus {
           outline: none;
         }
 
-        .ft-title {
-          color: #fff;
-          font-size: 15px;
-          font-weight: 600;
-          margin-bottom: 4px;
+        .ft-sparkles {
+          display: flex;
+          flex-shrink: 0;
+        }
+
+        .ft-content {
+          flex: 1;
+        }
+
+        .ft-row-1 {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .ft-label {
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .ft-price {
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .ft-row-2 {
+          display: flex;
+          align-items: center;
+          margin-top: 3px;
         }
 
         .ft-desc {
-          color: rgba(255,255,255,0.7);
+          font-size: 12px;
+          opacity: 0.7;
+        }
+
+        .ft-emojis {
+          font-size: 14px;
+          margin-left: 8px;
+        }
+
+        /* Select + Price Row */
+        .select-price-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 28px 14px;
+        }
+
+        .select-label {
+          color: #888;
+          font-size: 13px;
+        }
+
+        .per-transform-price {
+          color: #555;
           font-size: 13px;
         }
 

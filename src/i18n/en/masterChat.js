@@ -7,16 +7,16 @@ export const masterChat = {
   // ===== Common UI (7) =====
   common: {
     chatWith: 'Chat with {masterName}(AI)',
-    helpText: '💡 Request changes or ask questions.',
+    helpText: 'Ask the master to refine the result — or ask anything.',
     chatEnded: 'Chat has ended.',
     retransformComplete: '💡 Retransform complete! Previous image saved to gallery.',
-    requestModify: '✨ Modify',
+    requestModify: 'Modify',
     errorMessage: "...Sorry, my thoughts wandered. Could you say that again?",
     modifying: '{masterName} is modifying the artwork.',
     senderMe: 'Me',
     placeholderEnded: 'Chat ended',
     placeholderConverting: 'Converting...',
-    placeholderDefault: 'Type a message...'
+    placeholderDefault: 'Chat with {masterName}...'
   },
 
   // ===== Master Names (7) =====

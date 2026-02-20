@@ -410,26 +410,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
               </div>
             )}
 
-            {/* 점 네비게이션 + 이전/다음 버튼 */}
+            {/* 점 네비게이션 (Prev/Next 제거 — 스와이프 + dot 탭만) */}
             <div className="dots-nav">
-              <button 
-                className="nav-btn"
-                onClick={() => {
-                  if (viewIndex === -1 && completedCount > 0) {
-                    setViewIndex(completedCount - 1);
-                  } else if (viewIndex > 0) {
-                    setViewIndex(viewIndex - 1);
-                  } else if (viewIndex === 0) {
-                    setViewIndex(-1);
-                  }
-                }}
-                disabled={viewIndex === -1 && completedCount === 0}
-              >
-                {t.prev}
-              </button>
-              
               <div className="dots">
-                <button className={`dot edu ${viewIndex === -1 ? 'active' : ''}`} onClick={handleBackToEducation}>📚</button>
+                <button className={`dot edu ${viewIndex === -1 ? 'active' : ''}`} onClick={handleBackToEducation}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                </button>
                 {styles.map((_, idx) => (
                   <button 
                     key={idx}
@@ -440,20 +426,6 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                 ))}
                 <span className="count">[{viewIndex === -1 ? 0 : viewIndex + 1}/{totalCount}]</span>
               </div>
-              
-              <button 
-                className="nav-btn"
-                onClick={() => {
-                  if (viewIndex === -1 && completedCount > 0) {
-                    setViewIndex(0);
-                  } else if (viewIndex >= 0 && viewIndex < completedCount - 1) {
-                    setViewIndex(viewIndex + 1);
-                  }
-                }}
-                disabled={viewIndex >= completedCount - 1 || completedCount === 0}
-              >
-                {t.next}
-              </button>
             </div>
 
             {/* 프로그레스 섹션 - 하단 (단독변환 스타일 통일) */}
@@ -640,7 +612,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         .progress-fill {
           height: 100%;
-          background: linear-gradient(90deg, #667eea, #764ba2);
+          background: linear-gradient(90deg, #7c3aed, #a855f7);
           transition: width 0.3s;
         }
         
@@ -656,7 +628,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .spinner {
           width: 14px; height: 14px;
           border: 2px solid rgba(255,255,255,0.2);
-          border-top: 2px solid #667eea;
+          border-top: 2px solid #7c3aed;
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -673,7 +645,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .edu-card.secondary {
           background: transparent;
         }
-        .edu-card h3 { color: #667eea; margin: 0 0 10px; font-size: 15px; }
+        .edu-card h3 { color: #7c3aed; margin: 0 0 10px; font-size: 15px; }
         .edu-card h4 { color: #4CAF50; margin: 0 0 8px; font-size: 14px; }
         .edu-card p { color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 13px; margin: 0; white-space: pre-line; }
         .hint { color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 12px !important; }
@@ -779,7 +751,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .single-progress-fill {
           width: 40%;
           height: 100%;
-          background: linear-gradient(90deg, #667eea, #764ba2);
+          background: linear-gradient(90deg, #7c3aed, #a855f7);
           animation: singleProgress 2s ease-in-out infinite;
         }
         @keyframes singleProgress {
@@ -830,8 +802,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
           margin-top: 16px;
+          padding: 12px 0 4px;
         }
         .dots-nav .nav-btn {
           background: rgba(255,255,255,0.1);
@@ -861,10 +833,10 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           padding: 0;
         }
         .dot.done {
-          background: rgba(102, 126, 234, 0.5);
+          background: rgba(124, 58, 237, 0.5);
         }
         .dot.active {
-          background: #667eea;
+          background: #7c3aed;
           transform: scale(1.3);
         }
         .dot:disabled {
@@ -876,6 +848,15 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           height: auto;
           background: none;
           font-size: 11px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(255,255,255,0.4);
+        }
+        .dot.edu.active {
+          color: #7c3aed;
+          transform: none;
+          background: none;
         }
         .count {
           font-size: 10px;
