@@ -410,7 +410,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {selectMode ? (
         <div className="select-header">
           <button className="select-header-cancel" onClick={exitSelectMode}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            ←
           </button>
           <span className="select-header-count">
             {t.selectedCount.replace('{count}', selectedIds.size)}
@@ -427,40 +427,30 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
               onClick={handleSaveSelected}
               disabled={selectedIds.size === 0 || isBatchSaving}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:2}}>
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              {isBatchSaving ? t.saving : t.save}
+              {isBatchSaving ? '⏳' : '💾'} {isBatchSaving ? t.saving : t.save}
             </button>
             <button 
               className="select-header-delete"
               onClick={handleDeleteSelected}
               disabled={selectedIds.size === 0}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:2}}>
-                <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-              </svg>
-              {t.delete}
+              🗑 {t.delete}
             </button>
           </div>
         </div>
       ) : (
-        <>
-          <div style={styles.header}>
-            <button style={styles.backButton} onClick={onBack}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-              {t.back}
-            </button>
-            {/* 타이틀: absolute center (Back/Home과 무관하게 정중앙) */}
-            <h2 style={styles.titleCenter}>{t.title}</h2>
-            {/* Home 버튼: 원형 배경 제거, 아이콘만 */}
-            <button style={styles.homeButtonClean} onClick={onHome}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-            </button>
-          </div>
-        </>
+        <div style={styles.header}>
+          <button style={styles.backButton} onClick={onBack}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            {t.back}
+          </button>
+          <h2 style={styles.titleCenter}>{t.title}</h2>
+          <button style={styles.homeButtonClean} onClick={onHome}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </button>
+        </div>
       )}
 
       {/* 카운트 + Select 버튼 */}
@@ -476,13 +466,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {/* 갤러리 그리드 */}
       {galleryItems.length === 0 ? (
         <div style={styles.empty}>
-          <div style={styles.emptyIcon}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="1.5"/><circle cx="8.5" cy="7.5" r="1.5"/>
-              <circle cx="6.5" cy="12.5" r="1.5"/>
-              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
-            </svg>
-          </div>
+          <p style={styles.emptyIcon}>🎨</p>
           <p style={styles.emptyText}>{t.empty}</p>
           <p style={styles.emptySubtext}>{t.emptySubtext}</p>
         </div>
@@ -511,7 +495,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
               </div>
               <div style={styles.itemLabel}>
                 <span style={styles.styleName}>
-                  {display.badge && <span style={styles.reBadge}>{display.badge}</span>}
+                  {display.badge && <span style={styles.reText}>{display.badge} </span>}
                   {display.title}
                 </span>
                 {display.subtitle && (
@@ -533,9 +517,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
               style={styles.closeButton}
               onClick={() => setSelectedItem(null)}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
+              ✕
             </button>
             
             <img
@@ -546,7 +528,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
             
             <div style={styles.modalInfo}>
               <h3 style={styles.modalTitle}>
-                {getGalleryDisplay(selectedItem).badge && <span style={styles.reBadgeModal}>{getGalleryDisplay(selectedItem).badge}</span>}
+                {getGalleryDisplay(selectedItem).badge && <span style={{...styles.reText, fontSize: '0.85rem'}}>{getGalleryDisplay(selectedItem).badge} </span>}
                 {getGalleryDisplay(selectedItem).title}
               </h3>
               {getGalleryDisplay(selectedItem).subtitle && (
@@ -560,47 +542,36 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
                 style={styles.saveShareButton}
                 onClick={() => setShowSaveShareMenu(true)}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6}}>
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
                 {t.saveShare}
               </button>
               <button
                 style={styles.deleteButton}
                 onClick={() => handleDelete(selectedItem.id)}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:6}}>
-                  <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                </svg>
-                {t.delete}
+                🗑️ {t.delete}
               </button>
             </div>
             
-            {/* Save/Share 바텀시트 (통일 스펙) */}
+            {/* 저장/공유 팝업 메뉴 */}
             {showSaveShareMenu && (
-              <div style={styles.bottomSheetOverlay} onClick={() => setShowSaveShareMenu(false)}>
-                <div style={styles.bottomSheetMenu} onClick={(e) => e.stopPropagation()}>
-                  <div style={styles.bottomSheetHandle}></div>
+              <div style={styles.saveShareOverlay} onClick={() => setShowSaveShareMenu(false)}>
+                <div style={styles.saveShareMenu} onClick={(e) => e.stopPropagation()}>
                   <button 
-                    style={styles.bottomSheetItem}
+                    style={styles.menuItem}
                     onClick={() => handleDownload(selectedItem)}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
+                    <span style={styles.menuIcon}>💾</span>
                     {t.save}
                   </button>
                   <button 
-                    style={styles.bottomSheetItem}
+                    style={styles.menuItem}
                     onClick={() => handleShare(selectedItem)}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
-                    </svg>
+                    <span style={styles.menuIcon}>📤</span>
                     {t.share}
                   </button>
                   <button 
-                    style={styles.bottomSheetCancel}
+                    style={{...styles.menuItem, ...styles.menuCancel}}
                     onClick={() => setShowSaveShareMenu(false)}
                   >
                     {t.close}
@@ -645,7 +616,7 @@ const animationStyle = `
   }
   
   .gallery-item.selected {
-    outline: 2px solid #7c3aed;
+    outline: 2px solid #667eea;
     outline-offset: -2px;
   }
   
@@ -668,8 +639,8 @@ const animationStyle = `
   }
   
   .select-checkbox.checked {
-    background: #7c3aed;
-    border-color: #7c3aed;
+    background: #667eea;
+    border-color: #667eea;
     color: white;
   }
   
@@ -680,8 +651,8 @@ const animationStyle = `
     justify-content: space-between;
     padding: 12px 0;
     margin-bottom: 12px;
-    border-bottom: 1px solid rgba(124, 58, 237, 0.2);
-    background: rgba(124, 58, 237, 0.05);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+    background: rgba(102, 126, 234, 0.05);
     border-radius: 8px;
     padding: 10px 14px;
   }
@@ -690,16 +661,15 @@ const animationStyle = `
     background: none;
     border: none;
     color: rgba(255,255,255,0.6);
+    font-size: 13px;
     cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
+    padding: 4px 0;
   }
   
   .select-header-count {
     font-size: 14px;
     font-weight: 600;
-    color: #a78bfa;
+    color: #667eea;
   }
   
   .select-header-actions {
@@ -710,9 +680,9 @@ const animationStyle = `
   .select-header-all {
     padding: 5px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(124, 58, 237, 0.3);
-    background: rgba(124, 58, 237, 0.1);
-    color: #a78bfa;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
     font-size: 11px;
     cursor: pointer;
   }
@@ -720,13 +690,11 @@ const animationStyle = `
   .select-header-save {
     padding: 5px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(124, 58, 237, 0.3);
-    background: rgba(124, 58, 237, 0.1);
-    color: #a78bfa;
+    border: 1px solid rgba(76, 175, 80, 0.4);
+    background: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
     font-size: 11px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
   }
   
   .select-header-save:disabled {
@@ -742,8 +710,6 @@ const animationStyle = `
     color: #ff6b6b;
     font-size: 11px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
   }
   
   .select-header-delete:disabled {
@@ -791,18 +757,6 @@ const styles = {
     zIndex: 1,
   },
   
-  // 타이틀 정중앙 (absolute center)
-  titleCenter: {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    margin: 0,
-    fontSize: '1.2rem',
-    fontWeight: '600',
-    whiteSpace: 'nowrap',
-  },
-  
-  // Home 버튼: 원형 배경 제거, 아이콘만
   homeButtonClean: {
     background: 'none',
     border: 'none',
@@ -813,6 +767,16 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
+  },
+  
+  titleCenter: {
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    margin: 0,
+    fontSize: '1.2rem',
+    fontWeight: '600',
+    whiteSpace: 'nowrap',
   },
   
   clearButton: {
@@ -826,13 +790,13 @@ const styles = {
   },
   
   selectButton: {
-    background: 'none',
-    border: '1px solid rgba(255,255,255,0.2)',
-    color: 'rgba(255,255,255,0.6)',
-    padding: '6px 14px',
-    borderRadius: '20px',
+    background: 'rgba(167, 139, 250, 0.2)',
+    border: '1px solid rgba(167, 139, 250, 0.4)',
+    color: '#a78bfa',
+    padding: '10px 20px',
+    borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '0.8rem',
+    fontSize: '0.9rem',
   },
   
   notice: {
@@ -934,30 +898,13 @@ const styles = {
     opacity: 0.6,
   },
 
-  reBadge: {
-    display: 'inline-block',
-    background: 'rgba(124, 58, 237, 0.2)',
+  reText: {
     color: '#a78bfa',
-    fontSize: '0.6rem',
-    fontWeight: '700',
-    padding: '1px 5px',
-    borderRadius: '4px',
-    marginRight: '4px',
-    verticalAlign: 'middle',
+    fontSize: '0.75rem',
+    fontWeight: '600',
+    opacity: 0.7,
   },
-
-  reBadgeModal: {
-    display: 'inline-block',
-    background: 'rgba(124, 58, 237, 0.2)',
-    color: '#a78bfa',
-    fontSize: '0.7rem',
-    fontWeight: '700',
-    padding: '2px 6px',
-    borderRadius: '4px',
-    marginRight: '6px',
-    verticalAlign: 'middle',
-  },
-
+  
   // 모달 스타일
   modal: {
     position: 'fixed',
@@ -985,19 +932,17 @@ const styles = {
   
   closeButton: {
     position: 'absolute',
-    top: '8px',
-    right: '8px',
+    top: '10px',
+    right: '10px',
     background: 'rgba(0,0,0,0.5)',
     border: 'none',
-    color: '#fff',
+    color: 'rgba(255,255,255,0.7)',
     width: '36px',
     height: '36px',
     borderRadius: '50%',
     cursor: 'pointer',
+    fontSize: '1.2rem',
     zIndex: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   
   modalImage: {
@@ -1037,90 +982,79 @@ const styles = {
   
   saveShareButton: {
     flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: '#7c3aed',
-    border: 'none',
-    color: '#fff',
-    padding: '11px 0',
+    background: 'rgba(102,126,234,0.15)',
+    border: '1px solid rgba(102,126,234,0.3)',
+    color: '#667eea',
+    padding: '14px',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '13px',
+    fontSize: '0.9rem',
     fontWeight: '600',
+    textAlign: 'center',
   },
   
   deleteButton: {
     flex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'rgba(239,68,68,0.15)',
-    border: '1px solid rgba(239,68,68,0.3)',
-    color: '#ef4444',
-    padding: '11px 0',
+    background: 'rgba(255,107,107,0.1)',
+    border: '1px solid rgba(255,107,107,0.3)',
+    color: '#ff6b6b',
+    padding: '14px',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '13px',
+    fontSize: '0.9rem',
     fontWeight: '600',
+    textAlign: 'center',
   },
   
-  // 바텀시트 통일 스펙
-  bottomSheetOverlay: {
+  // 저장/공유 팝업 스타일
+  saveShareOverlay: {
     position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'rgba(0,0,0,0.6)',
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    zIndex: 9999,
-  },
-  
-  bottomSheetMenu: {
-    background: '#1a1a1a',
-    borderRadius: '16px 16px 0 0',
-    padding: '8px',
-    width: '100%',
-    maxWidth: '400px',
-  },
-  
-  bottomSheetHandle: {
-    width: '36px',
-    height: '4px',
-    background: '#444',
-    borderRadius: '2px',
-    margin: '4px auto 8px',
-  },
-  
-  bottomSheetItem: {
+    background: 'rgba(0,0,0,0.7)',
     display: 'flex',
     alignItems: 'center',
-    gap: '12px',
-    width: '100%',
-    padding: '14px 20px',
-    border: 'none',
-    background: 'transparent',
-    color: '#fff',
-    fontSize: '15px',
-    fontWeight: '500',
-    cursor: 'pointer',
-    borderRadius: '12px',
+    justifyContent: 'center',
+    zIndex: 2000,
   },
   
-  bottomSheetCancel: {
+  saveShareMenu: {
+    background: '#1e1e2e',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: '14px',
+    padding: '6px',
+    minWidth: '200px',
+    boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+  },
+  
+  menuItem: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
-    padding: '14px 20px',
+    padding: '14px 16px',
     border: 'none',
     background: 'transparent',
-    color: '#555',
-    fontSize: '15px',
-    textAlign: 'center',
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: '0.9rem',
     cursor: 'pointer',
+    borderRadius: '8px',
+    transition: 'background 0.2s',
+  },
+  
+  menuIcon: {
+    marginRight: '8px',
+    fontSize: '1.1rem',
+  },
+  
+  menuCancel: {
+    color: 'rgba(255,255,255,0.35)',
+    justifyContent: 'center',
     borderTop: '1px solid rgba(255,255,255,0.08)',
     marginTop: '4px',
+    paddingTop: '14px',
   },
 };
 

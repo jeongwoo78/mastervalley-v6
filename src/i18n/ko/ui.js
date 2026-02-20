@@ -122,7 +122,7 @@ export const ui = {
 
   // ===== Gallery =====
   gallery: {
-    title: '내 갤러리',
+    title: '갤러리',
     deleteAll: '전체 삭제',
     saved: '저장됨',
     empty: '아직 저장된 이미지가 없습니다',

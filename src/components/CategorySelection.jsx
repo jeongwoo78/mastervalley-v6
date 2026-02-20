@@ -146,7 +146,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         /* Branding */
         .branding {
           text-align: center;
-          padding: 20px 20px 8px;
+          padding: 40px 20px 8px;
         }
 
         .brand-icon-left {
@@ -178,10 +178,10 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         /* Category Grid - 목업: 좌우 padding 20px */
         .category-grid {
           flex: 1;
-          padding: 8px 20px 32px;
+          padding: 56px 20px 32px;
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          justify-content: flex-start;
           gap: 12px;
         }
 
@@ -256,7 +256,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
           }
 
           .branding {
-            padding: 14px 16px 6px;
+            padding: 30px 16px 6px;
           }
 
           .brand-title {
@@ -264,7 +264,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
           }
 
           .category-grid {
-            padding: 6px 16px 24px;
+            padding: 40px 16px 24px;
             gap: 10px;
           }
 
