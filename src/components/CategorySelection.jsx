@@ -104,7 +104,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 16px 20px;
+          padding: 24px 20px 16px;
         }
 
         .menu-btn {
@@ -146,7 +146,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         /* Branding */
         .branding {
           text-align: center;
-          padding: 40px 20px 8px;
+          padding: 52px 20px 8px;
         }
 
         .brand-icon-left {
@@ -178,7 +178,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         /* Category Grid - 목업: 좌우 padding 20px */
         .category-grid {
           flex: 1;
-          padding: 56px 20px 32px;
+          padding: 64px 20px 32px;
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
@@ -252,11 +252,11 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         /* Mobile Responsive */
         @media (max-width: 480px) {
           .main-header {
-            padding: 12px 16px;
+            padding: 20px 16px 12px;
           }
 
           .branding {
-            padding: 30px 16px 6px;
+            padding: 40px 16px 6px;
           }
 
           .brand-title {
@@ -264,7 +264,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
           }
 
           .category-grid {
-            padding: 40px 16px 24px;
+            padding: 48px 16px 24px;
             gap: 10px;
           }
 
