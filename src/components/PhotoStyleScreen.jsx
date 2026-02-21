@@ -106,7 +106,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     oriental: {
       name: ps.orientalName,
       price: '$0.20',
-      fullPrice: '$0.60',
+      fullPrice: '$0.50',
       emojis: '🐼🌸🐅',
       selectLabel: ps.selectStyle,
       priceLabel: '$0.20/transform',
