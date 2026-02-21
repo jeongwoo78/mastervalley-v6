@@ -1876,7 +1876,7 @@ const ResultScreen = ({
           border-radius: 0;
           background: none;
           font-size: 13px;
-          font-weight: 500;
+          font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
           display: flex;

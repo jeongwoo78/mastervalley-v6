@@ -705,7 +705,7 @@ const animationStyle = `
     background: none;
     color: #22c55e;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -724,7 +724,7 @@ const animationStyle = `
     background: none;
     color: #ef4444;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
