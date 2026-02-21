@@ -409,34 +409,41 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {/* 헤더: 일반 모드 / 선택 모드 전환 */}
       {selectMode ? (
         <div className="select-header">
-          <button className="select-header-cancel" onClick={exitSelectMode}>
-            ←
-          </button>
-          <span className="select-header-count">
-            {t.selectedCount.replace('{count}', selectedIds.size)}
-          </span>
-          <div className="select-header-actions">
+          <div className="select-header-left">
+            <button className="select-header-cancel" onClick={exitSelectMode}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            </button>
             <button 
               className="select-header-all"
               onClick={selectedIds.size === galleryItems.length ? deselectAll : selectAll}
             >
-              {selectedIds.size === galleryItems.length ? t.deselectAll : t.selectAll}
+              {selectedIds.size === galleryItems.length ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              )}
+              {t.selectAll}
             </button>
             <button 
               className="select-header-save"
               onClick={handleSaveSelected}
               disabled={selectedIds.size === 0 || isBatchSaving}
             >
-              {isBatchSaving ? '⏳' : '💾'} {isBatchSaving ? t.saving : t.save}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              {isBatchSaving ? t.saving : t.save}
             </button>
             <button 
               className="select-header-delete"
               onClick={handleDeleteSelected}
               disabled={selectedIds.size === 0}
             >
-              🗑 {t.delete}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              {t.delete}
             </button>
           </div>
+          <span className="select-header-count">
+            {t.selectedCount.replace('{count}', selectedIds.size)}
+          </span>
         </div>
       ) : (
         <div style={styles.header}>
@@ -616,7 +623,7 @@ const animationStyle = `
   }
   
   .gallery-item.selected {
-    outline: 2px solid #667eea;
+    outline: 2px solid #7c3aed;
     outline-offset: -2px;
   }
   
@@ -639,8 +646,8 @@ const animationStyle = `
   }
   
   .select-checkbox.checked {
-    background: #667eea;
-    border-color: #667eea;
+    background: #7c3aed;
+    border-color: #7c3aed;
     color: white;
   }
   
@@ -651,25 +658,27 @@ const animationStyle = `
     justify-content: space-between;
     padding: 12px 0;
     margin-bottom: 12px;
-    border-bottom: 1px solid rgba(102, 126, 234, 0.2);
-    background: rgba(102, 126, 234, 0.05);
-    border-radius: 8px;
-    padding: 10px 14px;
+  }
+  
+  .select-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
   
   .select-header-cancel {
     background: none;
     border: none;
-    color: rgba(255,255,255,0.6);
-    font-size: 13px;
+    color: rgba(255,255,255,0.7);
     cursor: pointer;
     padding: 4px 0;
+    display: flex;
+    align-items: center;
   }
   
   .select-header-count {
-    font-size: 14px;
-    font-weight: 600;
-    color: #667eea;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
   }
   
   .select-header-actions {
@@ -678,42 +687,53 @@ const animationStyle = `
   }
   
   .select-header-all {
-    padding: 5px 10px;
-    border-radius: 6px;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    background: rgba(102, 126, 234, 0.1);
-    color: #667eea;
-    font-size: 11px;
+    padding: 4px 0;
+    border: none;
+    background: none;
+    color: #7c3aed;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   
   .select-header-save {
-    padding: 5px 10px;
-    border-radius: 6px;
-    border: 1px solid rgba(76, 175, 80, 0.4);
-    background: rgba(76, 175, 80, 0.1);
-    color: #4caf50;
-    font-size: 11px;
+    padding: 4px 0;
+    border: none;
+    background: none;
+    color: #22c55e;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   
   .select-header-save:disabled {
-    opacity: 0.3;
+    opacity: 0.5;
+    color: rgba(255,255,255,0.3);
     cursor: not-allowed;
   }
   
   .select-header-delete {
-    padding: 5px 10px;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 107, 107, 0.4);
-    background: rgba(255, 107, 107, 0.1);
-    color: #ff6b6b;
-    font-size: 11px;
+    padding: 4px 0;
+    border: none;
+    background: none;
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   
   .select-header-delete:disabled {
-    opacity: 0.3;
+    opacity: 0.5;
+    color: rgba(255,255,255,0.3);
     cursor: not-allowed;
   }
   
@@ -790,13 +810,13 @@ const styles = {
   },
   
   selectButton: {
-    background: 'rgba(167, 139, 250, 0.2)',
-    border: '1px solid rgba(167, 139, 250, 0.4)',
-    color: '#a78bfa',
-    padding: '10px 20px',
-    borderRadius: '8px',
+    background: 'none',
+    border: 'none',
+    color: '#7c3aed',
+    padding: '4px 0',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '13px',
+    fontWeight: 600,
   },
   
   notice: {
@@ -984,7 +1004,7 @@ const styles = {
     flex: 1,
     background: 'rgba(102,126,234,0.15)',
     border: '1px solid rgba(102,126,234,0.3)',
-    color: '#667eea',
+    color: '#7c3aed',
     padding: '14px',
     borderRadius: '10px',
     cursor: 'pointer',

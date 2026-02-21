@@ -1476,7 +1476,7 @@ const ResultScreen = ({
             className="btn btn-save-share" 
             onClick={() => setShowSaveShareMenu(true)}
           >
-            <span className="btn-icon">💾</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             {t.save}/{t.share}
           </button>
           
@@ -1489,7 +1489,7 @@ const ResultScreen = ({
               cursor: (isAnyMasterRetransforming || isRetrying) ? 'not-allowed' : 'pointer'
             }}
           >
-            <span className="btn-icon">🖼️</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
             {t.gallery}
           </button>
           
@@ -1497,7 +1497,7 @@ const ResultScreen = ({
             className="btn btn-reset" 
             onClick={onReset}
           >
-            <span className="btn-icon">🔄</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
             {t.newPhoto}
           </button>
         </div>
@@ -1862,58 +1862,53 @@ const ResultScreen = ({
 
         .action-buttons {
           display: flex;
-          gap: 10px;
+          justify-content: center;
+          gap: 28px;
           max-width: 340px;
           margin: 0 auto;
+          padding: 14px 0 20px;
+          border-top: 1px solid rgba(255,255,255,0.08);
         }
 
         .btn {
-          flex: 1;
-          padding: 14px 8px;
+          padding: 8px 4px;
           border: none;
-          border-radius: 14px;
-          font-size: 12px;
-          font-weight: 600;
+          border-radius: 0;
+          background: none;
+          font-size: 13px;
+          font-weight: 500;
           cursor: pointer;
           transition: all 0.2s;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 6px;
-        }
-
-        .btn-icon {
-          font-size: 1rem;
+          color: rgba(255,255,255,0.7);
         }
 
         .btn-save-share {
-          background: linear-gradient(135deg, #667eea, #764ba2);
-          color: white;
-          border: none;
+          color: #7c3aed;
+          font-weight: 600;
         }
 
         .btn-save-share:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+          opacity: 0.8;
         }
 
         .btn-gallery {
-          background: rgba(255,255,255,0.1);
-          color: white;
+          color: rgba(255,255,255,0.7);
         }
 
         .btn-gallery:hover {
-          background: rgba(255,255,255,0.15);
+          color: rgba(255,255,255,0.9);
         }
 
         .btn-reset {
-          background: rgba(255,255,255,0.05);
           color: rgba(255,255,255,0.7);
-          border: none;
         }
 
         .btn-reset:hover {
-          background: rgba(255,255,255,0.1);
+          color: rgba(255,255,255,0.9);
         }
 
         /* Save/Share 팝업 메뉴 */
@@ -2100,7 +2095,7 @@ const ResultScreen = ({
           }
 
           .action-buttons {
-            grid-template-columns: 1fr;
+            gap: 20px;
           }
         }
 

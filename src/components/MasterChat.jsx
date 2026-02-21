@@ -276,8 +276,8 @@ const MasterChat = ({
         )}
       </div>
 
-      {/* 추천 질문 - 대화 시작 전에만 표시, 가로 배치 */}
-      {messageCount === 0 && !isChatEnded && (
+      {/* 추천 질문 - 로딩 중에만 숨김 */}
+      {!isLoading && !isRetransforming && !isChatEnded && (
         <div className="suggested-questions">
           {(chatText.suggestedQuestions[masterKey] || []).map((q, qIdx) => (
             <button
@@ -333,7 +333,7 @@ const MasterChat = ({
         onClick={handleRetransform}
         disabled={!pendingCorrection || isRetransforming || isChatEnded}
         style={{ 
-          background: pendingCorrection && !isRetransforming && !isChatEnded ? theme.gradient : undefined,
+          color: pendingCorrection && !isRetransforming && !isChatEnded ? theme.primary : 'rgba(255,255,255,0.4)',
           opacity: !pendingCorrection || isRetransforming || isChatEnded ? 0.5 : 1
         }}
       >
@@ -581,10 +581,10 @@ const MasterChat = ({
         /* 수정 버튼 (입력창 아래) */
         .retransform-btn {
           width: 100%;
-          background: linear-gradient(135deg, #667eea, #764ba2);
+          background: none;
           border: none;
-          border-radius: 12px;
-          padding: 12px;
+          border-radius: 0;
+          padding: 8px 0 2px;
           color: white;
           font-size: 13px;
           font-weight: 600;
@@ -594,17 +594,15 @@ const MasterChat = ({
           justify-content: center;
           gap: 6px;
           margin-top: 10px;
-          transition: transform 0.2s, box-shadow 0.2s;
+          transition: opacity 0.2s;
         }
 
         .retransform-btn:hover:not(:disabled) {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+          opacity: 0.8;
         }
 
         .retransform-btn:disabled {
           cursor: not-allowed;
-          transform: none;
         }
 
         .spinner-small {
