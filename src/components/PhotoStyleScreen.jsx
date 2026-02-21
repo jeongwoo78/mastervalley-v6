@@ -51,6 +51,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
       gradient: 'linear-gradient(135deg, #e9d5ff 0%, #a855f7 100%)',
       boxShadow: '0 4px 15px rgba(168, 85, 247, 0.3)',
       color: '#2e1065',
+      accent: '#a855f7',
       fullTransform: {
         id: 'movements-all',
         title: ps.movementsFullTitle,
@@ -83,6 +84,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
       gradient: 'linear-gradient(135deg, #f5deb3 0%, #daa520 100%)',
       boxShadow: '0 4px 15px rgba(218, 165, 32, 0.3)',
       color: '#3a2a10',
+      accent: '#daa520',
       fullTransform: {
         id: 'masters-all',
         title: ps.mastersFullTitle,
@@ -111,6 +113,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
       gradient: 'linear-gradient(135deg, #ffe4e6 0%, #f472b6 100%)',
       boxShadow: '0 4px 15px rgba(244, 114, 182, 0.3)',
       color: '#1e293b',
+      accent: '#f472b6',
       fullTransform: {
         id: 'oriental-all',
         title: ps.orientalFullTitle,
@@ -203,7 +206,9 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         onClick={handleFullTransform}
         style={{
           background: currentCategory.gradient,
-          boxShadow: currentCategory.boxShadow,
+          boxShadow: selectedStyle?.isFullTransform 
+            ? `0 0 0 2px ${currentCategory.accent}, 0 0 12px ${currentCategory.accent}66`
+            : currentCategory.boxShadow,
           color: currentCategory.color
         }}
       >
@@ -238,6 +243,10 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
             key={style.id}
             className={`style-card ${selectedStyle?.id === style.id ? 'selected' : ''}`}
             onClick={() => handleStyleSelect(style)}
+            style={selectedStyle?.id === style.id ? {
+              borderColor: currentCategory.accent,
+              boxShadow: `0 0 12px ${currentCategory.accent}66`
+            } : {}}
           >
             <div className="style-thumb">
               <img src={style.thumbnail} alt={style.name} />
@@ -306,16 +315,9 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           background: transparent;
         }
 
-        /* 사진 미선택 시 - 테두리 */
+        /* 사진 미선택 시 */
         .photo-section.awaiting-photo {
-          border: 2px solid #667eea !important;
-          box-shadow: 0 0 12px rgba(102, 126, 234, 0.4) !important;
-          animation: photoPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes photoPulse {
-          0%, 100% { box-shadow: 0 0 8px rgba(102, 126, 234, 0.3); }
-          50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.6); }
+          border: none;
         }
 
         .photo-placeholder {
@@ -362,8 +364,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         }
 
         .full-transform-btn.selected {
-          outline: 2px solid #fff;
-          outline-offset: 2px;
+          /* handled by inline style */
         }
 
         .full-transform-btn:focus {
@@ -449,8 +450,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         }
 
         .style-card.selected {
-          border-color: #7c3aed;
-          box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+          /* handled by inline style */
         }
 
         .style-card:focus {
