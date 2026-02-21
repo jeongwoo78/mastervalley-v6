@@ -353,7 +353,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                 
                 {/* 스타일 정보 - 가운데 정렬 (목업 준수) */}
                 <div className="oneclick-style-info">
-                  <h3>{getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}</h3>
+                  <h3>{selectedStyle?.title || getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}</h3>
                   <div className="subtitle1">
                     {category === 'movements' ? t.movementsSub1 :
                      category === 'masters' ? t.mastersSub1 :
@@ -410,24 +410,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
               </div>
             )}
 
-            {/* 점 네비게이션 + 이전/다음 버튼 */}
+            {/* 점 네비게이션 */}
             <div className="dots-nav">
-              <button 
-                className="nav-btn"
-                onClick={() => {
-                  if (viewIndex === -1 && completedCount > 0) {
-                    setViewIndex(completedCount - 1);
-                  } else if (viewIndex > 0) {
-                    setViewIndex(viewIndex - 1);
-                  } else if (viewIndex === 0) {
-                    setViewIndex(-1);
-                  }
-                }}
-                disabled={viewIndex === -1 && completedCount === 0}
-              >
-                {t.prev}
-              </button>
-              
               <div className="dots">
                 <button className={`dot edu ${viewIndex === -1 ? 'active' : ''}`} onClick={handleBackToEducation}>📚</button>
                 {styles.map((_, idx) => (
@@ -440,20 +424,6 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                 ))}
                 <span className="count">[{viewIndex === -1 ? 0 : viewIndex + 1}/{totalCount}]</span>
               </div>
-              
-              <button 
-                className="nav-btn"
-                onClick={() => {
-                  if (viewIndex === -1 && completedCount > 0) {
-                    setViewIndex(0);
-                  } else if (viewIndex >= 0 && viewIndex < completedCount - 1) {
-                    setViewIndex(viewIndex + 1);
-                  }
-                }}
-                disabled={viewIndex >= completedCount - 1 || completedCount === 0}
-              >
-                {t.next}
-              </button>
             </div>
 
             {/* 프로그레스 섹션 - 하단 (단독변환 스타일 통일) */}
@@ -615,7 +585,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           margin-top: 16px;
           display: flex;
           flex-direction: column;
-          align-items: center;
+          align-items: flex-end;
+          padding-right: 28px;
         }
         .progress-status {
           display: flex;
@@ -831,19 +802,6 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           justify-content: center;
           gap: 8px;
           margin-top: 16px;
-        }
-        .dots-nav .nav-btn {
-          background: rgba(255,255,255,0.1);
-          border: none;
-          color: rgba(255,255,255,0.7);
-          padding: 6px 10px;
-          border-radius: 12px;
-          font-size: 11px;
-          cursor: pointer;
-        }
-        .dots-nav .nav-btn:disabled {
-          opacity: 0.3;
-          cursor: not-allowed;
         }
         .dots {
           display: flex;
