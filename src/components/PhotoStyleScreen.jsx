@@ -105,7 +105,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
       name: ps.orientalName,
       price: '$0.20',
       fullPrice: '$0.60',
-      emojis: '🐅🐼🌸',
+      emojis: '🐼🌸🐅',
       selectLabel: ps.selectStyle,
       priceLabel: '$0.20/transform',
       gradient: 'linear-gradient(135deg, #ffe4e6 0%, #f472b6 100%)',
@@ -120,9 +120,9 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         category: 'oriental'
       },
       styles: [
-        { id: 'korean', name: ps.korean, period: ps.koreanSub, thumbnail: korean, category: 'oriental' },
         { id: 'chinese', name: ps.chinese, period: ps.chineseSub, thumbnail: chinese, category: 'oriental' },
-        { id: 'japanese', name: ps.japanese, period: ps.japaneseSub, thumbnail: japanese, category: 'oriental' }
+        { id: 'japanese', name: ps.japanese, period: ps.japaneseSub, thumbnail: japanese, category: 'oriental' },
+        { id: 'korean', name: ps.korean, period: ps.koreanSub, thumbnail: korean, category: 'oriental' }
       ]
     }
   };

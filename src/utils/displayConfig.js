@@ -47,13 +47,13 @@ export const STANDARD_KEYS = {
   
   // 동양화 (7개)
   oriental: [
-    'korean-minhwa',
-    'korean-pungsokdo',
-    'korean-jingyeong',
     'chinese-ink',
     'chinese-gongbi',
     'japanese-ukiyoe',
-    'japanese-rinpa'
+    'japanese-rinpa',
+    'korean-minhwa',
+    'korean-pungsokdo',
+    'korean-jingyeong'
   ],
   
   // 사조별 화가 (37명)
