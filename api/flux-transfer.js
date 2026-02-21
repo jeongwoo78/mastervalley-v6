@@ -1640,8 +1640,7 @@ MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'M
 FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'
 OHHHALRIGHT: 'OH, ALRIGHT...' | 'FINE, IF YOU INSIST...' | 'I GUESS SO...' | 'OKAY, YOU WIN...' | 'WHATEVER YOU SAY...' | 'IF THATS WHAT YOU WANT...' | 'ALRIGHT, ALRIGHT...' | 'I SUPPOSE SO...' | 'HAVE IT YOUR WAY...' | 'SIGH... OKAY...' | 'VERY WELL THEN...' | 'AS YOU WISH...' | 'ILL DO IT...' | 'YOU ALWAYS GET YOUR WAY...' | 'FINE BY ME...'
 STILLLIFE: null
-Otherwise: null",
-  "has_bubble_space": "If LICHTENSTEIN and speech_bubble is not null: true if the photo has empty space (sky, wall, simple background) where a speech bubble can fit WITHOUT overlapping the subject's face or body. false if the subject fills most of the frame (close-up, tight crop) or background is too busy. Otherwise: null"
+Otherwise: null"
 }`;
         
       } else {
@@ -2061,7 +2060,6 @@ FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM
 OHHHALRIGHT: 'OH, ALRIGHT...' | 'FINE, IF YOU INSIST...' | 'I GUESS SO...' | 'OKAY, YOU WIN...' | 'WHATEVER YOU SAY...' | 'IF THATS WHAT YOU WANT...' | 'ALRIGHT, ALRIGHT...' | 'I SUPPOSE SO...' | 'HAVE IT YOUR WAY...' | 'SIGH... OKAY...' | 'VERY WELL THEN...' | 'AS YOU WISH...' | 'ILL DO IT...' | 'YOU ALWAYS GET YOUR WAY...' | 'FINE BY ME...'
 STILLLIFE: null
 If other artist: null",
-  "has_bubble_space": "If LICHTENSTEIN and speech_bubble is not null: true if the photo has empty space (sky, wall, simple background) where a speech bubble can fit WITHOUT overlapping the subject's face or body. false if the subject fills most of the frame (close-up, tight crop) or background is too busy. Otherwise: null",
   "reason": "why this artist AND this masterwork fit (1 sentence)",
   "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by [Artist] in the style of [selected_work], [that work's distinctive techniques and colors]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background, keep background CLEAN'"
 }`;
@@ -2150,8 +2148,7 @@ If other artist: null",
         physical_description: result.physical_description || null,
         person_count: result.person_count || null,
         background_type: result.background_type || null,
-        speech_bubble: result.speech_bubble || null,  // v77: 리히텐슈타인 말풍선
-        has_bubble_space: result.has_bubble_space ?? null  // v77.1: 말풍선 공간 판단
+        speech_bubble: result.speech_bubble || null  // v77: 리히텐슈타인 말풍선
       }
     };
     
@@ -2691,7 +2688,6 @@ export default async function handler(req, res) {
         logData.vision.subjectType = visionAnalysis.subject_type || '';
         // v77: 리히텐슈타인 말풍선 텍스트 저장
         logData.vision.speechBubble = visionAnalysis.speech_bubble || null;
-        logData.vision.hasBubbleSpace = visionAnalysis.has_bubble_space ?? null;
       }
       
       // ========================================
@@ -3429,15 +3425,13 @@ export default async function handler(req, res) {
     // ========================================
     // v77: 리히텐슈타인 말풍선 (Vision AI 선택)
     // - 격자 유지, 말풍선 3% 안쪽 배치
-    // - v77.1: 공간 있을 때만 삽입
     // ========================================
     if (selectedArtist && (selectedArtist.toUpperCase().includes('LICHTENSTEIN') || 
         selectedArtist.includes('리히텐슈타인'))) {
       
       const speechText = logData.vision?.speechBubble;
-      const hasBubbleSpace = logData.vision?.hasBubbleSpace;
       
-      if (speechText && hasBubbleSpace === true && !finalPrompt.includes('speech bubble')) {
+      if (speechText && !finalPrompt.includes('speech bubble')) {
         finalPrompt = finalPrompt + `, white comic speech bubble with text "${speechText}" in bold font, position bubble at least 3% away from image edges`;
       }
     }
