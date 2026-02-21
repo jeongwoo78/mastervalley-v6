@@ -245,7 +245,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           const edu = mastersResult[key];
           const content = edu.content || edu.description || edu.desc || null;
           if (content) {
-            return content;
+            return { name: artistName, content: content };
           }
         }
       }
