@@ -467,14 +467,14 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
               )}
             </div>
             
-            {/* 하단 고정: 상태 + 프로그레스 바 */}
-            <div className="single-bottom-fixed">
-              <div className="single-status">
+            {/* 하단: 상태 + 프로그레스 바 (원클릭과 동일) */}
+            <div className="progress-section">
+              <div className="progress-status">
                 <div className="spinner"></div>
                 <p>{statusText}</p>
               </div>
-              <div className="single-progress-bar">
-                <div className="single-progress-fill"></div>
+              <div className="progress-bar">
+                <div className="progress-fill single-anim"></div>
               </div>
             </div>
           </div>
@@ -646,9 +646,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .edu-card p { color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 13px; margin: 0; white-space: pre-line; }
         .hint { color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 12px !important; }
         
-        /* 단독 로딩 화면 (이모지 35%, 진행 표시 하단 고정) */
+        /* 단독 로딩 화면 (flexbox 레이아웃) */
         .single-loading-container {
-          position: relative;
           width: 100%;
           min-height: 80vh;
           display: flex;
@@ -656,23 +655,16 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           align-items: center;
         }
         .single-loading-icon {
-          position: absolute;
-          top: 35%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          margin-top: 25vh;
           font-size: 56px;
         }
         .single-loading-content {
-          position: absolute;
-          top: calc(35% + 45px);
-          left: 50%;
-          transform: translateX(-50%);
           width: 100%;
           max-width: 340px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding-bottom: 80px;
+          margin-top: 16px;
         }
         .single-loading-title {
           width: 100%;
@@ -712,43 +704,9 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           margin-bottom: 0;
         }
         
-        /* 하단 고정: 상태 + 프로그레스 바 */
-        .single-bottom-fixed {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          padding: 12px 0;
-          background: #121212;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-        }
-        .single-status {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          margin-bottom: 8px;
-        }
-        .single-status p {
-          margin: 0;
-          color: rgba(255,255,255,0.5);
-          font-size: 11px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .single-progress-bar {
-          width: 50%;
-          height: 2px;
-          background: rgba(255,255,255,0.1);
-          border-radius: 2px;
-          overflow: hidden;
-        }
-        .single-progress-fill {
+        /* 단독 변환: 프로그레스바 애니메이션 (진행률 모름) */
+        .progress-fill.single-anim {
           width: 40%;
-          height: 100%;
-          background: linear-gradient(90deg, #7c3aed, #a855f7);
           animation: singleProgress 2s ease-in-out infinite;
         }
         @keyframes singleProgress {
