@@ -104,7 +104,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 24px 20px 16px;
+          padding: 16px 20px 16px;
         }
 
         .menu-btn {
@@ -252,7 +252,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         /* Mobile Responsive */
         @media (max-width: 480px) {
           .main-header {
-            padding: 20px 16px 12px;
+            padding: 16px 16px 12px;
           }
 
           .branding {
