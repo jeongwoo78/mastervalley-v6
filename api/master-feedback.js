@@ -125,7 +125,7 @@ async function callGPT4o(messages, systemPrompt) {
 // ========================================
 // 시스템 프롬프트 (다국어 지원)
 // ========================================
-function buildSystemPrompt(masterKey, conversationType, lang = 'ko') {
+function buildSystemPrompt(masterKey, conversationType, lang = 'en') {
   const persona = MASTER_PERSONAS[masterKey];
   
   if (!persona) {
@@ -272,7 +272,7 @@ export default async function handler(req, res) {
       conversationType,
       userMessage,
       conversationHistory,
-      lang = 'ko'  // 언어 파라미터 추가
+      lang = 'en'  // 언어 파라미터 (기본값: English)
     } = req.body;
 
     // 유효성 검사
@@ -304,7 +304,7 @@ export default async function handler(req, res) {
     let messages = [];
     
     if (conversationType === 'greeting') {
-      messages = [{ role: 'user', content: '첫 인사를 해주세요.' }];
+      messages = [{ role: 'user', content: lang === 'ko' ? '첫 인사를 해주세요.' : 'Please give your first greeting.' }];
     } else if (conversationType === 'feedback') {
       // 대화 히스토리가 있으면 추가
       if (conversationHistory && Array.isArray(conversationHistory)) {
@@ -315,7 +315,7 @@ export default async function handler(req, res) {
       }
       messages.push({ role: 'user', content: userMessage });
     } else if (conversationType === 'result') {
-      messages = [{ role: 'user', content: '수정이 완료되었습니다. 결과를 전달해주세요.' }];
+      messages = [{ role: 'user', content: lang === 'ko' ? '수정이 완료되었습니다. 결과를 전달해주세요.' : 'The modification is complete. Please share the result.' }];
     }
 
     // GPT-4o 호출
