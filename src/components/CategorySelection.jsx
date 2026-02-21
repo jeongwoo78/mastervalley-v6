@@ -178,7 +178,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         /* Category Grid - 목업: 좌우 padding 20px */
         .category-grid {
           flex: 1;
-          padding: 64px 20px 32px;
+          padding: 76px 20px 32px;
           display: flex;
           flex-direction: column;
           justify-content: flex-start;

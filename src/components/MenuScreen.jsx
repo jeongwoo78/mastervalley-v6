@@ -98,7 +98,7 @@ const MenuScreen = ({
         {/* Gallery */}
         <div className="menu-item-svg" onClick={onGallery}>
           <span className="menu-svg-icon"><IconImage /></span>
-          <span className="menu-label">Gallery</span>
+          <span className="menu-label">{t.myGallery}</span>
           <span className="menu-chevron-svg"><IconChevron /></span>
         </div>
 
