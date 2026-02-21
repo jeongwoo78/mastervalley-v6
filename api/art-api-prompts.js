@@ -1220,39 +1220,39 @@ export const MODERNISM_PROMPTS = {
   // 리히텐슈타인
   // ─────────────────────────────────────────
 
-  // ★ 차 안에서 — ~148w
+  // ★ 차 안에서 — ~85w
   'lichtenstein-inthecar': {
     name: '차 안에서',
     nameEn: 'In the Car',
-    prompt: `Pop art painting of the subject by Roy Lichtenstein. Solid black rectangular border 15px thick surrounding all four edges of the image like a printed comic book panel. Bold clean black outlines wrap every form like comic book printing. Primary colors fill flat and uniform. Uniform dot pattern creates light and shadow areas. Surface entirely smooth and machine-printed throughout. Edges between color areas are sharp and crisp. Flat hard printed texture dominates the entire surface. Vermilion red 30%, bright yellow 25%, black 25%, white 20%. Horizontal parallel lines create sense of speed cutting across the background. Uniform Ben-Day dots packed densely on skin creating flesh tones. Bright yellow hair and coat contrast sharply against the red car body. Horizontal parallel lines flow consistently following the direction of car movement. Flat lighting illuminates all surfaces uniformly. Ben-Day dot density variation alone separates light and dark areas. Primary colors applied pure and unmixed, separated by sharp clean boundaries.`
+    prompt: `COMIC PANEL FRAME with THICK BLACK BORDER around entire image. Pop art painting of the subject by Roy Lichtenstein "In the Car" (1963). EXTREMELY LARGE VISIBLE Ben-Day dots 15mm+ covering ALL skin and background areas. ULTRA THICK BLACK INK OUTLINES 20mm+ surrounding ALL shapes faces and figures. HEAVY BLACK CONTOUR LINES on EVERY edge. FLAT primary colors ONLY, vermilion red 30%, bright yellow 25%, black 25%, white 20%. Horizontal parallel lines create speed across background. Bright yellow hair and coat contrast sharply against red car body. Primary colors applied pure and unmixed with sharp clean boundaries.`
   },
 
-  // ★ M-메이비 — ~139w
+  // ★ M-메이비 — ~85w
   'lichtenstein-mmaybe': {
     name: '아마도',
     nameEn: 'M-Maybe',
-    prompt: `Pop art painting of the subject by Roy Lichtenstein. Solid black rectangular border 15px thick surrounding all four edges of the image like a printed comic book panel. Bold clean black outlines wrap every form like comic book printing. Primary colors fill flat and uniform. Uniform dot pattern creates light and shadow areas. Surface entirely smooth and machine-printed throughout. Edges between color areas are sharp and crisp. Flat hard printed texture dominates the entire surface. Bright yellow 30%, blue 25%, black 25%, white 20%. Blue and yellow toned city buildings simplified filling the background. Uniform Ben-Day dots packed densely on skin creating flesh tones. Bright yellow hair contrasts intensely against the blue background. Flat color fields and dots compose the entire surface. Flat lighting illuminates all surfaces uniformly. Ben-Day dot density variation alone separates light and dark areas. Primary colors applied pure and unmixed, separated by sharp clean boundaries.`
+    prompt: `COMIC PANEL FRAME with THICK BLACK BORDER around entire image. Pop art painting of the subject by Roy Lichtenstein "M-Maybe" (1965). EXTREMELY LARGE VISIBLE Ben-Day dots 15mm+ covering ALL skin and background areas. ULTRA THICK BLACK INK OUTLINES 20mm+ surrounding ALL shapes faces and figures. HEAVY BLACK CONTOUR LINES on EVERY edge. FLAT primary colors ONLY, bright yellow 30%, blue 25%, black 25%, white 20%. Blue and yellow toned city buildings simplified in background. Bright yellow hair contrasts intensely against blue background. Primary colors applied pure and unmixed with sharp clean boundaries.`
   },
 
-  // ★ 잊어! 날 잊어! — ~142w
+  // ★ 잊어! 날 잊어! — ~85w
   'lichtenstein-forgetit': {
     name: '날 잊어',
     nameEn: 'Forget It! Forget Me!',
-    prompt: `Pop art painting of the subject by Roy Lichtenstein. Solid black rectangular border 15px thick surrounding all four edges of the image like a printed comic book panel. Bold clean black outlines wrap every form like comic book printing. Primary colors fill flat and uniform. Uniform dot pattern creates light and shadow areas. Surface entirely smooth and machine-printed throughout. Edges between color areas are sharp and crisp. Flat hard printed texture dominates the entire surface. Bright yellow 30%, black 30%, blue 20%, red 20%. Solid flat color fills the background simply behind figures. Uniform Ben-Day dots packed densely on skin creating flesh tones. Bright yellow hair contrasts intensely against dark blue-black male hair. Flat color fields and dots compose the entire surface. Flat lighting illuminates all surfaces uniformly. Ben-Day dot density variation alone separates light and dark areas. Primary colors applied pure and unmixed, separated by sharp clean boundaries.`
+    prompt: `COMIC PANEL FRAME with THICK BLACK BORDER around entire image. Pop art painting of the subject by Roy Lichtenstein "Forget It! Forget Me!" (1962). EXTREMELY LARGE VISIBLE Ben-Day dots 15mm+ covering ALL skin and background areas. ULTRA THICK BLACK INK OUTLINES 20mm+ surrounding ALL shapes faces and figures. HEAVY BLACK CONTOUR LINES on EVERY edge. FLAT primary colors ONLY, bright yellow 30%, black 30%, blue 20%, red 20%. Solid flat color fills background behind figures. Bright yellow hair contrasts intensely against dark blue-black male hair. Primary colors applied pure and unmixed with sharp clean boundaries.`
   },
 
-  // ★ 오...알겠어 — ~144w
+  // ★ 오...알겠어 — ~85w
   'lichtenstein-ohhhalright': {
     name: '오 알았어',
     nameEn: 'Ohhh...Alright...',
-    prompt: `Pop art painting of the subject by Roy Lichtenstein. Solid black rectangular border 15px thick surrounding all four edges of the image like a printed comic book panel. Bold clean black outlines wrap every form like comic book printing. Primary colors fill flat and uniform. Uniform dot pattern creates light and shadow areas. Surface entirely smooth and machine-printed throughout. Edges between color areas are sharp and crisp. Ohhh...Alright... style. Flat hard printed texture dominates the entire surface. Bright yellow 30%, blue 30%, black 20%, red 20%. Blue color field fills the area behind the figure uniformly. Uniform Ben-Day dots packed densely on skin creating flesh tones. Bright yellow hair contrasts intensely against blue background, red lips accent as sharp highlight. Flat color fields and dots compose the entire surface. Flat lighting illuminates all surfaces uniformly. Ben-Day dot density variation alone separates light and dark areas. Primary colors applied pure and unmixed, separated by sharp clean boundaries.`
+    prompt: `COMIC PANEL FRAME with THICK BLACK BORDER around entire image. Pop art painting of the subject by Roy Lichtenstein "Ohhh...Alright..." (1964). EXTREMELY LARGE VISIBLE Ben-Day dots 15mm+ covering ALL skin and background areas. ULTRA THICK BLACK INK OUTLINES 20mm+ surrounding ALL shapes faces and figures. HEAVY BLACK CONTOUR LINES on EVERY edge. FLAT primary colors ONLY, bright yellow 30%, blue 30%, black 20%, red 20%. Blue color field fills area behind figure uniformly. Bright yellow hair contrasts against blue background, red lips accent sharply. Primary colors applied pure and unmixed with sharp clean boundaries.`
   },
 
-  // ★ 팔레트가 있는 정물 — ~148w
+  // ★ 팔레트가 있는 정물 — ~85w
   'lichtenstein-stilllife': {
     name: '정물화',
     nameEn: 'Still Life with Palette',
-    prompt: `Pop art painting of the subject by Roy Lichtenstein. Solid black rectangular border 15px thick surrounding all four edges of the image like a printed comic book panel. Bold clean black outlines wrap every form like comic book printing. Primary colors fill flat and uniform. Uniform dot pattern creates light and shadow areas. Surface entirely smooth and machine-printed throughout. Edges between color areas are sharp and crisp. Flat hard printed texture dominates the entire surface. Bright yellow 30%, blue 25%, black 25%, white 20%. Blue and black color fields form walls behind objects simply. Uniform Ben-Day dots packed densely on all object surfaces creating texture. Bright yellow objects contrast sharply against blue-black background, decorative flower patterns accent brightly. Diagonal leading lines flow toward the center of the composition. Flat lighting illuminates all surfaces uniformly. Ben-Day dot density variation alone separates light and dark areas. Primary colors applied pure and unmixed, separated by sharp clean boundaries.`
+    prompt: `COMIC PANEL FRAME with THICK BLACK BORDER around entire image. Pop art painting of the subject by Roy Lichtenstein "Still Life with Palette" (1972). EXTREMELY LARGE VISIBLE Ben-Day dots 15mm+ covering ALL surfaces and background areas. ULTRA THICK BLACK INK OUTLINES 20mm+ surrounding ALL shapes and objects. HEAVY BLACK CONTOUR LINES on EVERY edge. FLAT primary colors ONLY, bright yellow 30%, blue 25%, black 25%, white 20%. Blue and black color fields form walls behind objects. Bright yellow objects contrast sharply against blue-black background. Diagonal leading lines flow toward center. Primary colors applied pure and unmixed with sharp clean boundaries.`
   }
 };
 

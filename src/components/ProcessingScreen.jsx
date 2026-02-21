@@ -578,8 +578,6 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         
         .progress-section {
-          position: sticky;
-          bottom: 0;
           margin-top: 16px;
           padding: 12px 0;
           background: #121212;
@@ -716,9 +714,10 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         
         /* 하단 고정: 상태 + 프로그레스 바 */
         .single-bottom-fixed {
-          position: sticky;
+          position: absolute;
           bottom: 0;
-          margin-top: 16px;
+          left: 0;
+          right: 0;
           padding: 12px 0;
           background: #121212;
           display: flex;
@@ -734,13 +733,13 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .single-status p {
           margin: 0;
           color: rgba(255,255,255,0.5);
-          font-size: 10px;
+          font-size: 11px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
         .single-progress-bar {
-          width: 150px;
+          width: 50%;
           height: 2px;
           background: rgba(255,255,255,0.1);
           border-radius: 2px;
