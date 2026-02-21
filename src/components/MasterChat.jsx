@@ -313,7 +313,7 @@ const MasterChat = ({
             ? chatText.common.placeholderEnded
             : isRetransforming 
               ? chatText.common.placeholderConverting
-              : chatText.common.placeholderDefault}
+              : chatText.common.placeholderDefault.replace('{masterName}', masterName)}
           disabled={isLoading || isRetransforming || isChatEnded}
           style={{ borderColor: inputValue ? theme.primary : undefined }}
         />
@@ -323,7 +323,7 @@ const MasterChat = ({
           disabled={!inputValue.trim() || isLoading || isRetransforming || isChatEnded}
           style={{ background: theme.gradient }}
         >
-          ➤
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
 
@@ -346,7 +346,10 @@ const MasterChat = ({
             }
           </>
         ) : (
-          chatText.common.requestModify
+          <>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            {chatText.common.requestModify}
+          </>
         )}
       </button>
 
@@ -554,8 +557,9 @@ const MasterChat = ({
         .send-btn {
           background: linear-gradient(135deg, #F5A623, #e8941a);
           border: none;
-          border-radius: 20px;
-          padding: 10px 16px;
+          border-radius: 50%;
+          width: 36px;
+          height: 36px;
           color: #fff;
           font-size: 13px;
           font-weight: 600;
@@ -564,6 +568,7 @@ const MasterChat = ({
           align-items: center;
           justify-content: center;
           transition: transform 0.2s, opacity 0.2s;
+          flex-shrink: 0;
         }
 
         .send-btn:hover:not(:disabled) {
