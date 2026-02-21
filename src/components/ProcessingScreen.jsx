@@ -607,7 +607,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         .progress-fill {
           height: 100%;
-          background: linear-gradient(90deg, #667eea, #764ba2);
+          background: linear-gradient(90deg, #7c3aed, #a855f7);
           transition: width 0.3s;
         }
         
@@ -623,7 +623,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .spinner {
           width: 14px; height: 14px;
           border: 2px solid rgba(255,255,255,0.2);
-          border-top: 2px solid #667eea;
+          border-top: 2px solid #7c3aed;
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -640,7 +640,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .edu-card.secondary {
           background: transparent;
         }
-        .edu-card h3 { color: #667eea; margin: 0 0 10px; font-size: 15px; }
+        .edu-card h3 { color: #7c3aed; margin: 0 0 10px; font-size: 15px; }
         .edu-card h4 { color: #4CAF50; margin: 0 0 8px; font-size: 14px; }
         .edu-card p { color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 13px; margin: 0; white-space: pre-line; }
         .hint { color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 12px !important; }
@@ -713,10 +713,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         
         /* 하단 고정: 상태 + 프로그레스 바 */
         .single-bottom-fixed {
-          position: fixed;
-          bottom: 24px;
-          right: 24px;
-          width: auto;
+          margin-top: 16px;
           display: flex;
           flex-direction: column;
           align-items: flex-end;
@@ -814,10 +811,10 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           padding: 0;
         }
         .dot.done {
-          background: rgba(102, 126, 234, 0.5);
+          background: rgba(124, 58, 237, 0.5);
         }
         .dot.active {
-          background: #667eea;
+          background: #7c3aed;
           transform: scale(1.3);
         }
         .dot:disabled {
@@ -829,6 +826,15 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           height: auto;
           background: none;
           font-size: 11px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(255,255,255,0.4);
+        }
+        .dot.edu.active {
+          color: #7c3aed;
+          transform: none;
+          background: none;
         }
         .count {
           font-size: 10px;

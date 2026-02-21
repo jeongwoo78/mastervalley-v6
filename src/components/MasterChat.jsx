@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getMasterChat } from '../i18n';
 
 // API 기본 URL
-const API_BASE_URL = 'https://mastervalley-v5.vercel.app';
+const API_BASE_URL = 'https://mastervalley-v6.vercel.app';
 
 // 거장별 테마 색상 (7명) - 색상은 i18n 불필요
 const MASTER_THEMES = {
