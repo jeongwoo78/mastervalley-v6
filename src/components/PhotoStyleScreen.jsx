@@ -317,7 +317,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
 
         /* 사진 미선택 시 */
         .photo-section.awaiting-photo {
-          border: none;
+          border: 2px solid #4b5563;
         }
 
         .photo-placeholder {
@@ -364,7 +364,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         }
 
         .full-transform-btn.selected {
-          /* handled by inline style */
+          /* handled by inline boxShadow */
         }
 
         .full-transform-btn:focus {
