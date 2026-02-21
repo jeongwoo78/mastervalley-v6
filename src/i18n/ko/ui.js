@@ -180,6 +180,10 @@ export const ui = {
     pro: 'Pro',
     bonus: '보너스',
     bestValue: '인기',
+    get: '받기',
+    bonusLabel: '보너스',
+    hintCreators: '크리에이터에게 추천',
+    hintMaxValue: '최대 혜택',
     info1: '잔액은 만료되지 않습니다',
     info2: '구독 필요 없음'
   },

@@ -180,7 +180,11 @@ export const ui = {
     pro: 'Pro',
     bonus: 'Bonus',
     bestValue: 'Best Value',
-    info1: 'Your balance never expires',
+    get: 'Get',
+    bonusLabel: 'bonus',
+    hintCreators: 'Best for creators',
+    hintMaxValue: 'Maximum value',
+    info1: 'Balance never expires',
     info2: 'No subscription required'
   },
 

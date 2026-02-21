@@ -1,5 +1,4 @@
-// AddFundsScreen.jsx - Add Funds Screen (Dark Theme)
-// Based on mockup: 09-charge-menu.html
+// AddFundsScreen.jsx - Add Funds Screen (v7 Compact Dark Theme)
 import React, { useState } from 'react';
 import { getUi } from '../i18n';
 
@@ -9,20 +8,37 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
   const t = getUi(lang).addFunds;
 
   const packs = [
-    { id: 'mini', name: 'Mini', price: 0.99, value: 0.99, bonus: null },
-    { id: 'basic', name: 'Basic', price: 4.99, value: 5.24, bonus: '+5%' },
-    { id: 'standard', name: 'Standard', price: 9.99, value: 10.99, bonus: '+10%' },
-    { id: 'plus', name: 'Plus', price: 49.99, value: 59.99, bonus: '+20%', featured: true },
-    { id: 'pro', name: 'Pro', price: 99.99, value: 129.99, bonus: '+30%', featured: true }
+    { id: 'mini', name: 'Mini', price: 0.99, value: 0.99, bonus: null, bonusAmount: null, hint: null },
+    { id: 'basic', name: 'Basic', price: 4.99, value: 5.24, bonus: '+5%', bonusAmount: 0.25, hint: null },
+    { id: 'standard', name: 'Standard', price: 9.99, value: 10.99, bonus: '+10%', bonusAmount: 1.00, hint: null },
+    { id: 'plus', name: 'Plus', price: 49.99, value: 59.99, bonus: '+20%', bonusAmount: 10.00, hint: t.hintCreators, featured: true },
+    { id: 'pro', name: 'Pro', price: 99.99, value: 129.99, bonus: '+30%', bonusAmount: 30.00, hint: t.hintMaxValue, featured: true }
   ];
 
   const handlePurchase = (pack) => {
     setSelectedPack(pack);
-    // TODO: 실제 결제 연동
     if (onPurchase) {
       onPurchase(pack);
     }
   };
+
+  // SVG Icons
+  const InfoIcon = () => (
+    <svg className="info-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 16v-4"/>
+      <circle cx="12" cy="8" r="0.5" fill="rgba(255,255,255,0.4)"/>
+    </svg>
+  );
+
+  const CheckIcon = () => (
+    <svg className="info-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+  );
 
   return (
     <div className="funds-screen">
@@ -42,8 +58,8 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
       {/* Packs Section */}
       <div className="packs-section">
         {packs.map(pack => (
-          <div 
-            key={pack.id} 
+          <div
+            key={pack.id}
             className={`pack-item ${pack.featured ? 'featured' : ''}`}
           >
             <div className="pack-info">
@@ -55,9 +71,17 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
                   </span>
                 )}
               </div>
-              <div className="pack-value">${pack.value.toFixed(2)}</div>
+              <div className="pack-desc">
+                {t.get} <span className="get-amount">${pack.value.toFixed(2)}</span>
+                {pack.bonusAmount && (
+                  <span className="bonus-text"> (+${pack.bonusAmount.toFixed(2)} {t.bonusLabel})</span>
+                )}
+                {pack.hint && (
+                  <span className="usage-hint">{pack.hint}</span>
+                )}
+              </div>
             </div>
-            <button 
+            <button
               className="pack-price-btn"
               onClick={() => handlePurchase(pack)}
             >
@@ -69,8 +93,8 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
 
       {/* Info Text */}
       <div className="info-text">
-        <p>{t.info1}</p>
-        <p>{t.info2}</p>
+        <p><InfoIcon />{t.info1}</p>
+        <p><CheckIcon />{t.info2}</p>
       </div>
 
       <style>{`
@@ -87,7 +111,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         .funds-header {
           display: flex;
           align-items: center;
-          padding: 16px 20px;
+          padding: 14px 20px;
           border-bottom: 1px solid #2a2a2a;
         }
 
@@ -95,39 +119,37 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           background: none;
           border: none;
           color: #fff;
-          font-size: 20px;
+          font-size: 18px;
           cursor: pointer;
-          padding: 4px 8px;
-          width: 40px;
+          width: 36px;
         }
 
         .header-title {
           flex: 1;
           color: #fff;
-          font-size: 17px;
+          font-size: 16px;
           font-weight: 600;
           text-align: center;
         }
 
         .header-spacer {
-          width: 40px;
+          width: 36px;
         }
 
-        /* Balance Section */
+        /* Balance Section - no bottom border */
         .balance-section {
           text-align: center;
-          padding: 32px 20px;
-          border-bottom: 1px solid #2a2a2a;
+          padding: 36px 20px;
         }
 
         .balance-label {
           color: #888;
-          font-size: 14px;
+          font-size: 13px;
           margin-bottom: 8px;
         }
 
         .balance-amount {
-          font-size: 42px;
+          font-size: 40px;
           font-weight: 700;
           color: #fff;
         }
@@ -135,7 +157,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         /* Packs Section */
         .packs-section {
           flex: 1;
-          padding: 20px;
+          padding: 10px 18px 18px;
           overflow-y: auto;
         }
 
@@ -143,15 +165,19 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 18px;
+          padding: 16px;
           background: #1a1a1a;
-          border-radius: 14px;
-          margin-bottom: 12px;
+          border-radius: 12px;
+          margin-bottom: 14px;
+        }
+
+        .pack-item:last-child {
+          margin-bottom: 0;
         }
 
         .pack-item.featured {
-          border: 2px solid #7c3aed;
-          background: rgba(124, 58, 237, 0.08);
+          border: 1.5px solid #7c3aed;
+          background: rgba(124, 58, 237, 0.06);
         }
 
         .pack-info {
@@ -161,21 +187,21 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         .pack-header {
           display: flex;
           align-items: center;
-          gap: 10px;
-          margin-bottom: 8px;
+          gap: 8px;
+          margin-bottom: 6px;
         }
 
         .pack-name {
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 600;
-          color: #888;
+          color: #fff;
         }
 
         .bonus {
-          padding: 4px 10px;
+          padding: 2px 7px;
           background: #444;
-          border-radius: 12px;
-          font-size: 12px;
+          border-radius: 10px;
+          font-size: 11px;
           color: #fff;
           font-weight: 600;
         }
@@ -184,21 +210,42 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           background: #22c55e;
         }
 
-        .pack-value {
-          font-size: 24px;
-          font-weight: 700;
+        .pack-desc {
+          font-size: 12px;
+          color: #666;
+          line-height: 1.4;
+        }
+
+        .get-amount {
           color: #fff;
+          font-weight: 700;
+          font-size: 13px;
+        }
+
+        .bonus-text {
+          color: #fff;
+          font-weight: 500;
+        }
+
+        .usage-hint {
+          display: block;
+          margin-top: 2px;
+          font-size: 11px;
+          color: rgba(255,255,255,0.4);
         }
 
         .pack-price-btn {
-          padding: 12px 20px;
+          padding: 10px 16px;
           background: #7c3aed;
           border: none;
           border-radius: 10px;
           color: #fff;
           font-weight: 600;
-          font-size: 15px;
+          font-size: 13px;
           cursor: pointer;
+          min-width: 68px;
+          text-align: center;
+          margin-left: 14px;
           transition: all 0.2s;
         }
 
@@ -209,29 +256,33 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
 
         /* Info Text */
         .info-text {
-          padding: 16px 20px 32px;
+          padding: 16px 20px 28px;
           text-align: center;
         }
 
         .info-text p {
           color: rgba(255,255,255,0.4);
-          font-size: 13px;
+          font-size: 12px;
           margin: 4px 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+        }
+
+        .info-icon {
+          flex-shrink: 0;
         }
 
         /* Mobile */
         @media (max-width: 400px) {
           .balance-amount {
-            font-size: 36px;
-          }
-
-          .pack-value {
-            font-size: 20px;
+            font-size: 34px;
           }
 
           .pack-price-btn {
-            padding: 10px 16px;
-            font-size: 14px;
+            padding: 10px 14px;
+            font-size: 12px;
           }
         }
       `}</style>
