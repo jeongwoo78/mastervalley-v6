@@ -578,9 +578,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         
         .progress-section {
-          position: fixed;
-          bottom: 24px;
-          right: 28px;
+          margin-top: 16px;
           display: flex;
           flex-direction: column;
           align-items: flex-end;
@@ -714,9 +712,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         
         /* 하단 고정: 상태 + 프로그레스 바 */
         .single-bottom-fixed {
-          position: fixed;
-          bottom: 24px;
-          right: 28px;
+          margin-top: 16px;
           display: flex;
           flex-direction: column;
           align-items: flex-end;
