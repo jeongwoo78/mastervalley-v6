@@ -578,6 +578,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         }
         
         .progress-section {
+          width: 100%;
           margin-top: 16px;
           padding: 12px 0;
           background: #121212;
