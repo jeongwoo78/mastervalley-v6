@@ -69,9 +69,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
       for (let i = 0; i < styles.length; i++) {
         const style = styles[i];
         // 진행 메시지: displayConfig에서 적절한 이름 가져오기
-        const progressName = category === 'masters' 
-          ? style.name  // 거장: "Van Gogh in progress..."
-          : getStyleTitle(category, style.id, style.name, lang);  // 사조/동양화: 정식 이름
+        const progressName = style.name;  // 진행바: 이름만 (연도 제외)
         setStatusText(`${progressName} ${t.inProgress} [${i + 1}/${totalCount}]`);
         
         const result = await processSingleStyle(style, i, totalCount);
@@ -120,9 +118,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
 
   // ========== 단일 스타일 변환 (핵심 함수 - 원클릭도 이거 사용) ==========
   const processSingleStyle = async (style, index = 0, total = 1) => {
-    const styleName = getStyleTitle(
-      style.category, style.id, style.name, lang
-    );
+    const styleName = style.name;  // 진행바: 이름만 (연도 제외)
 
     // API 상태 객체 → i18n 텍스트 변환
     const mapProgress = (progressObj) => {
@@ -413,7 +409,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
             {/* 점 네비게이션 */}
             <div className="dots-nav">
               <div className="dots">
-                <button className={`dot edu ${viewIndex === -1 ? 'active' : ''}`} onClick={handleBackToEducation}>📚</button>
+                <button className={`dot edu ${viewIndex === -1 ? 'active' : ''}`} onClick={handleBackToEducation}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></button>
                 {styles.map((_, idx) => (
                   <button 
                     key={idx}
