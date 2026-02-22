@@ -1,4 +1,4 @@
-// AddFundsScreen.jsx - Add Funds Screen (v7 Compact Dark Theme)
+// AddFundsScreen.jsx - Add Funds Screen (v8 Final - 3 Packs)
 import React, { useState } from 'react';
 import { getUi } from '../i18n';
 
@@ -8,11 +8,9 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
   const t = getUi(lang).addFunds;
 
   const packs = [
-    { id: 'mini', name: 'Mini', price: 0.99, value: 0.99, bonus: null, bonusAmount: null, hint: null },
-    { id: 'basic', name: 'Basic', price: 4.99, value: 5.24, bonus: '+5%', bonusAmount: 0.25, hint: null },
-    { id: 'standard', name: 'Standard', price: 9.99, value: 10.99, bonus: '+10%', bonusAmount: 1.00, hint: null },
-    { id: 'plus', name: 'Plus', price: 49.99, value: 59.99, bonus: '+20%', bonusAmount: 10.00, hint: t.hintCreators, featured: true },
-    { id: 'pro', name: 'Pro', price: 99.99, value: 129.99, bonus: '+30%', bonusAmount: 30.00, hint: t.hintMaxValue, featured: true }
+    { id: 'starter', name: 'Starter', price: 0.99, value: 0.99, bonus: null, bonusAmount: null, tagline: t.tagStarter },
+    { id: 'standard', name: 'Standard', price: 4.99, value: 5.49, bonus: '+10%', bonusAmount: 0.50, tagline: t.tagStandard },
+    { id: 'plus', name: 'Plus', price: 49.99, value: 59.99, bonus: '+20%', bonusAmount: 10.00, tagline: t.tagPlus, featured: true }
   ];
 
   const handlePurchase = (pack) => {
@@ -66,9 +64,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
               <div className="pack-header">
                 <span className="pack-name">{pack.name}</span>
                 {pack.bonus && (
-                  <span className={`bonus ${pack.featured ? 'high' : ''}`}>
-                    {pack.bonus}
-                  </span>
+                  <span className="bonus">{pack.bonus}</span>
                 )}
               </div>
               <div className="pack-desc">
@@ -76,9 +72,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
                 {pack.bonusAmount && (
                   <span className="bonus-text"> (+${pack.bonusAmount.toFixed(2)} {t.bonusLabel})</span>
                 )}
-                {pack.hint && (
-                  <span className="usage-hint">{pack.hint}</span>
-                )}
+                <span className="tagline">{pack.tagline}</span>
               </div>
             </div>
             <button
@@ -136,10 +130,10 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           width: 36px;
         }
 
-        /* Balance Section - no bottom border */
+        /* Balance Section */
         .balance-section {
           text-align: center;
-          padding: 36px 20px;
+          padding: 68px 20px;
         }
 
         .balance-label {
@@ -157,22 +151,19 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         /* Packs Section */
         .packs-section {
           flex: 1;
-          padding: 10px 18px 18px;
-          overflow-y: auto;
+          padding: 14px 18px 18px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
         }
 
         .pack-item {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 16px;
+          padding: 20px 18px;
           background: #1a1a1a;
-          border-radius: 12px;
-          margin-bottom: 14px;
-        }
-
-        .pack-item:last-child {
-          margin-bottom: 0;
+          border-radius: 14px;
         }
 
         .pack-item.featured {
@@ -192,28 +183,24 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         }
 
         .pack-name {
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 600;
           color: #fff;
         }
 
         .bonus {
-          padding: 2px 7px;
-          background: #444;
+          padding: 2px 8px;
+          background: #22c55e;
           border-radius: 10px;
           font-size: 11px;
           color: #fff;
           font-weight: 600;
         }
 
-        .bonus.high {
-          background: #22c55e;
-        }
-
         .pack-desc {
           font-size: 12px;
           color: #666;
-          line-height: 1.4;
+          line-height: 1.5;
         }
 
         .get-amount {
@@ -227,25 +214,26 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           font-weight: 500;
         }
 
-        .usage-hint {
+        .tagline {
           display: block;
-          margin-top: 2px;
+          margin-top: 4px;
           font-size: 11px;
-          color: rgba(255,255,255,0.4);
+          color: rgba(255,255,255,0.85);
+          font-style: italic;
         }
 
         .pack-price-btn {
-          padding: 10px 16px;
+          padding: 12px 18px;
           background: #7c3aed;
           border: none;
           border-radius: 10px;
           color: #fff;
           font-weight: 600;
-          font-size: 13px;
+          font-size: 14px;
           cursor: pointer;
-          min-width: 68px;
+          min-width: 72px;
           text-align: center;
-          margin-left: 14px;
+          margin-left: 16px;
           transition: all 0.2s;
         }
 
@@ -256,7 +244,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
 
         /* Info Text */
         .info-text {
-          padding: 16px 20px 28px;
+          padding: 20px 20px 32px;
           text-align: center;
         }
 
@@ -282,7 +270,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
 
           .pack-price-btn {
             padding: 10px 14px;
-            font-size: 12px;
+            font-size: 13px;
           }
         }
       `}</style>

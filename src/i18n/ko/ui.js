@@ -182,8 +182,9 @@ export const ui = {
     bestValue: '인기',
     get: '받기',
     bonusLabel: '보너스',
-    hintCreators: '크리에이터에게 추천',
-    hintMaxValue: '최대 혜택',
+    tagStarter: '지금 시작하세요',
+    tagStandard: '세상에 보여주세요',
+    tagPlus: '영감을 얻으세요',
     info1: '잔액은 만료되지 않습니다',
     info2: '구독 필요 없음'
   },

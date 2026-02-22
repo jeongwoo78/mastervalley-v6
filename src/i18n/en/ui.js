@@ -182,8 +182,9 @@ export const ui = {
     bestValue: 'Best Value',
     get: 'Get',
     bonusLabel: 'bonus',
-    hintCreators: 'Best for creators',
-    hintMaxValue: 'Maximum value',
+    tagStarter: 'Get started',
+    tagStandard: 'Show the world',
+    tagPlus: 'Get inspired',
     info1: 'Balance never expires',
     info2: 'No subscription required'
   },
