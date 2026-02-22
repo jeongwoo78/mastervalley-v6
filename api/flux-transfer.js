@@ -1626,8 +1626,8 @@ Return ONLY valid JSON (no markdown):
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or "both" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "ethnicity": "asian (East Asian features, golden-brown skin) or caucasian (European features, light/fair skin) or african (Black/African descent, DARK BROWN to BLACK skin, broad nose, full lips) or hispanic (Latin American, tan/brown skin) or middle_eastern (Arab/Persian, olive/tan skin) or mixed or null - MUST accurately identify based on skin color and facial features",
-  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc. ALWAYS include skin tone and ethnic features." or null,
+  "ethnicity": "asian or caucasian or african or hispanic or middle_eastern or mixed or null - identify based on facial features ONLY, describe ACTUAL OBSERVED skin tone separately in physical_description",
+  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan - describe what you ACTUALLY SEE in the photo). Include facial features, hair, build." or null,
   "person_count": 1 or 2 or 3 (number of people in photo),
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "${categoryName}",
@@ -1681,8 +1681,8 @@ Return ONLY valid JSON (no markdown):
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or "both" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "ethnicity": "asian (East Asian features, golden-brown skin) or caucasian (European features, light/fair skin) or african (Black/African descent, DARK BROWN to BLACK skin, broad nose, full lips) or hispanic (Latin American, tan/brown skin) or middle_eastern (Arab/Persian, olive/tan skin) or mixed or null - MUST accurately identify based on skin color and facial features",
-  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc. ALWAYS include skin tone and ethnic features." or null,
+  "ethnicity": "asian or caucasian or african or hispanic or middle_eastern or mixed or null - identify based on facial features ONLY, describe ACTUAL OBSERVED skin tone separately in physical_description",
+  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan - describe what you ACTUALLY SEE in the photo). Include facial features, hair, build." or null,
   "person_count": 1 or 2 or 3,
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "${categoryName}",
@@ -1748,7 +1748,7 @@ Return ONLY valid JSON (no markdown):
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc." or null,
+  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan). Include facial features, hair, build." or null,
   "selected_artist": "Korean Minhwa" or "Korean Pungsokdo" or "Korean Jingyeong Landscape",
   "selected_style": "minhwa" or "pungsokdo" or "landscape",
   "calligraphy_text": "positive text you chose (Chinese characters only)",
@@ -1811,7 +1811,7 @@ Return ONLY valid JSON (no markdown):
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc." or null,
+  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan). Include facial features, hair, build." or null,
   "selected_artist": "Chinese Ink Wash" or "Chinese Gongbi",
   "selected_style": "ink_wash" or "gongbi",
   "calligraphy_text": "positive text you chose (Chinese characters only)",
@@ -2047,8 +2047,8 @@ Return JSON only:
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or "both" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "ethnicity": "asian (East Asian features, golden-brown skin) or caucasian (European features, light/fair skin) or african (Black/African descent, DARK BROWN to BLACK skin, broad nose, full lips) or hispanic (Latin American, tan/brown skin) or middle_eastern (Arab/Persian, olive/tan skin) or mixed or null - MUST accurately identify based on skin color and facial features",
-  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc. ALWAYS include skin tone and ethnic features." or null,
+  "ethnicity": "asian or caucasian or african or hispanic or middle_eastern or mixed or null - identify based on facial features ONLY, describe ACTUAL OBSERVED skin tone separately in physical_description",
+  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan - describe what you ACTUALLY SEE in the photo). Include facial features, hair, build." or null,
   "person_count": 1 or 2 or 3 (number of people in photo),
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "Artist Full Name",
@@ -2203,16 +2203,16 @@ function buildIdentityPrompt(visionAnalysis) {
   // 민족성 (매우 중요! - 성별 다음 우선)
   if (visionAnalysis.ethnicity) {
     const ethnicityMap = {
-      'asian': 'ASIAN PERSON with East Asian facial features, warm skin tone, dark eyes',
-      'caucasian': 'CAUCASIAN PERSON with European facial features, light skin tone',
-      'african': 'AFRICAN PERSON with African facial features, dark skin tone, dark eyes',
-      'hispanic': 'HISPANIC/LATINO PERSON with Latin American features, tan to brown skin tone, dark eyes',
-      'middle_eastern': 'MIDDLE EASTERN PERSON with Middle Eastern facial features, olive to tan skin tone, dark eyes',
-      'mixed': 'MIXED ETHNICITY PERSON preserving original features and skin tone'
+      'asian': 'ASIAN PERSON with East Asian facial features',
+      'caucasian': 'CAUCASIAN PERSON with European facial features',
+      'african': 'AFRICAN PERSON with African facial features',
+      'hispanic': 'HISPANIC/LATINO PERSON with Latin American facial features',
+      'middle_eastern': 'MIDDLE EASTERN PERSON with Middle Eastern facial features',
+      'mixed': 'MIXED ETHNICITY PERSON preserving original facial features'
     };
     const ethnicDesc = ethnicityMap[visionAnalysis.ethnicity] || `${visionAnalysis.ethnicity} ethnicity`;
     parts.push(ethnicDesc);
-    parts.push('MUST KEEP EXACT SAME SKIN COLOR AND TONE, MUST PRESERVE ALL RACIAL FEATURES');
+    parts.push('MUST PRESERVE EXACT SAME SKIN COLOR AND TONE AS ORIGINAL PHOTO, KEEP ORIGINAL BRIGHTNESS AND WARMTH');
   }
   
   // 나이
