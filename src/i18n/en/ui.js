@@ -106,6 +106,7 @@ export const ui = {
     linkCopied: 'Link copied to clipboard!',
     retrySuccess: 'Retry successful!',
     cancel: 'Cancel',
+    close: 'Close',
     retryFailed: 'Retry failed',
     saveToDevice: 'Save',
     shareArt: 'Share',

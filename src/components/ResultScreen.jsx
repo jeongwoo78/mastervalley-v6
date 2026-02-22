@@ -1541,7 +1541,7 @@ const ResultScreen = ({
                 className="menu-item menu-cancel"
                 onClick={() => setShowSaveShareMenu(false)}
               >
-                {t.cancel}
+                {t.close || '닫기'}
               </button>
             </div>
           </div>
@@ -1929,7 +1929,7 @@ const ResultScreen = ({
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0, 0, 0, 0.6);
+          background: rgba(0, 0, 0, 0.7);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1943,11 +1943,12 @@ const ResultScreen = ({
         }
 
         .save-share-menu {
-          background: #1a1a1a;
-          border-radius: 16px;
-          padding: 8px;
+          background: #1e1e2e;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 14px;
+          padding: 6px;
           min-width: 200px;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
           animation: slideUp 0.2s ease;
         }
 
@@ -1965,33 +1966,33 @@ const ResultScreen = ({
         .menu-item {
           display: flex;
           align-items: center;
-          gap: 12px;
+          justify-content: center;
           width: 100%;
-          padding: 14px 20px;
+          padding: 14px 16px;
           border: none;
           background: transparent;
-          font-size: 16px;
-          font-weight: 500;
-          color: #fff;
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.8);
           cursor: pointer;
-          border-radius: 12px;
+          border-radius: 8px;
           transition: background 0.2s;
         }
 
         .menu-item:hover {
-          background: #2a2a2a;
+          background: rgba(255, 255, 255, 0.05);
         }
 
         .menu-icon {
-          font-size: 20px;
+          margin-right: 8px;
+          font-size: 1.1rem;
         }
 
         .menu-cancel {
-          color: #6b7280;
+          color: rgba(255, 255, 255, 0.35);
           justify-content: center;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
           margin-top: 4px;
-          border-top: 1px solid #e5e7eb;
-          border-radius: 0 0 12px 12px;
+          padding-top: 14px;
         }
 
         /* 다시 시도 섹션 */

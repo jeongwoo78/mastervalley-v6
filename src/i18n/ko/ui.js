@@ -106,6 +106,7 @@ export const ui = {
     linkCopied: '링크가 클립보드에 복사되었습니다!',
     retrySuccess: '다시 시도 성공!',
     cancel: '취소',
+    close: '닫기',
     retryFailed: '다시 시도에 실패했습니다',
     saveToDevice: '저장하기',
     shareArt: '공유하기',
