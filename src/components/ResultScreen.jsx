@@ -638,9 +638,9 @@ const ResultScreen = ({
       // console.log('   - matched key:', key);
       
       if (key) {
-        // 거장 카테고리: 작품별 교육자료 우선 시도 (mastersResultEducation)
-        // → fallback: 원클릭 거장 일반 교육 (oneclickMastersSecondary)
-        if (category === 'masters' && mastersResultEducation[key]) {
+        // 거장 카테고리: 단독변환일 때만 작품별 교육자료 시도 (mastersResultEducation)
+        // → 원클릭일 때는 oneclickMastersSecondary 사용
+        if (category === 'masters' && !isFullTransform && mastersResultEducation[key]) {
           const edu = mastersResultEducation[key];
           content = edu.content || edu.description || edu.desc || null;
         }

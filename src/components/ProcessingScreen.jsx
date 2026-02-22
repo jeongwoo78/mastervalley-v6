@@ -234,8 +234,8 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
     console.log(`📚 교육자료 매칭: ${resultCategory} → ${key || '없음'} (${artistName}, ${workName || '-'})`);
     
     if (key) {
-      // 거장 카테고리: 작품별 교육자료 우선 시도 (mastersResultEducation)
-      if (resultCategory === 'masters') {
+      // 거장 카테고리: 단독변환일 때만 작품별 교육자료 시도 (mastersResultEducation)
+      if (resultCategory === 'masters' && !isFullTransform) {
         const mastersResult = getMastersResultEducation(lang);
         if (mastersResult[key]) {
           const edu = mastersResult[key];
