@@ -75,7 +75,7 @@ export const ui = {
     nationsLabel: 'nations',
     movementsSub1: 'From Greece to Modernism',
     movementsSub2: 'Traversing 2,500 years of Western art',
-    mastersSub1: 'Seven worlds',
+    mastersSub1: 'Artists who repainted the world in their own tongue',
     mastersSub2: 'Question, break, rebuild',
     orientalSub1: 'Korea · China · Japan',
     orientalSub2: 'Three nations, alike yet distinct',

@@ -75,7 +75,7 @@ export const ui = {
     nationsLabel: '개국 동양화',
     movementsSub1: '그리스에서 모더니즘까지',
     movementsSub2: '서양미술 2,500년을 관통하다',
-    mastersSub1: '일곱 개의 세계',
+    mastersSub1: '각자의 언어로 세상을 다시 그린 화가들',
     mastersSub2: '묻고, 부수고, 다시 세우다',
     orientalSub1: '한국 · 중국 · 일본',
     orientalSub2: '닮은 듯 다른 세 나라의 미학',
