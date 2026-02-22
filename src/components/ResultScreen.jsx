@@ -61,6 +61,8 @@ const ResultScreen = ({
 
   // i18n texts from ui.js
   const t = getUi(lang).result;
+  const tProcessing = getUi(lang).processing;
+  const tPhotoStyle = getUi(lang).photoStyle;
   
   // v77: i18n 교육 데이터 (lang에 따라 동적 로드)
   const movementsBasicInfo = getMovementsBasicInfo(lang);
@@ -1171,10 +1173,19 @@ const ResultScreen = ({
                 </span>
                 <div className="preview-text">
                   <div className="preview-style">
-                    {getStyleTitle(selectedStyle?.category, selectedStyle?.id, selectedStyle?.name, lang)}
+                    {category === 'movements' ? tPhotoStyle.movementsFullTitle :
+                     category === 'masters' ? tPhotoStyle.mastersFullTitle :
+                     tPhotoStyle.orientalFullTitle}
                   </div>
                   <div className="preview-subtitle">
-                    {getStyleSubtitle(selectedStyle?.category, selectedStyle?.id, 'loading', null, selectedStyle?.name, lang)}
+                    {category === 'movements' ? tProcessing.movementsSub1 :
+                     category === 'masters' ? tProcessing.mastersSub1 :
+                     tProcessing.orientalSub1}
+                  </div>
+                  <div className="preview-subtitle sub2">
+                    {category === 'movements' ? tProcessing.movementsSub2 :
+                     category === 'masters' ? tProcessing.mastersSub2 :
+                     tProcessing.orientalSub2}
                   </div>
                 </div>
               </div>
