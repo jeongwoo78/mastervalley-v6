@@ -89,7 +89,7 @@ export const ui = {
     save: '저장',
     share: '공유',
     gallery: '갤러리',
-    newPhoto: '새 사진',
+    newPhoto: '홈',
     modify: '수정',
     retry: '다시 시도',
     retryAll: '전체 다시 시도',
