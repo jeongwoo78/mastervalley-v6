@@ -383,7 +383,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
                     const [sub1, sub2] = getStyleSubtitles(
                       result?.style?.category,
                       result?.style?.id,
-                      'result-transformed',
+                      'result-oneclick',
                       result?.aiSelectedArtist,
                       result?.selected_work,
                       result?.style?.name,
