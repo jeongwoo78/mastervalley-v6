@@ -5,7 +5,7 @@
 // v71: displayConfig.js 컨트롤 타워 사용
 // v73: 통합 스타일 표시 함수 사용
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import BeforeAfter from './BeforeAfter';
 import MasterChat from './MasterChat';
 // v77: i18n 구조에서 교육 데이터 가져오기
@@ -102,16 +102,21 @@ const ResultScreen = ({
   // ========== Save/Share 메뉴 ==========
   const [showSaveShareMenu, setShowSaveShareMenu] = useState(false);
   
-  // v75: Original 이미지 URL 캐싱 (깜빡임 방지)
-  const [originalPhotoUrl, setOriginalPhotoUrl] = useState(null);
+  // v79: Original 이미지 URL (useMemo로 동기 생성 → 갤러리 왕복 시 깜빡임 완전 제거)
+  const originalPhotoUrl = useMemo(() => {
+    if (originalPhoto) {
+      return URL.createObjectURL(originalPhoto);
+    }
+    return null;
+  }, [originalPhoto]);
   
   useEffect(() => {
-    if (originalPhoto) {
-      const url = URL.createObjectURL(originalPhoto);
-      setOriginalPhotoUrl(url);
-      return () => URL.revokeObjectURL(url);
-    }
-  }, [originalPhoto]);
+    return () => {
+      if (originalPhotoUrl) {
+        URL.revokeObjectURL(originalPhotoUrl);
+      }
+    };
+  }, [originalPhotoUrl]);
   
   // v72: viewIndex - Original/결과 스와이프용 (-1: Original, 0~n: 결과)
   // 단독 변환: 항상 0 (결과만 표시, 목업 준수)

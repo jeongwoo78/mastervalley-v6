@@ -473,7 +473,13 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {/* 갤러리 그리드 */}
       {galleryItems.length === 0 ? (
         <div style={styles.empty}>
-          <p style={styles.emptyIcon}>🎨</p>
+          <div className="gallery-empty-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
           <p style={styles.emptyText}>{t.empty}</p>
           <p style={styles.emptySubtext}>{t.emptySubtext}</p>
         </div>
@@ -598,6 +604,15 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
 
 // CSS 애니메이션 스타일
 const animationStyle = `
+  .gallery-empty-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.2;
+    margin-bottom: 4px;
+  }
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -865,6 +880,7 @@ const styles = {
   emptyIcon: {
     fontSize: '4rem',
     margin: 0,
+    opacity: 0.2,
   },
   
   emptyText: {
