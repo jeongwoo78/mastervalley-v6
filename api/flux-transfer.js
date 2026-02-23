@@ -3506,7 +3506,7 @@ export default async function handler(req, res) {
     if (selectedArtist && (selectedArtist.toUpperCase().includes('LICHTENSTEIN') || 
         selectedArtist.includes('리히텐슈타인'))) {
       
-      const speechText = selectSpeechBubbleText(visionAnalysis);
+      const speechText = selectSpeechBubbleText({ person_count: logData.vision.count, gender: logData.vision.gender });
       logData.vision.speechBubble = speechText;
       
       if (!finalPrompt.includes('speech bubble')) {
