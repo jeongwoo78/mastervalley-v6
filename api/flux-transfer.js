@@ -84,9 +84,85 @@ import {
 
 // ========================================
 // ========================================
-// v77: 리히텐슈타인 말풍선 - Vision AI가 직접 선택
-// (기존 80개 문구 배열 삭제 - AI 판단에 맡김)
+// v65→v79: 리히텐슈타인 말풍선 - 코드 랜덤 선택 (짧은 문구)
+// FLUX는 짧은 텍스트(1~3단어)만 정확히 렌더링 가능
 // ========================================
+const LICHTENSTEIN_SPEECH_BUBBLES = {
+  // 감탄/기쁨 (12개) - 그룹/밝은 분위기
+  excited: [
+    "WOW!", "AMAZING!", "INCREDIBLE!", "PERFECT!", "YES!",
+    "THIS IS THE BEST DAY EVER!", "I CAN'T BELIEVE THIS IS HAPPENING!",
+    "EVERYTHING IS GOING TO BE ALRIGHT!", "WE DID IT!", "THIS IS SO EXCITING!",
+    "I KNEW WE COULD DO IT!", "NOTHING CAN STOP US NOW!"
+  ],
+  // 로맨틱 (10개) - 커플
+  romantic: [
+    "I LOVE YOU!", "KISS ME!", "MY DARLING!", "YOU'RE THE ONE!",
+    "I'VE BEEN WAITING FOR THIS MOMENT!", "MY HEART BEATS ONLY FOR YOU!",
+    "I NEVER WANT THIS TO END!", "YOU MAKE EVERYTHING BETTER!",
+    "STAY WITH ME FOREVER!", "THIS FEELS LIKE A DREAM!"
+  ],
+  // 드라마틱 (10개) - 강렬한 감정/여성
+  dramatic: [
+    "I CAN'T BELIEVE IT!", "HOW COULD THIS HAPPEN?!", "IT'S OVER!",
+    "I DON'T CARE ANYMORE!", "WHY DIDN'T ANYONE TELL ME?!",
+    "I SHOULD HAVE KNOWN!", "EVERYTHING HAS CHANGED NOW!",
+    "I NEVER THOUGHT IT WOULD END LIKE THIS!", "THIS CAN'T BE REAL!",
+    "I WON'T LET THIS STOP ME!"
+  ],
+  // 대화체/독백 (10개) - 원작 스타일
+  dialogue: [
+    "MAYBE HE'LL CALL ME TOMORROW...", "I WONDER WHAT HAPPENS NEXT...",
+    "THEY SAID IT COULDN'T BE DONE!", "SHE TOLD ME TO WAIT HERE!",
+    "HE PROMISED HE WOULD COME BACK!", "I THOUGHT I SAW SOMETHING!",
+    "SOMEONE HAS TO DO SOMETHING!", "THAT'S EXACTLY WHAT I NEEDED!",
+    "I KNEW SOMETHING WAS DIFFERENT TODAY!", "THIS CHANGES EVERYTHING!"
+  ],
+  // 놀람/생각 (8개) - 중립
+  surprised: [
+    "WHAT?!", "OH MY!", "REALLY?!", "WAIT... WHAT?!",
+    "I NEVER EXPECTED THIS!", "COULD IT BE TRUE?!",
+    "SOMETHING DOESN'T FEEL RIGHT...", "WHAT JUST HAPPENED?!"
+  ]
+};
+
+// 말풍선 텍스트 선택 함수
+function selectSpeechBubbleText(visionData) {
+  let category = 'excited'; // 기본값
+  
+  if (visionData) {
+    const personCount = visionData.person_count || 1;
+    const gender = visionData.gender;
+    
+    // 3명 이상 그룹이면 감탄
+    if (personCount >= 3) {
+      category = 'excited';
+    }
+    // 2명 커플이면 로맨틱
+    else if (personCount === 2) {
+      category = 'romantic';
+    }
+    // 여성 단독이면 드라마틱/대화체/로맨틱 랜덤
+    else if (gender === 'female') {
+      const rand = Math.random();
+      if (rand < 0.4) category = 'dramatic';
+      else if (rand < 0.7) category = 'dialogue';
+      else category = 'romantic';
+    }
+    // 남성 단독이면 감탄/대화체 랜덤
+    else if (gender === 'male') {
+      category = Math.random() > 0.5 ? 'excited' : 'dialogue';
+    }
+    // 기본은 랜덤
+    else {
+      const categories = ['excited', 'dialogue', 'surprised'];
+      category = categories[Math.floor(Math.random() * categories.length)];
+    }
+  }
+  
+  const texts = LICHTENSTEIN_SPEECH_BUBBLES[category];
+  return texts[Math.floor(Math.random() * texts.length)];
+}
 
 
 // ========================================
@@ -1618,7 +1694,7 @@ INSTRUCTIONS:
 3. From remaining works, select the MOST SUITABLE one
 4. Generate a FLUX prompt that STARTS with detailed subject description
 5. IMPORTANT: Preserve the original subject - if it's a baby, keep it as a baby; if elderly, keep elderly
-6. CRITICAL: If only 1 person in photo, add "DO NOT add extra people in background"
+6. CRITICAL: If only 1 person in photo, add "Single subject only, clean empty background"
 
 Return ONLY valid JSON (no markdown):
 {
@@ -1633,7 +1709,7 @@ Return ONLY valid JSON (no markdown):
   "selected_artist": "${categoryName}",
   "selected_work": "exact title of the masterwork you selected",
   "reason": "why this masterwork matches this photo (mention gender/count compatibility)",
-  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by ${categoryName} in the style of [selected work title], [that work's distinctive techniques]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background'",
+  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by ${categoryName} in the style of [selected work title], [that work's distinctive techniques]'. If person_count=1, END with 'Single subject only, clean empty background'",
   "speech_bubble": "If LICHTENSTEIN: MUST select EXACTLY one phrase from the list below. Pick the phrase that BEST MATCHES the mood of this photo. Copy it EXACTLY as written - do NOT modify, do NOT create your own text, do NOT combine phrases. STILLLIFE has no speech bubble. If other artist: null.
 INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
 MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
@@ -1688,7 +1764,7 @@ Return ONLY valid JSON (no markdown):
   "selected_artist": "${categoryName}",
   "selected_work": null,
   "reason": "applying ${categoryName}'s distinctive painting style",
-  "prompt": "Start with subject description (gender, age, features), then '${masterStylePrompt.substring(0, 200)}...'. If person_count=1, END with 'DO NOT add extra people'"
+  "prompt": "Start with subject description (gender, age, features), then '${masterStylePrompt.substring(0, 200)}...'. If person_count=1, END with 'Single subject only, clean empty background'"
 }`;
       }
       
@@ -2039,7 +2115,7 @@ Instructions:
 5. Preserve facial identity and original features
 6. Include the masterwork's SPECIFIC style characteristics in your prompt
 7. IMPORTANT: Start prompt with subject description if person
-8. CRITICAL: If only 1 person in photo, add "DO NOT add extra people in background, keep background clean"
+8. CRITICAL: If only 1 person in photo, add "Single subject only, clean empty background"
 
 Return JSON only:
 {
@@ -2061,7 +2137,7 @@ OHHHALRIGHT: 'OH, ALRIGHT...' | 'FINE, IF YOU INSIST...' | 'I GUESS SO...' | 'OK
 STILLLIFE: null
 If other artist: null",
   "reason": "why this artist AND this masterwork fit (1 sentence)",
-  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by [Artist] in the style of [selected_work], [that work's distinctive techniques and colors]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background, keep background CLEAN'"
+  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by [Artist] in the style of [selected_work], [that work's distinctive techniques and colors]'. If person_count=1, END with 'Single subject only, clean empty background'"
 }`;
         }
       }
@@ -2379,7 +2455,7 @@ export default async function handler(req, res) {
     const { image, selectedStyle, correctionPrompt } = req.body;
     
     // v73: 변수 초기화 - 부정어 제거, 유두 조항 삭제
-    let coreRulesPrefix = 'Preserve identity, gender, ethnicity exactly. Keep ONLY elements from original photo. NEVER add objects, decorations, flowers, furniture, or backgrounds not in photo. Clean pure painting surface. ';
+    let coreRulesPrefix = 'Preserve identity, gender, ethnicity exactly. Keep ONLY elements from original photo. Pure painting surface with ONLY original scene elements. ';
     let genderPrefixCommon = '';
     
     // v72.1: photoAnalysis 초기화 (인종 보존용)
@@ -2686,7 +2762,7 @@ export default async function handler(req, res) {
         logData.vision.gender = visionAnalysis.gender || '';
         logData.vision.age = visionAnalysis.age_range || '';
         logData.vision.subjectType = visionAnalysis.subject_type || '';
-        // v77: 리히텐슈타인 말풍선 텍스트 저장
+        // v79: Vision AI speech_bubble은 무시 (코드 랜덤으로 교체됨, 주입부에서 덮어씀)
         logData.vision.speechBubble = visionAnalysis.speech_bubble || null;
       }
       
@@ -2907,7 +2983,7 @@ export default async function handler(req, res) {
             if (isNonPerson) {
               // console.log(`📸 [NON-PERSON] Subject is ${visionAnalysis.subject_type}, skipping gender prefix`);
               // 풍경/정물용 프롬프트
-              genderPrefix = `CRITICAL: This is a ${visionAnalysis.subject_type.toUpperCase()} photo - DO NOT add any people or human figures. Keep as pure ${visionAnalysis.subject_type}. `;
+              genderPrefix = `CRITICAL: Pure ${visionAnalysis.subject_type.toUpperCase()} scene only, empty of all human figures. `;
               
               // 🎨 풍경/정물일 때 control_strength boost 플래그 설정 (마지막에 적용)
               landscapeStrengthBoost = true;
@@ -3423,16 +3499,18 @@ export default async function handler(req, res) {
     }
 
     // ========================================
-    // v77: 리히텐슈타인 말풍선 (Vision AI 선택)
-    // - 격자 유지, 말풍선 3% 안쪽 배치
+    // v65→v79: 리히텐슈타인 말풍선 (코드 랜덤 선택)
+    // - 짧은 문구만 사용 (FLUX 텍스트 렌더링 한계)
+    // - 상세 스타일 프롬프트로 말풍선 품질 향상
     // ========================================
     if (selectedArtist && (selectedArtist.toUpperCase().includes('LICHTENSTEIN') || 
         selectedArtist.includes('리히텐슈타인'))) {
       
-      const speechText = logData.vision?.speechBubble;
+      const speechText = selectSpeechBubbleText(visionAnalysis);
+      logData.vision.speechBubble = speechText;
       
-      if (speechText && !finalPrompt.includes('speech bubble')) {
-        finalPrompt = finalPrompt + `, white comic speech bubble with text "${speechText}" in bold font, position bubble at least 3% away from image edges`;
+      if (!finalPrompt.includes('speech bubble')) {
+        finalPrompt = finalPrompt + `, WHITE SPEECH BUBBLE with THICK BLACK OUTLINE containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+, COMIC PANEL FRAME with THICK BLACK BORDER around entire image`;
       }
     }
 

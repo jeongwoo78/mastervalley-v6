@@ -1173,18 +1173,18 @@ const ResultScreen = ({
                 </span>
                 <div className="preview-text">
                   <div className="preview-style">
-                    {category === 'movements' ? tPhotoStyle.movementsFullTitle :
-                     category === 'masters' ? tPhotoStyle.mastersFullTitle :
+                    {displayCategory === 'movements' ? tPhotoStyle.movementsFullTitle :
+                     displayCategory === 'masters' ? tPhotoStyle.mastersFullTitle :
                      tPhotoStyle.orientalFullTitle}
                   </div>
                   <div className="preview-subtitle">
-                    {category === 'movements' ? tProcessing.movementsSub1 :
-                     category === 'masters' ? tProcessing.mastersSub1 :
+                    {displayCategory === 'movements' ? tProcessing.movementsSub1 :
+                     displayCategory === 'masters' ? tProcessing.mastersSub1 :
                      tProcessing.orientalSub1}
                   </div>
                   <div className="preview-subtitle sub2">
-                    {category === 'movements' ? tProcessing.movementsSub2 :
-                     category === 'masters' ? tProcessing.mastersSub2 :
+                    {displayCategory === 'movements' ? tProcessing.movementsSub2 :
+                     displayCategory === 'masters' ? tProcessing.mastersSub2 :
                      tProcessing.orientalSub2}
                   </div>
                 </div>
