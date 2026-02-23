@@ -95,7 +95,7 @@ export const ui = {
     retryAll: 'Retry All',
     retrying: 'Retrying...',
     conversionFailed: 'Conversion failed.',
-    aiRetrying: '🎨 AI is retrying...',
+    aiRetrying: 'AI is retrying...',
     noImageToSave: 'No image to save.',
     savedToGallery: '✅ Saved to Gallery!',
     saved: '✅ Saved!',

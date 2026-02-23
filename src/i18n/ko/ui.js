@@ -95,7 +95,7 @@ export const ui = {
     retryAll: '전체 다시 시도',
     retrying: '다시 시도 중...',
     conversionFailed: '변환에 실패하였습니다.',
-    aiRetrying: '🎨 AI가 다시 변환 중입니다...',
+    aiRetrying: 'AI가 다시 변환 중입니다...',
     noImageToSave: '저장할 이미지가 없습니다.',
     savedToGallery: '✅ 갤러리에 저장되었습니다!',
     saved: '✅ 저장되었습니다!',

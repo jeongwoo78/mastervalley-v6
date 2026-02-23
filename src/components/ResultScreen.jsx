@@ -1308,23 +1308,29 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* 단독변환 실패 시 다시 시도 버튼 */}
+        {/* v79: 단독변환 실패 시 이미지 영역 대체 */}
         {!isFullTransform && (!finalDisplayImage || isRetrying) && (
           <div className="retry-section">
             {isRetrying ? (
-              <div className="retry-in-progress">
+              <div className="retry-placeholder">
                 <div className="spinner-medium"></div>
-                <p className="retry-text">{t.aiRetrying}</p>
+                <p className="placeholder-text">{t.aiRetrying}</p>
               </div>
             ) : (
-              <div className="retry-prompt">
-                <div className="retry-icon">🎨</div>
-                <p className="fail-message">{t.conversionFailed}</p>
+              <div className="retry-placeholder">
+                <div className="placeholder-icon">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+                <p className="placeholder-text">{t.conversionFailed}</p>
                 <button 
-                  className="btn btn-retry"
+                  className="btn-retry-inline"
                   onClick={handleSingleModeRetry}
                 >
-                  <span className="btn-icon">✨</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
                   {t.retry}
                 </button>
               </div>
@@ -1415,23 +1421,29 @@ const ResultScreen = ({
           </div>
         )}
 
-        {/* 다시 시도 버튼 (현재 보고 있는 결과가 실패한 경우에만 표시) */}
+        {/* v79: 원클릭 실패 시 이미지 영역 대체 */}
         {isFullTransform && currentResult && !currentResult.success && viewIndex >= 0 && (
           <div className="retry-section">
             {isRetrying ? (
-              <div className="retry-in-progress">
+              <div className="retry-placeholder">
                 <div className="spinner-medium"></div>
-                <p className="retry-text">{t.aiRetrying}</p>
+                <p className="placeholder-text">{t.aiRetrying}</p>
               </div>
             ) : (
-              <div className="retry-prompt">
-                <div className="retry-icon">🎨</div>
-                <p className="fail-message">{t.conversionFailed}</p>
+              <div className="retry-placeholder">
+                <div className="placeholder-icon">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                </div>
+                <p className="placeholder-text">{t.conversionFailed}</p>
                 <button 
-                  className="btn btn-retry"
+                  className="btn-retry-inline"
                   onClick={handleRetry}
                 >
-                  <span className="btn-icon">✨</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
                   {failedCount > 1 ? t.retryAll : t.retry}
                 </button>
               </div>
@@ -1996,62 +2008,57 @@ const ResultScreen = ({
         }
 
         /* 다시 시도 섹션 */
+        /* v79: 에러 — 이미지 영역 대체 스타일 */
         .retry-section {
           margin-bottom: 1.5rem;
           text-align: center;
         }
 
-        .retry-prompt {
-          background: rgba(139, 92, 246, 0.1);
+        .retry-placeholder {
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 16px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .placeholder-icon {
+          width: 44px;
+          height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0.25;
+        }
+
+        .placeholder-text {
+          color: rgba(255, 255, 255, 0.35);
+          font-size: 13px;
+        }
+
+        .btn-retry-inline {
+          background: rgba(124, 58, 237, 0.12);
+          border: 1px solid rgba(124, 58, 237, 0.25);
+          color: #a78bfa;
+          padding: 8px 20px;
           border-radius: 20px;
-          padding: 2rem;
-        }
-
-        .retry-icon {
-          font-size: 3rem;
-          margin-bottom: 1rem;
-        }
-
-        .fail-message {
-          color: rgba(255, 255, 255, 0.9);
-          font-size: 1rem;
-          margin-bottom: 1.25rem;
-        }
-
-        .btn-retry {
-          background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-          color: white;
-          border: none;
-          padding: 1rem 2rem;
-          border-radius: 12px;
-          font-size: 1rem;
+          font-size: 12px;
           font-weight: 600;
           cursor: pointer;
           display: inline-flex;
           align-items: center;
-          gap: 0.5rem;
-          transition: all 0.3s ease;
+          gap: 5px;
+          transition: all 0.2s ease;
         }
 
-        .btn-retry:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
-        }
-
-        .retry-in-progress {
-          background: rgba(139, 92, 246, 0.1);
-          border-radius: 20px;
-          padding: 2rem;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .retry-text {
-          color: #5b21b6;
-          font-size: 1rem;
-          font-weight: 500;
+        .btn-retry-inline:hover {
+          background: rgba(124, 58, 237, 0.2);
+          transform: translateY(-1px);
         }
 
         .spinner-medium {

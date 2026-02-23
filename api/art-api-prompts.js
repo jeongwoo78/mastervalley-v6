@@ -1305,10 +1305,31 @@ export const ORIENTAL_PROMPTS = {
   // 일본화
   // ─────────────────────────────────────────
   
+  // v79: 우키요에 5분기 — 피사체별 장르 분리
+  // bijinga(여성/우타마로), yakushae(남성/샤라쿠), meishoe(풍경/히로시게), animal(동물/쿠니요시)
+  
   'ukiyoe': {
-    name: '우키요에',
-    nameEn: 'Japanese Ukiyo-e Woodblock Print',
+    name: '우키요에 미인화',
+    nameEn: 'Japanese Ukiyo-e Bijin-ga',
     prompt: `Japanese Ukiyo-e woodblock print in bijin-ga (美人画) beautiful woman style by Kitagawa Utamaro. FLAT SOLID COLOR AREAS with BOLD BLACK OUTLINES 3mm thick. Beautiful refined elegant figures with graceful features. LIMITED PALETTE of water-soluble pigments - indigo (藍), vermillion (朱), yellow ochre, green, pink. CHERRY WOOD BLOCK TEXTURE (桜板) visible in color areas with subtle wood grain. BAREN-PRESSED TEXTURE with varying pressure creating gradation effects (bokashi). Completely FLAT TWO-DIMENSIONAL aesthetic with purely flat decorative planes. Dramatic asymmetrical compositions. Transform clothing to traditional KIMONO with decorative patterns. Elegant Edo period aesthetic.`
+  },
+
+  'ukiyoe_yakushae': {
+    name: '우키요에 역자회',
+    nameEn: 'Japanese Ukiyo-e Yakusha-e',
+    prompt: `Japanese Ukiyo-e woodblock print in yakusha-e (役者絵) kabuki actor portrait style by Toshusai Sharaku. BOLD DRAMATIC EXPRESSION with exaggerated facial features capturing intense emotion. DARK MICA BACKGROUND (雲母摺) creating silvery metallic sheen behind figure. STRONG ANGULAR BLACK OUTLINES 4mm thick defining powerful masculine features. LIMITED PALETTE of water-soluble pigments - deep indigo (藍), vermillion (朱), yellow ochre, black, grey. CHERRY WOOD BLOCK TEXTURE (桜板) visible in color areas. Sharp geometric forms and dramatic asymmetry. Transform clothing to traditional HAKAMA (袴) with HAORI jacket and bold patterns. Powerful Edo period masculine aesthetic.`
+  },
+
+  'ukiyoe_meishoe': {
+    name: '우키요에 명소회',
+    nameEn: 'Japanese Ukiyo-e Meisho-e Landscape',
+    prompt: `Japanese Ukiyo-e woodblock print in meisho-e (名所絵) famous places landscape style by Utagawa Hiroshige. Atmospheric perspective with layered landscape planes receding into distance. BOKASHI gradation technique (暈し) creating smooth sky and water transitions from deep indigo to pale blue. LIMITED PALETTE - Prussian blue (ベロ藍), vermillion, green, grey, soft pink. BOLD BLACK OUTLINES defining mountains, trees, bridges, architecture. Rain shown as fine parallel diagonal lines. Mist and fog dissolving distant forms. CHERRY WOOD BLOCK TEXTURE (桜板) visible throughout. Completely FLAT TWO-DIMENSIONAL aesthetic with dramatic atmospheric depth illusion. Seasonal weather effects - rain, snow, moonlight, wind. Serene contemplative Edo period landscape.`
+  },
+
+  'ukiyoe_animal': {
+    name: '우키요에 동물화',
+    nameEn: 'Japanese Ukiyo-e Animal Print',
+    prompt: `Japanese Ukiyo-e woodblock print in animal portrait style by Utagawa Kuniyoshi (歌川国芳). EXPRESSIVE ANIMAL as central subject drawn with personality and character. BOLD BLACK OUTLINES 3mm thick defining fur texture and body form with playful energy. LIMITED PALETTE of water-soluble pigments - indigo (藍), vermillion (朱), yellow ochre, brown, grey. CHERRY WOOD BLOCK TEXTURE (桜板) visible in color areas. FLAT SOLID COLOR AREAS with subtle gradation for fur and features. Simple scenic background - garden, tatami room, or nature setting. Charming anthropomorphic quality capturing animal personality. Completely FLAT TWO-DIMENSIONAL Edo period aesthetic.`
   },
 
   'rinpa': {

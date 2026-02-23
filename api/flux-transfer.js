@@ -2657,13 +2657,15 @@ export default async function handler(req, res) {
     // (나중에 visionAnalysis 확인 후 조정됨)
     let landscapeStrengthBoost = false;
     
-    // v74: 일본 전통화 - 린파/우키요에 분기
-    // 린파: 꽃, 새, 동물 → 장식적 금박 스타일
-    // 우키요에: 인물, 풍경, 기타 모두 → 목판화 스타일
+    // v79: 일본 전통화 5분기 + identityPrompt + antiHallucination
+    // 여성→bijin-ga(우타마로) | 남성→yakusha-e(샤라쿠) | 풍경→meisho-e(히로시게)
+    // 반려동물→animal(쿠니요시) | 꽃/새→rinpa(코린/소타츠)
     if (selectedStyle.category === 'oriental' && selectedStyle.id === 'japanese') {
       let subjectInfo = '';
-      let useRinpa = false;
+      let japanVisionData = null;
+      let japanStyleKey = 'ukiyoe'; // default: bijin-ga
       
+      // 1. Vision 분석
       if (anthropicClient) {
         try {
           const cleanBase64 = image.replace(/^data:image\/\w+;base64,/, '');
@@ -2673,7 +2675,10 @@ export default async function handler(req, res) {
   "subject_type": "person" or "animal" or "flower" or "bird" or "landscape" or "object",
   "animal_type": "dog" or "cat" or "bird" or other animal name or null,
   "person_count": number or 0,
-  "gender": "male" or "female" or "mixed" or null
+  "gender": "male" or "female" or "mixed" or null,
+  "ethnicity": "asian" or "caucasian" or "african" or "hispanic" or "middle_eastern" or "mixed" or null,
+  "age_range": "baby" or "child" or "teen" or "young_adult" or "adult" or "middle_aged" or "elderly" or null,
+  "hair": "short black hair" or "long brown hair" or other description or null
 }`;
           
           const visionResponse = await anthropicClient.messages.create({
@@ -2689,51 +2694,93 @@ export default async function handler(req, res) {
           });
           
           const visionText = visionResponse.content[0]?.text || '{}';
-          const visionData = JSON.parse(visionText.replace(/```json\n?|\n?```/g, '').trim());
+          japanVisionData = JSON.parse(visionText.replace(/```json\n?|\n?```/g, '').trim());
           
-          // v74: 린파/우키요에 분기
-          if (visionData.person_count > 0 || visionData.subject_type === 'person') {
-            useRinpa = false;
-            const genderInfo = visionData.gender === 'male' ? 'male person in hakama' : 
-                              visionData.gender === 'female' ? 'female person in elegant kimono' : 
-                              'person in traditional Japanese attire';
-            subjectInfo = `CRITICAL: Draw the ${genderInfo} as shown in the photo. `;
-          } else if (visionData.subject_type === 'flower') {
-            useRinpa = true;
-          } else if (visionData.subject_type === 'bird' || visionData.animal_type === 'bird') {
-            useRinpa = true;
-            subjectInfo = `CRITICAL: The main subject is a bird. Draw the bird as the central subject in Rinpa decorative style. `;
-          } else if (visionData.subject_type === 'animal' && visionData.animal_type) {
-            useRinpa = true;
-            subjectInfo = `CRITICAL: The main subject is a ${visionData.animal_type}. Draw the ${visionData.animal_type} as the central subject in Rinpa decorative style. `;
-          } else {
-            useRinpa = false;
-          }
+          // logData.vision 기록
+          logData.vision.count = japanVisionData.person_count || 0;
+          logData.vision.gender = japanVisionData.gender || '';
+          logData.vision.age = japanVisionData.age_range || '';
+          logData.vision.subjectType = japanVisionData.subject_type || '';
           
         } catch (e) {
           console.log('⚠️ Japan Vision error:', e.message);
-          useRinpa = false;
         }
-      } else {
-        useRinpa = false;
       }
       
-      // v74: 린파 또는 우키요에 프롬프트 선택
-      if (useRinpa) {
-        const rinpaPromptData = getPrompt('rinpa');
-        const basePrompt = rinpaPromptData ? rinpaPromptData.prompt : fallbackPrompts.japanese.prompt;
-        finalPrompt = subjectInfo + basePrompt;
-        selectedArtist = rinpaPromptData ? rinpaPromptData.nameEn : '린파';
-        selectionMethod = 'oriental_rinpa';
-        selectionDetails = { style: 'japanese_rinpa' };
-      } else {
-        const ukiyoePromptData = getPrompt('ukiyoe');
-        const basePrompt = ukiyoePromptData ? ukiyoePromptData.prompt : fallbackPrompts.japanese.prompt;
-        finalPrompt = subjectInfo + basePrompt;
-        selectedArtist = ukiyoePromptData ? ukiyoePromptData.nameEn : '일본 우키요에';
-        selectionMethod = 'oriental_ukiyoe';
-        selectionDetails = { style: 'japanese_ukiyoe' };
+      // 2. 피사체별 5분기
+      if (japanVisionData) {
+        const st = japanVisionData.subject_type;
+        const at = japanVisionData.animal_type;
+        const gender = japanVisionData.gender;
+        
+        if (st === 'flower') {
+          japanStyleKey = 'rinpa';
+        } else if (st === 'bird' || at === 'bird') {
+          japanStyleKey = 'rinpa';
+          subjectInfo = `CRITICAL: The main subject is a bird. Draw the bird as the central subject in Rinpa decorative style. `;
+        } else if (st === 'animal' && at) {
+          japanStyleKey = 'ukiyoe_animal';
+          subjectInfo = `CRITICAL: The main subject is a ${at}. Draw the ${at} as the central expressive subject in Kuniyoshi ukiyo-e animal style. `;
+        } else if (st === 'landscape') {
+          japanStyleKey = 'ukiyoe_meishoe';
+          subjectInfo = '';
+        } else if (st === 'person' || japanVisionData.person_count > 0) {
+          if (gender === 'male') {
+            japanStyleKey = 'ukiyoe_yakushae';
+            subjectInfo = `CRITICAL: Draw the male person in hakama as shown in the photo. `;
+          } else {
+            japanStyleKey = 'ukiyoe';
+            const genderInfo = gender === 'female' ? 'female person in elegant kimono' : 'person in traditional Japanese attire';
+            subjectInfo = `CRITICAL: Draw the ${genderInfo} as shown in the photo. `;
+          }
+        } else {
+          japanStyleKey = 'ukiyoe_meishoe';
+        }
       }
+      
+      // 3. 프롬프트 조립
+      const japanPromptData = getPrompt(japanStyleKey);
+      const basePrompt = japanPromptData ? japanPromptData.prompt : fallbackPrompts.japanese.prompt;
+      finalPrompt = subjectInfo + basePrompt;
+      selectedArtist = japanPromptData ? japanPromptData.nameEn : 'Japanese Ukiyo-e';
+      selectionMethod = `oriental_${japanStyleKey}`;
+      selectionDetails = { style: `japanese_${japanStyleKey}` };
+      
+      // 4. identityPrompt (얼굴/성별/인종 보존)
+      if (japanVisionData && japanVisionData.subject_type === 'person') {
+        const identityPromptJp = buildIdentityPrompt(japanVisionData);
+        if (identityPromptJp) {
+          finalPrompt = `ABSOLUTE REQUIREMENT: ${identityPromptJp}. ` + finalPrompt;
+        }
+      }
+      
+      // 5. antiHallucination (환각 방지)
+      let antiHallucinationJp = ' STRICT COMPOSITION: Keep ONLY elements from original photo. ';
+      if (japanVisionData) {
+        const count = japanVisionData.person_count;
+        const subjectType = japanVisionData.subject_type;
+        if (subjectType === 'person' && count) {
+          if (count === 1) {
+            antiHallucinationJp += 'Maintain EXACTLY 1 PERSON only, background must stay empty of people. ';
+          } else if (count === 2) {
+            antiHallucinationJp += 'Maintain EXACTLY 2 PEOPLE only, background must stay empty of additional people. ';
+          } else {
+            antiHallucinationJp += `Maintain EXACTLY ${count} PEOPLE only, background must stay empty of additional people. `;
+          }
+        } else if (subjectType === 'landscape') {
+          antiHallucinationJp += 'LANDSCAPE only, keep scene free of people and figures. ';
+        } else if (subjectType === 'animal') {
+          antiHallucinationJp += 'ANIMAL photo only, keep scene free of humans. ';
+        }
+        antiHallucinationJp += 'Keep composition faithful to original photo.';
+      }
+      finalPrompt = finalPrompt + antiHallucinationJp;
+      
+      // 6. logData.selection 기록
+      logData.selection.category = selectedStyle.category || '';
+      logData.selection.artist = selectedArtist || '';
+      logData.selection.masterwork = '';
+      logData.selection.reason = `japan_${japanStyleKey}`;
       
     } else if (process.env.ANTHROPIC_API_KEY) {
       // console.log(`Trying AI artist selection for ${selectedStyle.name}...`);
@@ -2815,6 +2862,9 @@ export default async function handler(req, res) {
             'pungsokdo': 'pungsokdo',
             'gongbi': 'gongbi',
             'ukiyoe': 'ukiyoe',
+            'ukiyoe_yakushae': 'ukiyoe_yakushae',
+            'ukiyoe_meishoe': 'ukiyoe_meishoe',
+            'ukiyoe_animal': 'ukiyoe_animal',
             'rinpa': 'rinpa',
             'jingyeong': 'jingyeong',
             'shuimohua': 'shuimohua'
