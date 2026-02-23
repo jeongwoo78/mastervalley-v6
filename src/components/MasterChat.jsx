@@ -320,7 +320,17 @@ const MasterChat = ({
             ? chatText.common.placeholderEnded
             : isRetransforming 
               ? chatText.common.placeholderConverting
-              : chatText.common.placeholderDefault.replace('{masterName}', masterName)}
+              : chatText.common.placeholderDefault
+                  .replace('{masterName}', masterName)
+                  .replace('{withParticle}', (() => {
+                    // 한국어 조사 와/과 판별 (받침 유무)
+                    const lastChar = masterName[masterName.length - 1];
+                    const code = lastChar.charCodeAt(0);
+                    if (code >= 0xAC00 && code <= 0xD7A3) {
+                      return (code - 0xAC00) % 28 === 0 ? '와' : '과';
+                    }
+                    return '와'; // 한글 아닌 경우 기본값
+                  })())}
           disabled={isLoading || isRetransforming || isChatEnded}
           style={{ borderColor: inputValue ? theme.primary : undefined }}
         />
