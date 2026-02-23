@@ -409,41 +409,46 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {/* 헤더: 일반 모드 / 선택 모드 전환 */}
       {selectMode ? (
         <div className="select-header">
-          <div className="select-header-left">
-            <button className="select-header-cancel" onClick={exitSelectMode}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <div className="select-header-row1">
+            <button className="select-header-back" onClick={exitSelectMode}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              {t.back}
             </button>
-            <button 
-              className="select-header-all"
-              onClick={selectedIds.size === galleryItems.length ? deselectAll : selectAll}
-            >
-              {selectedIds.size === galleryItems.length ? (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-              ) : (
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-              )}
-              {t.selectAll}
-            </button>
-            <button 
-              className="select-header-save"
-              onClick={handleSaveSelected}
-              disabled={selectedIds.size === 0 || isBatchSaving}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              {isBatchSaving ? t.saving : t.save}
-            </button>
-            <button 
-              className="select-header-delete"
-              onClick={handleDeleteSelected}
-              disabled={selectedIds.size === 0}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              {t.delete}
-            </button>
+            <div className="select-header-actions">
+              <button 
+                className="select-header-all"
+                onClick={selectedIds.size === galleryItems.length ? deselectAll : selectAll}
+              >
+                {selectedIds.size === galleryItems.length ? (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                ) : (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                )}
+                {t.selectAll}
+              </button>
+              <button 
+                className="select-header-save"
+                onClick={handleSaveSelected}
+                disabled={selectedIds.size === 0 || isBatchSaving}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                {isBatchSaving ? t.saving : t.save}
+              </button>
+              <button 
+                className="select-header-delete"
+                onClick={handleDeleteSelected}
+                disabled={selectedIds.size === 0}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                {t.delete}
+              </button>
+            </div>
           </div>
-          <span className="select-header-count">
-            {t.selectedCount.replace('{count}', selectedIds.size)}
-          </span>
+          <div className="select-header-row2">
+            <span className="select-header-count">
+              {t.selectedCount.replace('{count}', selectedIds.size)}
+            </span>
+          </div>
         </div>
       ) : (
         <div style={styles.header}>
@@ -666,89 +671,93 @@ const animationStyle = `
     color: white;
   }
   
-  /* B안: 선택 모드 헤더 */
+  /* v79: 선택 모드 헤더 — 2줄 레이아웃 */
   .select-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0;
+    padding: 0 0 0;
     margin-bottom: 12px;
   }
   
-  .select-header-left {
+  .select-header-row1 {
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: space-between;
+    padding: 14px 0 0;
   }
   
-  .select-header-cancel {
+  .select-header-back {
     background: none;
     border: none;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
     cursor: pointer;
-    padding: 4px 0;
+    padding: 0;
     display: flex;
     align-items: center;
-  }
-  
-  .select-header-count {
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
+    gap: 4px;
   }
   
   .select-header-actions {
     display: flex;
-    gap: 6px;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .select-header-row2 {
+    padding: 8px 0 0;
+    text-align: right;
+  }
+  
+  .select-header-count {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
   }
   
   .select-header-all {
-    padding: 4px 0;
+    padding: 0;
     border: none;
     background: none;
-    color: #7c3aed;
-    font-size: 13px;
-    font-weight: 600;
+    color: #6b8afd;
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
   }
   
   .select-header-save {
-    padding: 4px 0;
+    padding: 0;
     border: none;
     background: none;
-    color: #22c55e;
-    font-size: 13px;
-    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
   }
   
   .select-header-save:disabled {
-    opacity: 0.5;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.2);
     cursor: not-allowed;
   }
   
   .select-header-delete {
-    padding: 4px 0;
+    padding: 0;
     border: none;
     background: none;
-    color: #ef4444;
-    font-size: 13px;
-    font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    font-size: 12px;
+    font-weight: 500;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 3px;
   }
   
   .select-header-delete:disabled {
-    opacity: 0.5;
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.2);
     cursor: not-allowed;
   }
   

@@ -1,8 +1,4 @@
-// PicoArt v77 - 콘솔 로그 정리 + 린파 버그 수정
-// v77: 콘솔 로그 간소화 (한 줄 요약)
-//      - 불필요한 디버그 로그 제거
-//      - 핵심 정보만 간결하게 출력
-//
+// PicoArt v74 - Kontext 프롬프트 최소화
 // v76: Kontext 프롬프트 공식 권장 구조 적용
 // "ONLY ${correctionPrompt} while keeping the same painting style"
 //      - 불필요한 보존 명령어 제거
@@ -49,14 +45,14 @@
 // v64: 사조별 대표작 매칭 시스템
 // ========================================
 import {
-  ALL_PROMPTS,
-  getPrompt,
-  masterworkNameMapping,
+  getMovementMasterwork,
+  getMasterworkGuideForAI,
   getArtistMasterworkList,
   getMovementMasterworkGuide,
   getArtistMasterworkGuide,
-  getMasterworkGuideForAI
-} from './art-api-prompts.js';
+  allMovementMasterworks,
+  masterworkNameMapping
+} from './masterworks.js';
 
 // ========================================
 // v72: Anthropic 클라이언트 (일본 우키요에 Vision용)
@@ -71,21 +67,20 @@ const anthropicClient = process.env.ANTHROPIC_API_KEY
 // v66: 통합 화풍 프롬프트
 // ========================================
 import {
-  ARTIST_CONFIG,
-  MOVEMENT_DEFAULTS,
+  ARTIST_STYLES,
   PAINT_TEXTURE,
   VINTAGE_TEXTURE,
   EXCLUDE_VINTAGE,
-  getArtistConfig,
-  getBrushSize,
-  getControlStrength,
-  normalizeArtistKey
-} from './art-api-prompts.js';
+  getArtistStyle,
+  getArtistStyleByName
+} from './artistStyles.js';
+
+// v79: 동양화 curated 프롬프트 (한중일 AI 선택 → 고품질 프롬프트 매핑)
+import { getPrompt } from './art-api-prompts.js';
 
 // ========================================
-// ========================================
-// v65→v79: 리히텐슈타인 말풍선 - 코드 랜덤 선택 (짧은 문구)
-// FLUX는 짧은 텍스트(1~3단어)만 정확히 렌더링 가능
+// v65: 리히텐슈타인 말풍선 텍스트 (50개)
+// 짧은 감탄사 + 대화체 + 독백체 + 긴 문장 혼합
 // ========================================
 const LICHTENSTEIN_SPEECH_BUBBLES = {
   // 감탄/기쁨 (12개) - 그룹/밝은 분위기
@@ -164,12 +159,289 @@ function selectSpeechBubbleText(visionData) {
   return texts[Math.floor(Math.random() * texts.length)];
 }
 
+// ========================================
+// v70: 화가별 설정 통합 관리
+// 🎯 수정 위치: 여기서 화가별 control_strength, 붓터치 크기 조정!
+// 
+// [control] 낮을수록 화풍 강하게, 높을수록 원본 유지
+//   - 0.10~0.30: 매우 강함 (피카소, 모네, 르누아르)
+//   - 0.40~0.50: 강함 (반 고흐, 카라바조, 마티스)
+//   - 0.55~0.65: 중간 (클림트, 세잔, 마그리트)
+//   - 0.70~0.80: 약함 (프리다, 동양화, 보티첼리)
+//
+// [brush] 붓터치 크기 (null = 붓터치 없음)
+//   - null: 조각, 스테인드글라스, 동양화, 팝아트
+//   - '8mm': 점묘법 (시냑)
+//   - '15mm': 세밀화 (이슬람 미니어처)
+//   - '20mm': 섬세 (르네상스, 바로크, 로코코)
+//   - '25mm': 중간 (신고전, 낭만, 사실, 클림트)
+//   - '30mm': 굵음 (인상주의, 후기인상, 모더니즘)
+//   - '35mm': 더 굵음 (야수파, 표현주의)
+//   - '50mm': 임파스토 (반 고흐, 모자이크)
+//
+// [2025.01 기준값 예시]
+//   피카소:   { control: 0.10, brush: '30mm' }  ← 화풍 매우 강함
+//   반 고흐:  { control: 0.45, brush: '50mm' }  ← 두꺼운 임파스토
+//   레오나르도: { control: 0.40, brush: '20mm' }  ← 섬세한 스푸마토
+//   시냑:     { control: 0.55, brush: '8mm' }   ← 점묘법
+//   워홀:     { control: 0.45, brush: null }    ← 실크스크린 (붓터치 없음)
+//   한국화:   { control: 0.75, brush: null }    ← 먹선 (붓터치 없음)
+// ========================================
+const ARTIST_CONFIG = {
+  // === 고대/중세 ===
+  'classical-sculpture': { control: 0.55, brush: null },      // 조각
+  'sculpture':           { control: 0.55, brush: null },
+  'roman-mosaic':        { control: 0.60, brush: '75mm' },    // 모자이크 타일
+  'mosaic':              { control: 0.60, brush: '75mm' },
+  'byzantine':           { control: 0.60, brush: null },      // 모자이크/아이콘
+  'gothic':              { control: 0.50, brush: null },      // 스테인드글라스
+  'islamic-miniature':   { control: 0.80, brush: '25mm' },    // 세밀화
+  
+  // === 르네상스 ===
+  'botticelli':          { control: 0.70, brush: '75mm' },
+  'leonardo':            { control: 0.65, brush: '75mm' },
+  'titian':              { control: 0.70, brush: '75mm' },
+  'michelangelo':        { control: 0.70, brush: '75mm' },
+  'raphael':             { control: 0.70, brush: '75mm' },
+  
+  // === 바로크 ===
+  'caravaggio':          { control: 0.50, brush: '75mm' },
+  'rubens':              { control: 0.50, brush: '75mm' },
+  'rembrandt':           { control: 0.50, brush: '75mm' },
+  'velazquez':           { control: 0.50, brush: '75mm' },
+  
+  // === 로코코 ===
+  'watteau':             { control: 0.45, brush: '75mm' },
+  'boucher':             { control: 0.45, brush: '75mm' },
+  
+  // === 신고전/낭만/사실 ===
+  'david':               { control: 0.50, brush: '75mm' },
+  'ingres':              { control: 0.45, brush: '75mm' },
+  'turner':              { control: 0.45, brush: '75mm' },
+  'delacroix':           { control: 0.50, brush: '75mm' },
+  'courbet':             { control: 0.50, brush: '75mm' },
+  'manet':               { control: 0.50, brush: '75mm' },
+  
+  // === 인상주의 ===
+  'renoir':              { control: 0.30, brush: '75mm' },
+  'monet':               { control: 0.30, brush: '75mm' },
+  'degas':               { control: 0.50, brush: '75mm' },
+  'caillebotte':         { control: 0.50, brush: '75mm' },
+  
+  // === 후기인상주의 ===
+  'vangogh':             { control: 0.45, brush: '75mm' },
+  'gauguin':             { control: 0.60, brush: '75mm' },
+  'cezanne':             { control: 0.65, brush: '75mm' },
+  
+  // === 야수파 ===
+  'matisse':             { control: 0.45, brush: '75mm' },
+  'derain':              { control: 0.45, brush: '75mm' },
+  'vlaminck':            { control: 0.45, brush: '75mm' },
+  
+  // === 표현주의 ===
+  'munch':               { control: 0.40, brush: '75mm' },
+  'kirchner':            { control: 0.1, brush: '75mm' },
+  'kokoschka':           { control: 0.1, brush: '75mm' },
+  
+  // === 모더니즘/팝아트 ===
+  'picasso':             { control: 0.10, brush: '75mm' },
+  'magritte':            { control: 0.40, brush: '75mm' },
+  'miro':                { control: 0.40, brush: '75mm' },
+  'chagall':             { control: 0.40, brush: '75mm' },
+  'lichtenstein':        { control: 0.30, brush: null },      // 벤데이 점, 스타일 강화
+  
+  // === 거장 ===
+  'klimt':               { control: 0.65, brush: '25mm' },    // 세밀 금박
+  'frida':               { control: 0.80, brush: '25mm' },    // 세밀 상징
+  
+  // === 동양화 ===
+  'korean':              { control: 0.75, brush: null },      // 먹선 별도
+  'chinese':             { control: 0.75, brush: null },
+  'japanese':            { control: 0.75, brush: null },      // 판화 별도
+};
 
-// ========================================
-// v70: 화가별 설정 - art-api-config.js로 이동
-// ARTIST_CONFIG, MOVEMENT_DEFAULTS, 관련 함수들은
-// art-api-config.js에서 import됨
-// ========================================
+// 사조별 기본값 (화가 매칭 안 될 때 fallback)
+const MOVEMENT_DEFAULTS = {
+  'ancient-greek-sculpture':              { control: 0.55, brush: null },
+  'roman-mosaic':                         { control: 0.60, brush: '75mm' },
+  'byzantine':                            { control: 0.55, brush: null },      // 모자이크/아이콘
+  'islamic-miniature':                    { control: 0.80, brush: '25mm' },    // 세밀화
+  'gothic':                               { control: 0.50, brush: null },
+  'renaissance':                          { control: 0.80, brush: '75mm' },
+  'baroque':                              { control: 0.70, brush: '75mm' },
+  'rococo':                               { control: 0.70, brush: '75mm' },
+  'neoclassicism':                        { control: 0.80, brush: '75mm' },
+  'neoclassicism_vs_romanticism_vs_realism': { control: 0.80, brush: '75mm' },
+  'romanticism':                          { control: 0.80, brush: '75mm' },
+  'impressionism':                        { control: 0.60, brush: '75mm' },
+  'post-impressionism':                   { control: 0.55, brush: '75mm' },
+  'pointillism':                          { control: 0.55, brush: '25mm' },    // 점
+  'fauvism':                              { control: 0.45, brush: '75mm' },
+  'expressionism':                        { control: 0.45, brush: '75mm' },
+  'modernism':                            { control: 0.50, brush: '75mm' },
+  'korean':                               { control: 0.75, brush: null },
+  'chinese':                              { control: 0.75, brush: null },
+  'japanese':                             { control: 0.75, brush: null },
+};
+
+// 화가명 정규화 매핑
+const ARTIST_NAME_MAPPING = {
+  'leonardodavinci': 'leonardo',
+  'davinci': 'leonardo',
+  '레오나르도': 'leonardo',
+  '다빈치': 'leonardo',
+  '레오나르도다빈치': 'leonardo',
+  'vincentvangogh': 'vangogh',
+  'vincent': 'vangogh',
+  'gogh': 'vangogh',
+  '반고흐': 'vangogh',
+  '고흐': 'vangogh',
+  '빈센트': 'vangogh',
+  '빈센트반고흐': 'vangogh',
+  'pierreaugusterenoir': 'renoir',
+  '르누아르': 'renoir',
+  '피에르오귀스트르누아르': 'renoir',
+  'claudemonet': 'monet',
+  '모네': 'monet',
+  '클로드모네': 'monet',
+  'edgardegas': 'degas',
+  '드가': 'degas',
+  '에드가드가': 'degas',
+  'gustavecaillebotte': 'caillebotte',
+  '카유보트': 'caillebotte',
+  '귀스타브카유보트': 'caillebotte',
+  'paulcezanne': 'cezanne',
+  '세잔': 'cezanne',
+  '폴세잔': 'cezanne',
+  'henrimatisse': 'matisse',
+  '마티스': 'matisse',
+  '앙리마티스': 'matisse',
+  'andrederain': 'derain',
+  '드랭': 'derain',
+  'mauricedevlaminck': 'vlaminck',
+  '블라맹크': 'vlaminck',
+  'edvardmunch': 'munch',
+  '뭉크': 'munch',
+  '에드바르뭉크': 'munch',
+  'ernstludwigkirchner': 'kirchner',
+  '키르히너': 'kirchner',
+  'oskarkokoschka': 'kokoschka',
+  '코코슈카': 'kokoschka',
+  'pablopicasso': 'picasso',
+  '피카소': 'picasso',
+  '파블로피카소': 'picasso',
+  'renemagritte': 'magritte',
+  '마그리트': 'magritte',
+  '르네마그리트': 'magritte',
+  'joanmiro': 'miro',
+  '미로': 'miro',
+  '호안미로': 'miro',
+  'marcchagall': 'chagall',
+  '샤갈': 'chagall',
+  '마르크샤갈': 'chagall',
+  'roylichtenstein': 'lichtenstein',
+  '리히텐슈타인': 'lichtenstein',
+  '로이리히텐슈타인': 'lichtenstein',
+  'gustavklimt': 'klimt',
+  '클림트': 'klimt',
+  '구스타프클림트': 'klimt',
+  'fridakahlo': 'frida',
+  '프리다': 'frida',
+  '프리다칼로': 'frida',
+  'antoinewatteau': 'watteau',
+  '와토': 'watteau',
+  'francoisboucher': 'boucher',
+  '부셰': 'boucher',
+  'jacqueslouisdavid': 'david',
+  '다비드': 'david',
+  'jeanaugustdominiqueingres': 'ingres',
+  'jeanaugustedominiqueingres': 'ingres',
+  '앵그르': 'ingres',
+  'jmwturner': 'turner',
+  '터너': 'turner',
+  'eugenedelacroix': 'delacroix',
+  '들라크루아': 'delacroix',
+  'gustavecourbet': 'courbet',
+  '쿠르베': 'courbet',
+  'edouardmanet': 'manet',
+  '마네': 'manet',
+  'caravaggio': 'caravaggio',
+  '카라바조': 'caravaggio',
+  'peterpaulrubens': 'rubens',
+  '루벤스': 'rubens',
+  'rembrandt': 'rembrandt',
+  '렘브란트': 'rembrandt',
+  'diegovelazquez': 'velazquez',
+  '벨라스케스': 'velazquez',
+  'sandrobotticelli': 'botticelli',
+  '보티첼리': 'botticelli',
+  'titian': 'titian',
+  '티치아노': 'titian',
+  'michelangelo': 'michelangelo',
+  '미켈란젤로': 'michelangelo',
+  'raphael': 'raphael',
+  '라파엘로': 'raphael',
+  'paulgauguin': 'gauguin',
+  '고갱': 'gauguin',
+  '폴고갱': 'gauguin',
+  'classicalsculpture': 'classical-sculpture',
+  'sculpture': 'sculpture',
+  'romanmosaic': 'roman-mosaic',
+  'mosaic': 'mosaic',
+  'byzantine': 'byzantine',
+  '비잔틴': 'byzantine',
+  'gothic': 'gothic',
+  '고딕': 'gothic',
+};
+
+// 화가명 정규화 함수
+function normalizeArtistKey(artist) {
+  if (!artist) return '';
+  const normalized = artist.toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/-/g, '')
+    .replace(/[^a-z가-힣]/g, '');
+  
+  return ARTIST_NAME_MAPPING[normalized] || normalized;
+}
+
+// 화가 설정 가져오기 (통합)
+function getArtistConfig(artist, styleId, category) {
+  const artistKey = normalizeArtistKey(artist);
+  
+  // 1. 화가별 설정 확인
+  if (artistKey && ARTIST_CONFIG[artistKey]) {
+    return ARTIST_CONFIG[artistKey];
+  }
+  
+  // 2. 사조별 기본값 확인
+  if (styleId && MOVEMENT_DEFAULTS[styleId]) {
+    return MOVEMENT_DEFAULTS[styleId];
+  }
+  
+  // 3. 카테고리별 기본값
+  if (category === 'oriental') {
+    return { control: 0.75, brush: null };
+  } else if (category === 'modernism') {
+    return { control: 0.50, brush: '75mm' };
+  } else if (category === 'masters') {
+    // 거장 모드: 화가별 설정이 없으면 중간값
+    return { control: 0.55, brush: '75mm' };
+  }
+  
+  // 4. 최종 기본값
+  return { control: 0.80, brush: '75mm' };
+}
+
+// control_strength 결정 함수
+function getControlStrength(artist, styleId, category) {
+  return getArtistConfig(artist, styleId, category).control;
+}
+
+// 붓터치 크기 결정 함수
+function getBrushstrokeSize(artist, styleId, category) {
+  return getArtistConfig(artist, styleId, category).brush;
+}
 
 // ========================================
 // v67: 대표작 키 변환 함수 (간소화)
@@ -336,17 +608,6 @@ function detectPhotoType(photoAnalysis) {
 const ARTIST_WEIGHTS = {
   // 모더니즘 (5명) - v71: 초상화/커플 비중 균등화
   modernism: {
-    portraitFemale: [
-      { name: 'PICASSO', weight: 25 },
-      { name: 'CHAGALL', weight: 25 },
-      { name: 'LICHTENSTEIN', weight: 25 },
-      { name: 'MAGRITTE', weight: 25 }
-    ],
-    portraitMale: [
-      { name: 'MAGRITTE', weight: 33 },
-      { name: 'LICHTENSTEIN', weight: 33 },
-      { name: 'CHAGALL', weight: 34 }
-    ],
     portrait: [
       { name: 'LICHTENSTEIN', weight: 25 },
       { name: 'CHAGALL', weight: 25 },
@@ -354,9 +615,10 @@ const ARTIST_WEIGHTS = {
       { name: 'MAGRITTE', weight: 25 }
     ],
     couple: [
-      { name: 'PICASSO', weight: 15 },
-      { name: 'CHAGALL', weight: 40 },
-      { name: 'LICHTENSTEIN', weight: 45 }
+      { name: 'CHAGALL', weight: 30 },
+      { name: 'LICHTENSTEIN', weight: 30 },
+      { name: 'PICASSO', weight: 20 },
+      { name: 'MAGRITTE', weight: 20 }
     ],
     group: [
       { name: 'CHAGALL', weight: 35 },
@@ -460,31 +722,15 @@ const ARTIST_WEIGHTS = {
     ]
   },
   
-  // 로코코 - v74: 사진 유형별 세분화
+  // 로코코
   rococo: {
-    portrait: [
-      { name: 'BOUCHER', weight: 70 },
-      { name: 'WATTEAU', weight: 30 }
-    ],
-    couple: [
-      { name: 'WATTEAU', weight: 60 },
-      { name: 'BOUCHER', weight: 40 }
-    ],
-    group: [
-      { name: 'WATTEAU', weight: 60 },
-      { name: 'BOUCHER', weight: 40 }
-    ],
     outdoor: [
       { name: 'WATTEAU', weight: 70 },
       { name: 'BOUCHER', weight: 30 }
     ],
-    indoor: [
-      { name: 'BOUCHER', weight: 80 },
-      { name: 'WATTEAU', weight: 20 }
-    ],
     default: [
-      { name: 'BOUCHER', weight: 60 },
-      { name: 'WATTEAU', weight: 40 }
+      { name: 'BOUCHER', weight: 70 },
+      { name: 'WATTEAU', weight: 30 }
     ]
   },
   
@@ -574,41 +820,39 @@ const ARTIST_WEIGHTS = {
     ]
   },
   
-  // 인상주의 (3명 활성) - v74: 드가 비중 0
+  // 인상주의 (4명) - 피사로→칼리보트 교체 (도시풍경/남성인물 차별화)
   impressionism: {
     portrait: [
-      { name: 'RENOIR', weight: 40 },
-      { name: 'MONET', weight: 25 },
-      { name: 'CAILLEBOTTE', weight: 35 },
-      { name: 'DEGAS', weight: 0 }
+      { name: 'RENOIR', weight: 35 },      // 여성/아이 인물 (AI힌트로 분기)
+      { name: 'MONET', weight: 30 },
+      { name: 'CAILLEBOTTE', weight: 35 }  // 남성 인물 (AI힌트로 분기)
     ],
     movement: [
-      { name: 'RENOIR', weight: 45 },
-      { name: 'CAILLEBOTTE', weight: 35 },
-      { name: 'MONET', weight: 20 },
-      { name: 'DEGAS', weight: 0 }
+      { name: 'DEGAS', weight: 50 },
+      { name: 'RENOIR', weight: 30 },
+      { name: 'MONET', weight: 15 },
+      { name: 'CAILLEBOTTE', weight: 5 }
     ],
-    landscape_nature: [
-      { name: 'MONET', weight: 85 },
-      { name: 'RENOIR', weight: 15 },
-      { name: 'DEGAS', weight: 0 }
+    landscape_nature: [  // 자연 풍경 (산, 숲, 바다, 정원)
+      { name: 'MONET', weight: 85 },       // 자연 풍경 전문
+      { name: 'RENOIR', weight: 15 }       // 야외 장면
+      // 드가/칼리보트 제외
     ],
-    landscape_urban: [
-      { name: 'CAILLEBOTTE', weight: 70 },
-      { name: 'MONET', weight: 30 },
-      { name: 'DEGAS', weight: 0 }
+    landscape_urban: [   // 도시 풍경 (건물, 거리)
+      { name: 'CAILLEBOTTE', weight: 70 }, // 도시 풍경 전문
+      { name: 'MONET', weight: 30 }
     ],
-    landscape: [
+    landscape: [  // 기본 풍경 (분류 불가 시)
       { name: 'MONET', weight: 70 },
       { name: 'RENOIR', weight: 20 },
-      { name: 'CAILLEBOTTE', weight: 10 },
-      { name: 'DEGAS', weight: 0 }
+      { name: 'CAILLEBOTTE', weight: 10 }
+      // 드가 제외 (발레/실내 전문)
     ],
     default: [
-      { name: 'RENOIR', weight: 40 },
+      { name: 'RENOIR', weight: 35 },
       { name: 'MONET', weight: 35 },
-      { name: 'CAILLEBOTTE', weight: 25 },
-      { name: 'DEGAS', weight: 0 }
+      { name: 'CAILLEBOTTE', weight: 20 },
+      { name: 'DEGAS', weight: 10 }
     ]
   },
   
@@ -636,22 +880,22 @@ const ARTIST_WEIGHTS = {
     ]
   },
   
-  // 야수파 (3명) - v74: 드랭 비중 상향
+  // 야수파 (3명)
   fauvism: {
     portrait: [
-      { name: 'MATISSE', weight: 40 },
-      { name: 'DERAIN', weight: 40 },
-      { name: 'VLAMINCK', weight: 20 }
+      { name: 'MATISSE', weight: 45 },
+      { name: 'DERAIN', weight: 30 },
+      { name: 'VLAMINCK', weight: 25 }
     ],
     landscape: [
-      { name: 'DERAIN', weight: 55 },
-      { name: 'VLAMINCK', weight: 30 },
-      { name: 'MATISSE', weight: 15 }
+      { name: 'DERAIN', weight: 45 },
+      { name: 'VLAMINCK', weight: 35 },
+      { name: 'MATISSE', weight: 20 }
     ],
     default: [
-      { name: 'DERAIN', weight: 45 },
-      { name: 'MATISSE', weight: 30 },
-      { name: 'VLAMINCK', weight: 25 }
+      { name: 'MATISSE', weight: 35 },
+      { name: 'DERAIN', weight: 35 },
+      { name: 'VLAMINCK', weight: 30 }
     ]
   },
   
@@ -692,45 +936,15 @@ function selectArtistByWeight(category, photoAnalysis) {
     }
   }
   
-  if (category === 'modernism') {
-    if (photoAnalysis.gender === 'female' && photoType === 'portrait') {
-      return weightedRandomSelect(weights.portraitFemale);
-    }
-    if (photoAnalysis.gender === 'male' && photoType === 'portrait') {
-      return weightedRandomSelect(weights.portraitMale);
-    }
-  }
-  
   if (category === 'baroque') {
     if (photoAnalysis.age === 'elderly') {
       return weightedRandomSelect(weights.elderly);
     }
   }
   
-  // 로코코 - v74: 사진 유형별 세분화
   if (category === 'rococo') {
-    const count = photoAnalysis.count || 1;
-    const background = (photoAnalysis.background || '').toLowerCase();
-    
-    // 커플 → 와토 우세
-    if (count === 2) {
-      return weightedRandomSelect(weights.couple);
-    }
-    // 단체 → 와토 우세
-    if (count >= 3) {
-      return weightedRandomSelect(weights.group);
-    }
-    // 야외/정원 → 와토 우세
-    if (background.includes('outdoor') || background.includes('garden')) {
+    if (photoAnalysis.background?.includes('outdoor') || photoAnalysis.background?.includes('garden')) {
       return weightedRandomSelect(weights.outdoor);
-    }
-    // 실내 → 부셰 우세
-    if (background.includes('indoor') || background.includes('room') || background.includes('interior')) {
-      return weightedRandomSelect(weights.indoor);
-    }
-    // 단독 인물 → 부셰 우세
-    if (count === 1) {
-      return weightedRandomSelect(weights.portrait);
     }
   }
   
@@ -762,14 +976,14 @@ function selectArtistByWeight(category, photoAnalysis) {
     const subject = (photoAnalysis.subject || '').toLowerCase();
     const background = (photoAnalysis.background || '').toLowerCase();
     
-    // 움직임/액션 → 르누아르/카유보트 (v74: 드가 비중 0)
+    // 움직임/액션 → 드가
     if (subject.includes('dance') || subject.includes('movement') || subject.includes('action') || subject.includes('sport')) {
       return weightedRandomSelect(weights.movement);
     }
     
     // 인물 사진 + 배경 체크 → 카유보트 조건부 제외
     if (subject.includes('person') || subject.includes('portrait') || subject === 'person') {
-      // 단색/단순 배경이면 카유보트 제외 (르누아르/모네만)
+      // 단색/단순 배경이면 카유보트 제외 (르누아르/모네/드가만)
       const isSimpleBackground = background.includes('plain') || background.includes('solid') || 
                                   background.includes('studio') || background.includes('simple') ||
                                   background.includes('white') || background.includes('gray') ||
@@ -782,11 +996,12 @@ function selectArtistByWeight(category, photoAnalysis) {
                                  background.includes('paris') || background.includes('cafe');
       
       if (isSimpleBackground && !isUrbanBackground) {
-        // 단순 배경: 카유보트 제외 (르누아르 60%, 모네 40%) - v74: 드가 비중 0
+        // 단순 배경: 카유보트 제외 (르누아르 60%, 모네 35%, 드가 5%)
         // console.log('🎨 Impressionism portrait: Simple background → Caillebotte excluded');
         return weightedRandomSelect([
           { name: 'RENOIR', weight: 60 },
-          { name: 'MONET', weight: 40 }
+          { name: 'MONET', weight: 35 },
+          { name: 'DEGAS', weight: 5 }
         ]);
       }
       // 도시/복잡한 배경이면 기존 portrait 비중 사용 (카유보트 포함)
@@ -874,13 +1089,26 @@ ONLY "CLASSICAL SCULPTURE" or "ROMAN MOSAIC" are allowed!
 Available Ancient Greek-Roman Styles (2가지):
 
 ⭐ STYLE 1: CLASSICAL SCULPTURE (고대 그리스-로마 조각)
-   - ONLY FOR: SHOULDERS-UP CLOSEUP (indoor) or SPORTS/ATHLETIC photos
+   - For: INDOOR PORTRAITS or SPORTS/ACTION PHOTOS ONLY
+   - PRIORITY: Sports/athletic action OR indoor portrait settings
+   - Examples: Sports action shots (running, jumping, throwing)
+              Indoor portraits (studio, home, office settings)
+              Athletic poses, gym photos
+              Indoor group photos
+   - NOT for: Outdoor portraits, casual outdoor photos, landscapes with people
    - Material: Pure white marble only (classical aesthetic)
+   - Technique: Dynamic poses for sports, classical poses for indoor portraits
    - Background: Simple plain neutral background (museum-like)
    - Aesthetic: Classical Greek/Roman white marble sculpture
 
 ⭐ STYLE 2: ROMAN MOSAIC (로마 모자이크)
-   - DEFAULT STYLE for most photos
+   - For: ALL OTHER PHOTOS (outdoor portraits, landscapes, nature, etc.)
+   - Examples: Outdoor portraits (any setting)
+              All landscape shots (with or without people)
+              Nature scenes, flowers, plants
+              City scenes, buildings
+              Beach photos, mountain photos
+              ANY outdoor photos with people
    - Technique: LARGE VISIBLE tesserae tiles 50mm, THICK DARK GROUT LINES between tiles
    - CRITICAL: Each tile must be CLEARLY DISTINGUISHABLE as individual square/rectangular pieces
    - Aesthetic: Roman floor/wall mosaic with chunky stone tiles, jewel-tone colors
@@ -892,22 +1120,23 @@ Available Ancient Greek-Roman Styles (2가지):
    • Four Seasons (사계절 모자이크) → Portrait busts, seasonal themes, elegant female
    • Nile Mosaic (닐 모자이크) → Landscape panorama, exotic wildlife, river scenes
 
-🎯 KEY DECISION RULE - PRIORITY ORDER:
-1. OUTDOOR photo (any)? → MOSAIC 100% (no exception)
-2. SHOULDERS-UP CLOSEUP (indoor, face/head only, no torso visible)? → Choose SCULPTURE or MOSAIC based on which fits better
-3. SPORTS/ATHLETIC photo (indoor or outdoor)? → Choose SCULPTURE or MOSAIC based on which fits better
-4. ALL OTHER photos? → MOSAIC 100%
+🎯 KEY DECISION RULE - SIMPLIFIED:
+1. SPORTS/ATHLETIC ACTION? → SCULPTURE (highest priority!)
+2. INDOOR PORTRAIT/GROUP? → SCULPTURE
+3. OUTDOOR PORTRAIT? → MOSAIC
+4. LANDSCAPE/NATURE? → MOSAIC
+5. ANY OTHER OUTDOOR SCENE? → MOSAIC
 
 Examples:
-- Beach portrait = MOSAIC (outdoor = always mosaic)
-- Park selfie = MOSAIC (outdoor = always mosaic)
-- Mountain hiking = MOSAIC (outdoor = always mosaic)
-- Indoor face closeup = SCULPTURE or MOSAIC (AI decides which fits better)
-- Studio headshot = SCULPTURE or MOSAIC (AI decides which fits better)
-- Volleyball game = SCULPTURE or MOSAIC (AI decides which fits better)
-- Gym workout = SCULPTURE or MOSAIC (AI decides which fits better)
-- Indoor full body = MOSAIC (not closeup, not sports)
-- Office team photo = MOSAIC (not closeup, not sports)
+- Volleyball game = SCULPTURE (sports action)
+- Indoor portrait at home = SCULPTURE (indoor setting)
+- Gym workout = SCULPTURE (athletic/indoor)
+- Office team photo = SCULPTURE (indoor group)
+- Couple at beach = MOSAIC (outdoor portrait)
+- Person in garden = MOSAIC (outdoor setting)
+- Mountain hiking = MOSAIC (outdoor landscape)
+- Street portrait = MOSAIC (outdoor)
+- Sunflower = MOSAIC (nature)
 `;
 }
 
@@ -1208,15 +1437,15 @@ function getNeoclassicismVsRomanticismVsRealismHints(photoAnalysis) {
   return '';
 }
 
-// 인상주의 (3명) - v74: 드가 제외
+// 인상주의 (4명)
 function getImpressionismGuidelines() {
   return `
 🚫🚫🚫 CRITICAL RESTRICTION 🚫🚫🚫
 YOU MUST ONLY SELECT FROM THE ARTISTS LISTED BELOW!
 DO NOT select artists from other movements (Post-Impressionism, Expressionism, Fauvism, etc.)
-ONLY Impressionism artists: RENOIR, MONET, CAILLEBOTTE!
+ONLY Impressionism artists: RENOIR, MONET, DEGAS, CAILLEBOTTE!
 
-Available Impressionism Artists (3명):
+Available Impressionism Artists (4명):
 
 1. RENOIR (르누아르) ⭐ Best - Best for portraits 
    - Specialty: SOFT WARM figures in dappled sunlight, joyful atmosphere, peachy skin tones
@@ -1224,13 +1453,19 @@ Available Impressionism Artists (3명):
    - Masterworks: "Luncheon of the Boating Party", "Bal du moulin de la Galette", "The Swing" ← SELECT ONE ONLY!
    - When to prioritize: Most portrait cases 
 
-2. MONET (모네) ⭐ Good for landscapes 
+2. DEGAS (드가) ⭐ Best for movement AND composition 
+   - Specialty: Movement capture, unusual angles, dynamic compositions, ballet dancers
+   - Best for: Action shots, dance, sports, movement, diagonal compositions, interesting angles
+   - Masterworks: "The Dance Class", "The Star", "L'Absinthe" ← SELECT ONE ONLY!
+   - When to prioritize: Movement/action/dance OR unique compositional angles 
+
+3. MONET (모네) ⭐ Good for landscapes 
    - Specialty: Light effects, outdoor atmosphere, water reflections
    - Best for: Landscapes, gardens, water scenes (NOT portraits)
    - Masterworks: "Water Lilies", "Impression, Sunrise", "Woman with a Parasol" ← SELECT ONE ONLY!
    - When to prioritize: Pure landscapes without people 
 
-3. CAILLEBOTTE (칼리보트) ⭐ Urban specialist 
+4. CAILLEBOTTE (칼리보트) ⭐ Urban specialist 
    - Specialty: Modern urban scenes, dramatic perspective, city life
    - Best for: City backgrounds, male portraits, geometric compositions
    - Masterworks: "Paris Street, Rainy Day", "The Floor Scrapers", "Man at the Window" ← SELECT ONE ONLY!
@@ -1241,7 +1476,7 @@ Available Impressionism Artists (3명):
 🎯 CRITICAL DECISION LOGIC:
 - Female/child portraits → RENOIR  ⭐ PRIMARY
 - Male portraits → CAILLEBOTTE  ⭐ (modern urban men)
-- Movement/action → RENOIR or CAILLEBOTTE
+- Movement/action/interesting angles → DEGAS  ⭐
 - Natural landscapes (no people) → MONET  ⭐
 - Urban/city scenes → CAILLEBOTTE  ⭐
 `;
@@ -1268,8 +1503,7 @@ Available Post-Impressionism Artists (3명) + MASTERWORKS:
    - "The Starry Night" (별이 빛나는 밤) → night, sky, landscape, FEMALE portrait | SWIRLING SPIRALS, cobalt blue + yellow
    - "Sunflowers" (해바라기) → flowers, still life | THICK IMPASTO, chrome yellow dominates
    - "Self-Portrait" (자화상) → MALE portrait ONLY | turquoise swirling background, intense gaze
-   - "Café Terrace at Night" (밤의 카페 테라스) → outdoor evening, cafe, street, FEMALE portrait | yellow gas lamp, cobalt blue night
-   - "Wheat Field with Cypresses" (밀밭과 사이프러스) → landscape, FEMALE portrait | swirling sky, golden wheat
+   - "Café Terrace at Night" (밤의 카페 테라스) → outdoor evening, cafe, street | yellow gas lamp, cobalt blue night
    
 2. GAUGUIN (고갱) - Flat bold colors, primitive exotic Tahitian style
    ⭐ BEST FOR: Portraits, tropical scenes, exotic mood
@@ -1289,7 +1523,7 @@ Available Post-Impressionism Artists (3명) + MASTERWORKS:
 🎯 CRITICAL MATCHING RULES:
 - PORTRAITS/PEOPLE → VAN GOGH or GAUGUIN (NEVER Cézanne!)
 - MALE portrait → Van Gogh Self-Portrait
-- FEMALE portrait → Van Gogh (Starry Night / Café Terrace / Wheatfield 동일 비중) or Gauguin Tahitian
+- FEMALE portrait → Van Gogh Starry Night or Gauguin Tahitian
 - STILL LIFE → CÉZANNE (Still Life with Apples)
 - NIGHT/EVENING → Van Gogh (Starry Night or Café Terrace)
 `;
@@ -1423,14 +1657,7 @@ Available 20th Century Modernism Artists (6명):
 
 === POP ART 팝아트 ===
 5. LICHTENSTEIN (리히텐슈타인) - Ben-Day dots, comic book style
-   - Masterworks: "In the Car", "M-Maybe", "Forget It! Forget Me!", "Oh, Alright...", "Still Life with Crystal Bowl" ← SELECT ONE ONLY!
-   
-🎤 LICHTENSTEIN SPEECH BUBBLE RULE:
-If you select LICHTENSTEIN, you MUST select speech_bubble text ONLY from the EXACT list provided in the speech_bubble field below.
-Do NOT create your own text. Do NOT modify the phrases. Copy EXACTLY as listed.
-
-⚠️ CRITICAL: ONLY use phrases from the provided list per selected_work!
-⚠️ If landscape/animal/object → speech_bubble = null
+   - Masterworks: "Drowning Girl", "Whaam!", "Hopeless" ← SELECT ONE ONLY!
 
 ⚠️ CRITICAL: You MUST select a masterwork from the exact list above! Do NOT invent new titles!
 
@@ -1438,13 +1665,9 @@ Do NOT create your own text. Do NOT modify the phrases. Copy EXACTLY as listed.
 📊 PHOTO TYPE WEIGHT GUIDE (사진 유형별 비중)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🧑‍♂️ MALE PORTRAIT (남성 단독):
-   MAGRITTE 33%, LICHTENSTEIN 33%, CHAGALL 34%
-   ❌ PICASSO, MIRÓ 제외
-
-🧑‍♀️ FEMALE PORTRAIT (여성 단독):
-   PICASSO 25%, CHAGALL 25%, LICHTENSTEIN 25%, MAGRITTE 25%
-   ❌ MIRÓ 제외
+🧑 SINGLE PORTRAIT (단독 인물):
+   PICASSO 30%, MAGRITTE 35%, LICHTENSTEIN 35%
+   ❌ CHAGALL, MIRÓ 제외
 
 💑 COUPLE (커플 2인):
    PICASSO 25%, CHAGALL 30%, MAGRITTE 20%, LICHTENSTEIN 25%
@@ -1476,8 +1699,8 @@ function getModernismHints(photoAnalysis) {
 
 
 // ========================================
-// v73: 화풍 프롬프트는 art-api-prompts.js로 통합됨
-// getPrompt(workKey) 사용 (화가+대표작 통합 프롬프트)
+// v66: 화풍 프롬프트는 artistStyles.js로 통합됨
+// getArtistStyle(artistKey) 또는 getArtistStyleByName(artistName) 사용
 // ========================================
 
 // ========================================
@@ -1486,7 +1709,7 @@ function getModernismHints(photoAnalysis) {
 const fallbackPrompts = {
   ancient: {
     name: '그리스·로마',
-    prompt: 'Transform this image into ancient Greek-Roman art. RULES: 1) OUTDOOR photos (any outdoor setting) → ALWAYS Roman mosaic with LARGE CHUNKY TESSERAE TILES 50mm, THICK BLACK GROUT LINES clearly visible between EVERY tile, LIMITED COLORS (terracotta, ochre, umber, ivory, slate blue), Pompeii villa floor style. 2) SHOULDERS-UP CLOSEUP (indoor, face only, no torso) → Greek/Roman MARBLE SCULPTURE OR Roman mosaic (choose which fits better), pure white Carrara marble with classical proportions, museum display style. 3) SPORTS/ATHLETIC activity → MARBLE SCULPTURE OR Roman mosaic (choose which fits better). 4) ALL OTHER photos → Roman mosaic. CRITICAL FOR SCULPTURES: ENTIRE FIGURE INCLUDING ALL CLOTHING must be PURE WHITE MARBLE, convert ALL fabric to carved white marble drapery folds. MANDATORY: ALL nipples and private areas must be covered with carved marble fabric draping. Ancient masterpiece quality'
+    prompt: 'Transform this image into ancient Greek-Roman art. STRICT RULES: 1) ANY SPORTS/ATHLETIC ACTION (soccer, football, running, jumping, throwing, catching ball, ANY physical activity) → ALWAYS Greek/Roman MARBLE SCULPTURE in style of Discobolus or ancient Olympic athletes, pure white Carrara marble with visible carved muscles and dynamic frozen movement, classical athletic proportions, museum display style. CRITICAL: Ball games = SCULPTURE, NOT mosaic. 2) INDOOR PORTRAITS (no sports) → Greek/Roman marble sculpture with classical poses, ENTIRE FIGURE INCLUDING ALL CLOTHING must be PURE WHITE MARBLE, NO colored clothing, convert ALL fabric to carved white marble drapery folds. 3) OUTDOOR SCENES WITHOUT SPORTS → Roman mosaic with LARGE CHUNKY TESSERAE TILES 50mm, THICK BLACK GROUT LINES clearly visible between EVERY tile, LIMITED COLORS (terracotta, ochre, umber, ivory, slate blue), Pompeii villa floor style. PRIORITY: Sports/athletic = ALWAYS SCULPTURE regardless of indoor/outdoor. CRITICAL FOR ALL SCULPTURES: Convert ALL clothing colors to pure white marble, no original clothing colors preserved, entire figure is carved from single block of white Carrara marble. MANDATORY: ALL nipples and private areas must be covered with carved marble fabric draping or strategic arm positioning. Ancient masterpiece quality'
   },
   
   medieval: {
@@ -1495,8 +1718,8 @@ const fallbackPrompts = {
   },
   
   renaissance: {
-    name: 'Sandro Botticelli',
-    prompt: 'Old tempera painting of the subject by Sandro Botticelli. Thin translucent layers build up to create a smooth luminous surface. Precise delicate dark outlines define every form clearly. Elegant elongated figures hold graceful S-curved postures. Soft bright spring garden tone wraps the scene. Pale rose 30%, forest green 25%, gold 20%, ivory 25%. Skin luminous in pale ivory and soft pink. Gold accents glow softly on fabric edges. Soft even spring light illuminates throughout. Renaissance masterpiece quality'
+    name: 'Leonardo da Vinci',
+    prompt: 'Renaissance painting by Leonardo da Vinci, Leonardo art style, EXTREME sfumato technique, PRESERVE original person face and features exactly, apply Leonardo PAINTING TECHNIQUE ONLY with sfumato haze, apply Leonardo STYLE not any specific portrait LIKENESS, apply very strong soft atmospheric haze throughout, all edges must be completely blurred, no sharp outlines anywhere in entire painting, mysterious smoky depth with sfumato technique, every boundary softly dissolved into atmosphere, warm golden Renaissance colors, harmonious balanced composition, unified composition all figures together NOT separated, preserve facial identity, Renaissance masterpiece quality'
   },
   
   baroque: {
@@ -1510,18 +1733,18 @@ const fallbackPrompts = {
   },
   
   neoclassicism_vs_romanticism_vs_realism: {
-    name: 'Eugène Delacroix',
-    prompt: 'Hand-painted oil painting of the subject by Eugène Delacroix. Thick rich paint applied in agitated passionate strokes. Fiery reds and deep jewel tones clash with explosive energy. Outlines break apart in dynamic turbulent motion. The surface churns with visible vigorous brushwork. Smoky golden light cuts through thick haze and smoke. Warm ochre 30%, crimson red 25%, deep blue 25%, ivory 20%. Skin glows warm in ochre and ivory through the surrounding haze. Strong light breaks through from the upper left. Romantic masterpiece quality'
+    name: '신고전 vs 낭만 vs 사실주의',
+    prompt: 'Choose best style based on photo: if static balanced formal use Neoclassical style by Jacques-Louis David, David art style, with cold perfection and clear lines, if dynamic emotional landscape use Romantic style by J.M.W. Turner, Turner art style, with atmospheric sublime effects, if rural peaceful use Realist style by Gustave Courbet, Courbet art style, with honest rural reality, if urban modern use Realist style by Édouard Manet, Manet art style, with sophisticated Paris realism, masterpiece quality with single unified composition NOT separated'
   },
   
   impressionism: {
-    name: 'Pierre-Auguste Renoir',
-    prompt: 'Hand-painted oil painting of the subject by Pierre-Auguste Renoir. Soft feathery brushstrokes build warm luminous layers of color. Rosy pink and golden tones glow with sensuous warmth. Outlines dissolve into shimmering dappled light. The surface shimmers with a pearly iridescent quality. Gold 30%, cobalt blue 25%, rosy pink 25%, olive green 20%. Skin glows in soft rosy pink and warm golden ivory. Warm dappled sunlight filters through the scene. Impressionist masterpiece quality'
+    name: 'Claude Monet',
+    prompt: 'Impressionist painting by Claude Monet, Monet art style, ROUGH VISIBLE BROKEN brushstrokes, SOFT HAZY atmospheric effects like morning mist, colors BLENDED and DISSOLVED into each other, NO sharp edges, dreamy blurred boundaries, dappled light filtering through atmosphere, Woman with a Parasol style atmospheric haze, everything slightly out of focus and impressionistic, Impressionist masterpiece quality'
   },
   
   postImpressionism: {
-    name: 'Paul Gauguin',
-    prompt: 'Hand-painted oil painting of the subject by Paul Gauguin. Flat unmixed color areas spread broadly across the surface. Intense primary colors placed side by side decoratively. Outlines enclosed by thick dark contour lines. The surface is smooth and flat with minimal visible brushwork. Tropical orange 30%, turquoise 25%, chrome yellow 25%, crimson pink 20%. Skin filled flatly with warm ochre and orange color planes. Warm even light illuminates the entire scene. Post-Impressionist masterpiece quality'
+    name: 'Vincent van Gogh',
+    prompt: 'Post-Impressionist painting, Post-Impressionist art style, bold expressive colors, personal artistic vision, emotional depth and symbolic meaning, visible distinctive brushwork, Post-Impressionist masterpiece quality'
   },
   
   fauvism: {
@@ -1536,8 +1759,9 @@ const fallbackPrompts = {
   },
   
   modernism: {
-    name: 'Roy Lichtenstein',
-    prompt: 'Pop art painting of the subject by Roy Lichtenstein. Solid black rectangular border 15px thick surrounding all four edges. Bold clean black outlines wrap every form like comic book printing. Primary colors fill flat and uniform. Uniform dot pattern creates light and shadow areas. Surface entirely smooth and machine-printed throughout. Vermilion red 30%, bright yellow 25%, black 25%, white 20%. Uniform Ben-Day dots packed densely on skin creating flesh tones. Flat lighting illuminates all surfaces uniformly. Primary colors applied pure and unmixed, separated by sharp clean boundaries.'
+    name: 'Pablo Picasso',
+    prompt: 'PICASSO_CUBIST',  // 기본값 - 실제로는 artistStyles.js에서 동적 생성
+    dynamicPrompt: true  // 동적 프롬프트 플래그
   },
   
   // ========================================
@@ -1582,8 +1806,8 @@ const fallbackPrompts = {
     name: '피카소',
     artist: 'Pablo Picasso (1881-1973)',
     movement: '입체주의 (Cubism)',
-    defaultWork: 'Portrait of Dora Maar',
-    prompt: 'Cubist painting by Pablo Picasso, Picasso Cubism art style, MOST IMPORTANT THE FACE MUST BE CUBIST DECONSTRUCTED NOT REALISTIC, REQUIRED DISTORTIONS: show PROFILE NOSE side view while BOTH EYES face FORWARD on same face, FRAGMENT face into FLAT ANGULAR GEOMETRIC PLANES, break JAW FOREHEAD CHEEKS into separate angular shapes like shattered glass, Earth tones, ochre, brown, olive, grey, If the face looks normal or realistic YOU ARE DOING IT WRONG faces must look abstracted and geometrically impossible, Picasso Cubist masterpiece quality'
+    defaultWork: 'Les Demoiselles d\'Avignon',
+    prompt: 'Cubist painting by Pablo Picasso, Picasso Cubism art style, MOST IMPORTANT THE FACE MUST BE CUBIST DECONSTRUCTED NOT REALISTIC, REQUIRED DISTORTIONS: show PROFILE NOSE side view while BOTH EYES face FORWARD on same face, FRAGMENT face into FLAT ANGULAR GEOMETRIC PLANES, break JAW FOREHEAD CHEEKS into separate angular shapes like shattered glass, Les Demoiselles d Avignon African mask angular style, Earth tones, ochre, brown, olive, grey, If the face looks normal or realistic YOU ARE DOING IT WRONG faces must look abstracted and geometrically impossible, Picasso Cubist masterpiece quality'
   },
   
   frida: {
@@ -1640,7 +1864,7 @@ function analyzePhoto() {
 // ========================================
 // AI 화가 자동 선택 (타임아웃 포함)
 // ========================================
-async function selectArtistWithAI(imageBase64, selectedStyle, timeoutMs = 25000) {
+async function selectArtistWithAI(imageBase64, selectedStyle, timeoutMs = 15000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   
@@ -1694,7 +1918,7 @@ INSTRUCTIONS:
 3. From remaining works, select the MOST SUITABLE one
 4. Generate a FLUX prompt that STARTS with detailed subject description
 5. IMPORTANT: Preserve the original subject - if it's a baby, keep it as a baby; if elderly, keep elderly
-6. CRITICAL: If only 1 person in photo, add "Single subject only, clean empty background"
+6. CRITICAL: If only 1 person in photo, add "DO NOT add extra people in background"
 
 Return ONLY valid JSON (no markdown):
 {
@@ -1702,30 +1926,20 @@ Return ONLY valid JSON (no markdown):
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or "both" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "ethnicity": "asian or caucasian or african or hispanic or middle_eastern or mixed or null - identify based on facial features ONLY, describe ACTUAL OBSERVED skin tone separately in physical_description",
-  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan - describe what you ACTUALLY SEE in the photo). Include facial features, hair, build." or null,
+  "ethnicity": "asian (East Asian features, golden-brown skin) or caucasian (European features, light/fair skin) or african (Black/African descent, DARK BROWN to BLACK skin, broad nose, full lips) or hispanic (Latin American, tan/brown skin) or middle_eastern (Arab/Persian, olive/tan skin) or mixed or null - MUST accurately identify based on skin color and facial features",
+  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc. ALWAYS include skin tone and ethnic features." or null,
   "person_count": 1 or 2 or 3 (number of people in photo),
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "${categoryName}",
   "selected_work": "exact title of the masterwork you selected",
   "reason": "why this masterwork matches this photo (mention gender/count compatibility)",
-  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by ${categoryName} in the style of [selected work title], [that work's distinctive techniques]'. If person_count=1, END with 'Single subject only, clean empty background'",
-  "speech_bubble": "If LICHTENSTEIN: MUST select EXACTLY one phrase from the list below. Pick the phrase that BEST MATCHES the mood of this photo. Copy it EXACTLY as written - do NOT modify, do NOT create your own text, do NOT combine phrases. STILLLIFE has no speech bubble. If other artist: null.
-INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
-MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
-FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'
-OHHHALRIGHT: 'OH, ALRIGHT...' | 'FINE, IF YOU INSIST...' | 'I GUESS SO...' | 'OKAY, YOU WIN...' | 'WHATEVER YOU SAY...' | 'IF THATS WHAT YOU WANT...' | 'ALRIGHT, ALRIGHT...' | 'I SUPPOSE SO...' | 'HAVE IT YOUR WAY...' | 'SIGH... OKAY...' | 'VERY WELL THEN...' | 'AS YOU WISH...' | 'ILL DO IT...' | 'YOU ALWAYS GET YOUR WAY...' | 'FINE BY ME...'
-STILLLIFE: null
-Otherwise: null"
+  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by ${categoryName} in the style of [selected work title], [that work's distinctive techniques]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background'"
 }`;
         
       } else {
-        // ========== 대표작 가이드가 없는 화가: 첫 번째 대표작 프롬프트 사용 ==========
-        // v73: art-api-prompts.js에서 첫 번째 대표작 프롬프트 가져오기
-        const masterworkList = getArtistMasterworkList(masterId);
-        const firstWorkKey = masterworkList && masterworkList.length > 0 ? masterworkList[0] : null;
-        const firstPromptData = firstWorkKey ? getPrompt(firstWorkKey) : null;
-        const masterStylePrompt = firstPromptData ? firstPromptData.prompt.substring(0, 300) : `painting by ${categoryName}`;
+        // ========== 대표작 가이드가 없는 화가: 화풍 프롬프트 방식 ==========
+        // v68: masterworks.js에 가이드가 없으면 artistStyles.js 사용
+        const masterStylePrompt = getArtistStyleByName(masterId);
         
         // AI에게는 단순 사진 분석만 요청
         promptText = `Analyze this photo for ${categoryName}'s painting style transformation.
@@ -1757,14 +1971,14 @@ Return ONLY valid JSON (no markdown):
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or "both" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "ethnicity": "asian or caucasian or african or hispanic or middle_eastern or mixed or null - identify based on facial features ONLY, describe ACTUAL OBSERVED skin tone separately in physical_description",
-  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan - describe what you ACTUALLY SEE in the photo). Include facial features, hair, build." or null,
+  "ethnicity": "asian (East Asian features, golden-brown skin) or caucasian (European features, light/fair skin) or african (Black/African descent, DARK BROWN to BLACK skin, broad nose, full lips) or hispanic (Latin American, tan/brown skin) or middle_eastern (Arab/Persian, olive/tan skin) or mixed or null - MUST accurately identify based on skin color and facial features",
+  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc. ALWAYS include skin tone and ethnic features." or null,
   "person_count": 1 or 2 or 3,
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "${categoryName}",
   "selected_work": null,
   "reason": "applying ${categoryName}'s distinctive painting style",
-  "prompt": "Start with subject description (gender, age, features), then '${masterStylePrompt.substring(0, 200)}...'. If person_count=1, END with 'Single subject only, clean empty background'"
+  "prompt": "Start with subject description (gender, age, features), then '${masterStylePrompt.substring(0, 200)}...'. If person_count=1, END with 'DO NOT add extra people'"
 }`;
       }
       
@@ -1796,6 +2010,14 @@ Style 3: Korean Jingyeong Landscape (진경산수)
 
 Analyze the photo and choose the MOST suitable style.
 
+KOREAN VISUAL DNA (MUST follow in generated prompt):
+- EMPTY SPACE is the soul of Korean painting. Pungsokdo: 60%+ of composition must be BREATHING EMPTY HANJI SURFACE
+- SPARSE MINIMAL brush strokes - capture entire figure in just a FEW CONFIDENT ink lines
+- PALE DILUTED color washes only - watered-down soft pastels (soft pink, light blue, pale green)
+- HANJI PAPER FIBER TEXTURE visible throughout entire image
+- Beauty style: quiet UNDERSTATED natural charm - gentle serene expression, unadorned simplicity
+- Korean painting whispers softly. Every stroke is precious BECAUSE there are so few.
+
 CRITICAL INSTRUCTIONS FOR PROMPT GENERATION:
 
 1. KOREAN VS CHINESE DISTINCTION:
@@ -1824,7 +2046,7 @@ Return ONLY valid JSON (no markdown):
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan). Include facial features, hair, build." or null,
+  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc." or null,
   "selected_artist": "Korean Minhwa" or "Korean Pungsokdo" or "Korean Jingyeong Landscape",
   "selected_style": "minhwa" or "pungsokdo" or "landscape",
   "calligraphy_text": "positive text you chose (Chinese characters only)",
@@ -1857,6 +2079,15 @@ Style 2: Chinese Gongbi Meticulous Painting (工筆畫)
 Analyze the photo and choose the MOST suitable style.
 NOTE: For animals (dogs, cats, birds, flowers), use Gongbi style with its detailed brushwork.
 
+CHINESE VISUAL DNA (MUST follow in generated prompt for Gongbi):
+- RICHLY FILLED composition - elaborate background elements, decorative details everywhere
+- ULTRA-FINE hair-thin brush lines - every eyelash, every hair strand individually painted
+- SILK SURFACE TEXTURE with subtle LUMINOUS SHEEN throughout (Gongbi)
+- LAYERED MINERAL PIGMENTS building rich depth - vermillion, malachite green, azurite blue, gold
+- ORNATE ACCESSORIES - jade hairpins, gold earrings, embroidered silk patterns, elaborate hair ornaments
+- Beauty style: REGAL DIGNIFIED imperial court splendor - majestic bearing, serene composure
+- Chinese Gongbi painting dazzles with meticulous abundance. Every surface rewards close inspection.
+
 CRITICAL INSTRUCTIONS FOR PROMPT GENERATION:
 
 1. GENDER PRESERVATION (MANDATORY IN PROMPT):
@@ -1887,7 +2118,7 @@ Return ONLY valid JSON (no markdown):
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan). Include facial features, hair, build." or null,
+  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc." or null,
   "selected_artist": "Chinese Ink Wash" or "Chinese Gongbi",
   "selected_style": "ink_wash" or "gongbi",
   "calligraphy_text": "positive text you chose (Chinese characters only)",
@@ -1899,48 +2130,90 @@ CRITICAL: Keep prompt field UNDER 150 WORDS to avoid truncation.`;
       }
       
       if (styleId === 'japanese') {
-        // v74: 일본 - 린파/우키요에 분기 (AI가 판단)
-        // 린파: 꽃, 새, 동물만 / 우키요에: 인물, 풍경, 기타
-        promptText = `You are converting a photo to Japanese traditional art style.
+        // v79: 일본 - Claude가 5가지 스타일 중 선택 (한국/중국과 동일 구조)
+        promptText = `Analyze this photo and select the BEST Japanese traditional painting style.
 
-FIRST, analyze the photo carefully:
-1. What is the main subject? (person, animal, flower, bird, landscape, object)
-2. Are there people in the photo? (yes/no)
-3. If animal: what type? (dog, cat, bird, etc.)
-4. If person: what gender? (male/female)
+You must choose ONE of these FIVE styles:
 
-STYLE SELECTION RULES:
-- If ONLY flowers, birds, or animals (NO people): Use RINPA style (琳派)
-- If people present (even with animals): Use UKIYO-E style (浮世絵)
-- If landscape or other: Use UKIYO-E style
+Style 1: Ukiyo-e Bijin-ga (美人画) - Beautiful Woman Portrait
+- Best for: FEMALE person, young woman, girl, feminine beauty
+- Artist: Kitagawa Utamaro style
+- Characteristics: Elegant elongated figure, captivating almond eyes, porcelain skin as FLAT COLOR, luxurious KIMONO with decorative patterns
+- When: Photo shows a female person
 
-RINPA STYLE (for flowers/birds/animals only):
-- Gold leaf background, decorative patterns
-- Tarashikomi technique (wet-on-wet bleeding)
-- Stylized natural motifs: irises, plum blossoms, cranes
-- Bold asymmetrical composition
+Style 2: Ukiyo-e Yakusha-e (役者絵) - Kabuki Actor Portrait  
+- Best for: MALE person, man, boy, masculine subjects
+- Artist: Toshusai Sharaku style
+- Characteristics: Powerful intense expression, strong angular jawline, DARK MICA BACKGROUND, bold 4mm outlines, HAKAMA with HAORI jacket
+- When: Photo shows a male person
 
-UKIYO-E STYLE (for people/landscape/other):
-- Flat bold colors, strong black outlines
-- Woodblock print aesthetic
-- Traditional Japanese attire (kimono/hakama)
-- Mt Fuji or cherry blossom background
+Style 3: Ukiyo-e Meisho-e (名所絵) - Famous Places Landscape
+- Best for: landscapes, buildings, scenery, food, objects, still life
+- Artist: Utagawa Hiroshige style
+- Characteristics: Atmospheric perspective with layered planes, BOKASHI gradation in sky, rain as fine parallel lines, mist dissolving distant forms
+- When: Photo has landscape, architecture, food, or objects (NO people, NO animals)
 
-CALLIGRAPHY TEXT (POSITIVE MEANING ONLY):
-- Single characters: "福" (blessing), "壽" (longevity), "喜" (joy), "美" (beauty)
+Style 4: Ukiyo-e Animal Print (動物画)
+- Best for: dogs, cats, pets, animals (NOT birds)
+- Artist: Utagawa Kuniyoshi style
+- Characteristics: ADORABLE EXPRESSIVE animal as central subject, bright sparkling eyes, playful charm, bold outlines defining fur texture
+- When: Photo has dogs, cats, or other mammals
 
-Return ONLY valid JSON:
+Style 5: Rinpa School (琳派) - Decorative Painting
+- Best for: flowers, birds, plants, nature close-ups, botanical subjects
+- Artists: Sotatsu and Korin style
+- Characteristics: GOLD LEAF BACKGROUND, TARASHIKOMI ink pooling technique, boneless color forms, stylized natural motifs (irises, plum blossoms, cranes)
+- When: Photo has flowers, birds, or botanical subjects
+
+Analyze the photo and choose the MOST suitable style.
+
+JAPANESE VISUAL DNA (MUST follow in generated prompt):
+- COMPLETELY FLAT 2D surface - every element as SOLID COLOR AREA
+- BOLD BLACK OUTLINES 3mm+ thick separating all color areas
+- CHERRY WOOD BLOCK TEXTURE (桜板) visible throughout
+- LIMITED PALETTE: indigo, vermillion, yellow ochre, green, pink
+- All beauty expressed through LINE QUALITY and PATTERN, pure woodblock print aesthetic
+
+CRITICAL INSTRUCTIONS FOR PROMPT GENERATION:
+
+1. GENDER PRESERVATION (MANDATORY IN PROMPT):
+   - FIRST identify if photo has person(s) and their gender
+   - If MALE in photo → prompt MUST start with "CRITICAL GENDER RULE: This photo shows MALE person, PRESERVE MASCULINE FEATURES - strong jaw, masculine face, male body structure, KEEP MALE GENDER."
+   - If FEMALE in photo → prompt MUST start with "CRITICAL GENDER RULE: This photo shows FEMALE person, PRESERVE FEMININE FEATURES - soft face, feminine features, female body structure, KEEP FEMALE GENDER."
+   - This gender instruction MUST be the FIRST thing in your generated prompt
+
+2. TRADITIONAL CLOTHING (MANDATORY FOR PEOPLE):
+   - Female → MUST dress in elegant traditional KIMONO with intricate patterns
+   - Male → MUST dress in HAKAMA pants with HAORI jacket
+   - NEVER keep modern clothing
+
+3. ANIMAL PRESERVATION (MANDATORY FOR ANIMALS):
+   - If photo has animals → draw the EXACT animal type as main subject
+   - NEVER replace animals with people or vice versa
+
+4. CALLIGRAPHY TEXT (POSITIVE MEANING ONLY):
+   - Choose appropriate positive text (1-4 characters)
+   - MUST use Japanese/Chinese characters
+   - Single characters: "福" (blessing), "壽" (longevity), "喜" (joy), "美" (beauty), "和" (harmony)
+   - Japanese style: "粋" (iki/stylish), "雅" (miyabi/elegant), "桜" (sakura), "波" (wave), "富士" (Fuji)
+   - Two characters: "風雅" (elegance), "花鳥" (flowers and birds), "浮世" (floating world)
+
+Return ONLY valid JSON (no markdown):
 {
-  "analysis": "brief photo description",
-  "subject_type": "person" or "animal" or "flower" or "bird" or "landscape",
-  "has_people": true or false,
-  "animal_type": "dog" or "cat" or "bird" or null,
+  "analysis": "brief photo description including gender if person present (1 sentence)",
+  "subject_type": "person" or "landscape" or "animal" or "object" or "flower" or "bird",
   "gender": "male" or "female" or null,
-  "selected_style": "rinpa" or "ukiyoe",
-  "selected_artist": "Japanese Rinpa" or "Japanese Ukiyo-e",
-  "calligraphy_text": "positive text",
-  "prompt": "[If rinpa: describe with gold leaf, decorative patterns] [If ukiyoe: describe with bold outlines, flat colors]"
-}`;
+  "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
+  "physical_description": "brief physical features" or null,
+  "animal_type": "dog" or "cat" or "bird" or null,
+  "selected_artist": "Japanese Ukiyo-e Bijin-ga" or "Japanese Ukiyo-e Yakusha-e" or "Japanese Ukiyo-e Meisho-e Landscape" or "Japanese Ukiyo-e Animal Print" or "Japanese Rinpa School Decorative Painting",
+  "selected_style": "bijinga" or "yakushae" or "meishoe" or "animal" or "rinpa",
+  "calligraphy_text": "positive text you chose",
+  "reason": "why this style fits (1 sentence)",
+  "prompt": "KEEP UNDER 150 WORDS. [Gender rule] Japanese [style] with key characteristics. Calligraphy text '[your calligraphy_text]'."
+}
+
+CRITICAL: Keep prompt field UNDER 150 WORDS to avoid truncation.`;
       }
       
     } else {
@@ -2036,17 +2309,19 @@ ${ancientMasterworkGuide}
 ${hints}
 
 Instructions - PRIORITY ORDER:
-1. FIRST check: Is this an OUTDOOR photo (any outdoor setting)?
-   - If YES → ROMAN MOSAIC 100% (no exception!)
-   - Beach, park, street, mountain, garden = MOSAIC
-2. SECOND check: Is this a SHOULDERS-UP CLOSEUP (indoor, face/head only, no torso visible)?
-   - If YES → Choose SCULPTURE or MOSAIC based on which fits the photo better
-3. THIRD check: Is there SPORTS/ATHLETIC activity?
-   - If YES → Choose SCULPTURE or MOSAIC based on which fits the photo better
-4. FOURTH: ALL OTHER photos (indoor full body, groups, etc.)
-   - → ROMAN MOSAIC 100%
+1. FIRST check: Are there ANIMALS in this photo?
+   - Dogs, cats, horses, birds, fish, any animals → ROMAN MOSAIC
+   - Historical accuracy: Romans excelled at animal mosaics (Pompeii Cave Canem)
+   - Animals = MOSAIC priority!
+2. SECOND check: Is there DYNAMIC MOVEMENT/ACTION/SPORTS in this photo?
+   - If YES → CLASSICAL SCULPTURE (even if landscape/stadium visible!)
+   - Sports, jumping, running, athletic action = SCULPTURE priority!
+3. THIRD check: Is it a STATIC photo WITH landscape/nature elements?
+   - If YES → ROMAN MOSAIC
+4. FOURTH: Portrait without landscape → CLASSICAL SCULPTURE
 5. If ROMAN MOSAIC selected, also choose the BEST MASTERWORK from the list above
-6. Preserve subject identity
+6. Follow RECOMMENDATIONS (80% weight)
+7. Preserve subject identity
 
 Return JSON only:
 {
@@ -2115,7 +2390,7 @@ Instructions:
 5. Preserve facial identity and original features
 6. Include the masterwork's SPECIFIC style characteristics in your prompt
 7. IMPORTANT: Start prompt with subject description if person
-8. CRITICAL: If only 1 person in photo, add "Single subject only, clean empty background"
+8. CRITICAL: If only 1 person in photo, add "DO NOT add extra people in background, keep background clean"
 
 Return JSON only:
 {
@@ -2123,71 +2398,49 @@ Return JSON only:
   "subject_type": "person" or "landscape" or "animal" or "object",
   "gender": "male" or "female" or "both" or null,
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
-  "ethnicity": "asian or caucasian or african or hispanic or middle_eastern or mixed or null - identify based on facial features ONLY, describe ACTUAL OBSERVED skin tone separately in physical_description",
-  "physical_description": "MUST describe ACTUAL OBSERVED skin tone precisely (e.g. light caramel, deep brown, pale ivory, warm olive, golden tan - describe what you ACTUALLY SEE in the photo). Include facial features, hair, build." or null,
+  "ethnicity": "asian (East Asian features, golden-brown skin) or caucasian (European features, light/fair skin) or african (Black/African descent, DARK BROWN to BLACK skin, broad nose, full lips) or hispanic (Latin American, tan/brown skin) or middle_eastern (Arab/Persian, olive/tan skin) or mixed or null - MUST accurately identify based on skin color and facial features",
+  "physical_description": "for MALE: strong jaw, angular face, short hair, broad shoulders etc. For FEMALE: soft features, delicate face etc. ALWAYS include skin tone and ethnic features." or null,
   "person_count": 1 or 2 or 3 (number of people in photo),
   "background_type": "simple" or "complex" or "outdoor" or "indoor" or "studio",
   "selected_artist": "Artist Full Name",
   "selected_work": "EXACT masterwork title from the list above",
-  "speech_bubble": "If LICHTENSTEIN selected: MUST select EXACTLY one phrase from the list below. Pick the phrase that BEST MATCHES the mood of this photo. Copy it EXACTLY as written - do NOT modify, do NOT create your own text, do NOT combine phrases. STILLLIFE has no speech bubble. If other artist: null.
-INTHECAR: 'I LOVE YOU!' | 'WHERE ARE WE GOING?' | 'JUST DRIVE!' | 'HOLD ME TIGHT!' | 'THIS IS PERFECT!' | 'DONT STOP!' | 'FASTER DARLING!' | 'TAKE ME AWAY!' | 'TOGETHER FOREVER!' | 'IM SO HAPPY!' | 'WHAT A DAY!' | 'FEELING ALIVE!' | 'NEVER LET GO!' | 'JUST THE TWO OF US!' | 'THIS IS FREEDOM!'
-MMAYBE: 'M-MAYBE HE BECAME ILL AND COULDNT LEAVE THE STUDIO' | 'M-MAYBE...' | 'MAYBE HELL CALL...' | 'MAYBE ITS TRUE...' | 'MAYBE IM WRONG...' | 'PERHAPS HE FORGOT...' | 'I WONDER IF HE KNOWS...' | 'COULD IT BE LOVE?' | 'WHAT IF HE COMES BACK?' | 'MAYBE TOMORROW...' | 'IM NOT SURE ANYMORE...' | 'PERHAPS I SHOULD WAIT...' | 'MAYBE THIS IS IT...' | 'I KEEP WONDERING...' | 'MAYBE HE STILL CARES...'
-FORGETIT: 'FORGET IT! FORGET ME! IM FED UP WITH YOUR KIND!' | 'FORGET IT!' | 'IM DONE WITH YOU!' | 'LEAVE ME ALONE!' | 'ITS OVER BETWEEN US!' | 'I NEVER WANT TO SEE YOU AGAIN!' | 'DONT CALL ME!' | 'GO AWAY FOREVER!' | 'I CANT TAKE THIS ANYMORE!' | 'YOU BROKE MY HEART!' | 'ENOUGH IS ENOUGH!' | 'IM WALKING OUT!' | 'THIS IS GOODBYE!' | 'I DESERVE BETTER!' | 'NO MORE TEARS!'
-OHHHALRIGHT: 'OH, ALRIGHT...' | 'FINE, IF YOU INSIST...' | 'I GUESS SO...' | 'OKAY, YOU WIN...' | 'WHATEVER YOU SAY...' | 'IF THATS WHAT YOU WANT...' | 'ALRIGHT, ALRIGHT...' | 'I SUPPOSE SO...' | 'HAVE IT YOUR WAY...' | 'SIGH... OKAY...' | 'VERY WELL THEN...' | 'AS YOU WISH...' | 'ILL DO IT...' | 'YOU ALWAYS GET YOUR WAY...' | 'FINE BY ME...'
-STILLLIFE: null
-If other artist: null",
   "reason": "why this artist AND this masterwork fit (1 sentence)",
-  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by [Artist] in the style of [selected_work], [that work's distinctive techniques and colors]'. If person_count=1, END with 'Single subject only, clean empty background'"
+  "prompt": "Start with 'MALE/FEMALE SUBJECT with [physical features]' if person, then 'painting by [Artist] in the style of [selected_work], [that work's distinctive techniques and colors]'. If person_count=1, END with 'DO NOT add extra people, NO hallucinated figures in background, keep background CLEAN'"
 }`;
         }
       }
     }
     
-    // Claude API 호출 (529/502/503 재시도 포함)
-    let response;
-    const API_MAX_RETRIES = 3;
-    for (let attempt = 1; attempt <= API_MAX_RETRIES; attempt++) {
-      response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json'
-        },
-        signal: controller.signal,
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-5',  // Claude Sonnet 4.5 (최신)
-          max_tokens: 1000,  // 500 → 1000 (JSON 잘림 방지)
-          messages: [{
-            role: 'user',
-            content: [
-              {
-                type: 'image',
-                source: {
-                  type: 'base64',
-                  media_type: 'image/jpeg',
-                  data: imageBase64.split(',')[1]
-                }
-              },
-              {
-                type: 'text',
-                text: promptText
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json'
+      },
+      signal: controller.signal,
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',  // Claude Sonnet 4.5 (최신)
+        max_tokens: 1000,  // 500 → 1000 (JSON 잘림 방지)
+        messages: [{
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: 'image/jpeg',
+                data: imageBase64.split(',')[1]
               }
-            ]
-          }]
-        })
-      });
-      
-      // 529/502/503 재시도
-      if (response.status === 529 || response.status === 502 || response.status === 503) {
-        console.log(`🔄 Claude API 재시도 (${attempt}/${API_MAX_RETRIES})... ${response.status} 에러`);
-        if (attempt < API_MAX_RETRIES) {
-          await new Promise(r => setTimeout(r, 2000 * attempt));
-          continue;
-        }
-      }
-      break;
-    }
+            },
+            {
+              type: 'text',
+              text: promptText
+            }
+          ]
+        }]
+      })
+    });
     
     clearTimeout(timeout);
     
@@ -2212,6 +2465,7 @@ If other artist: null",
       success: true,
       artist: result.selected_artist,
       work: result.selected_work,  // 거장 모드: 선택된 대표작
+      selected_style: result.selected_style || null,  // v79: 동양화 서브스타일 (bijinga, pungsokdo 등)
       reason: result.reason,
       prompt: result.prompt,
       analysis: result.analysis,
@@ -2223,8 +2477,7 @@ If other artist: null",
         age_range: result.age_range || null,
         physical_description: result.physical_description || null,
         person_count: result.person_count || null,
-        background_type: result.background_type || null,
-        speech_bubble: result.speech_bubble || null  // v77: 리히텐슈타인 말풍선
+        background_type: result.background_type || null
       }
     };
     
@@ -2244,9 +2497,6 @@ function buildIdentityPrompt(visionAnalysis) {
   }
   
   const parts = [];
-  
-  // 환각 방지 (최우선 - 맨 앞)
-  parts.push('Paint only what exists in the original photo');
   
   // 성별 강조 (가장 중요)
   if (visionAnalysis.gender === 'male') {
@@ -2276,21 +2526,6 @@ function buildIdentityPrompt(visionAnalysis) {
     parts.push('MALES MUST STAY MASCULINE, FEMALES MUST STAY FEMININE, PRESERVE EACH GENDER EXACTLY');
   }
   
-  // 민족성 (매우 중요! - 성별 다음 우선)
-  if (visionAnalysis.ethnicity) {
-    const ethnicityMap = {
-      'asian': 'ASIAN PERSON with East Asian facial features',
-      'caucasian': 'CAUCASIAN PERSON with European facial features',
-      'african': 'AFRICAN PERSON with African facial features',
-      'hispanic': 'HISPANIC/LATINO PERSON with Latin American facial features',
-      'middle_eastern': 'MIDDLE EASTERN PERSON with Middle Eastern facial features',
-      'mixed': 'MIXED ETHNICITY PERSON preserving original facial features'
-    };
-    const ethnicDesc = ethnicityMap[visionAnalysis.ethnicity] || `${visionAnalysis.ethnicity} ethnicity`;
-    parts.push(ethnicDesc);
-    parts.push('MUST PRESERVE EXACT SAME SKIN COLOR AND TONE AS ORIGINAL PHOTO, KEEP ORIGINAL BRIGHTNESS AND WARMTH');
-  }
-  
   // 나이
   if (visionAnalysis.age_range) {
     const ageMap = {
@@ -2310,8 +2545,20 @@ function buildIdentityPrompt(visionAnalysis) {
     parts.push(visionAnalysis.hair);
   }
   
-  // 노출 방지 (공통, 남녀 모두)
-  parts.push('Attire fully covering chest');
+  // 민족성 (매우 중요!)
+  if (visionAnalysis.ethnicity) {
+    const ethnicityMap = {
+      'asian': 'ASIAN PERSON with East Asian facial features, warm skin tone, dark eyes',
+      'caucasian': 'CAUCASIAN PERSON with European facial features, light skin tone',
+      'african': 'AFRICAN PERSON with African facial features, dark skin tone, dark eyes',
+      'hispanic': 'HISPANIC/LATINO PERSON with Latin American features, tan to brown skin tone, dark eyes',
+      'middle_eastern': 'MIDDLE EASTERN PERSON with Middle Eastern facial features, olive to tan skin tone, dark eyes',
+      'mixed': 'MIXED ETHNICITY PERSON preserving original features and skin tone'
+    };
+    const ethnicDesc = ethnicityMap[visionAnalysis.ethnicity] || `${visionAnalysis.ethnicity} ethnicity`;
+    parts.push(ethnicDesc);
+    parts.push('MUST KEEP EXACT SAME SKIN COLOR AND TONE, MUST PRESERVE ALL RACIAL FEATURES');
+  }
   
   return parts.join(', ');
 }
@@ -2331,9 +2578,10 @@ const MALE_BIASED_ARTISTS = [
 // 여성 편향: BOUCHER, WATTEAU, BOTTICELLI, RENOIR
 const MALE_SUITABLE_ARTISTS_BY_CATEGORY = {
   'impressionism': [
-    // RENOIR 제외, v74: DEGAS 제외
-    { name: 'CAILLEBOTTE', weight: 60 },  // 도시 남성 전문
-    { name: 'MONET', weight: 40 }
+    // RENOIR 제외
+    { name: 'CAILLEBOTTE', weight: 50 },  // 도시 남성 전문
+    { name: 'MONET', weight: 30 },
+    { name: 'DEGAS', weight: 20 }
   ],
   'postImpressionism': [
     // 시냐크 삭제
@@ -2454,8 +2702,8 @@ export default async function handler(req, res) {
     const startTime = Date.now();
     const { image, selectedStyle, correctionPrompt } = req.body;
     
-    // v73: 변수 초기화 - 부정어 제거, 유두 조항 삭제
-    let coreRulesPrefix = 'Preserve identity, gender, ethnicity exactly. Keep ONLY elements from original photo. Pure painting surface with ONLY original scene elements. ';
+    // v68.3: 변수 초기화 (스코프 문제 해결) - v68: 긍정 명령어로 통일
+    let coreRulesPrefix = 'Female nipples MUST be covered by clothing. Preserve identity, gender, ethnicity exactly. Keep only original elements from photo. Clean artwork, text-free, signature-free, watermark-free. ';
     let genderPrefixCommon = '';
     
     // v72.1: photoAnalysis 초기화 (인종 보존용)
@@ -2463,7 +2711,7 @@ export default async function handler(req, res) {
 
     // v66: 구조화된 로그 수집 객체
     const logData = {
-      vision: { count: 0, gender: '', age: '', subjectType: '', speechBubble: null },
+      vision: { count: 0, gender: '', age: '', subjectType: '' },
       selection: { category: '', movement: '', artist: '', masterwork: '', reason: '' },
       prompt: { 
         wordCount: 0, 
@@ -2520,6 +2768,15 @@ export default async function handler(req, res) {
     // artistStyles.js 화풍 연동 + MODIFY 먼저 순서
     // ========================================
     if (correctionPrompt) {
+      console.log('');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('🔄 재변환 모드 (FLUX Kontext Pro) v75');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log(`📝 수정 요청: ${correctionPrompt}`);
+      console.log(`🖼️ 입력 이미지: ${typeof image === 'string' ? image.substring(0, 100) + '...' : 'base64 data'}`);
+      console.log(`📐 이미지 타입: ${typeof image}, 길이: ${image?.length || 'N/A'}`);
+      
+      
       // v70: 거장 키 → artistStyles 키 매핑
       const MASTER_TO_ARTIST_KEY = {
         'VAN GOGH': 'vangogh',
@@ -2553,6 +2810,7 @@ export default async function handler(req, res) {
       keepUnchanged.push('composition');
       
       const keepUnchangedStr = keepUnchanged.join(', ');
+      console.log(`🔒 보존 항목: ${keepUnchangedStr}`);
       
       // v76: FLUX Kontext 프롬프트 - 화가 이름 포함
       // "ONLY" + 수정 요청 + "while keeping the same [화가] painting style"
@@ -2574,8 +2832,8 @@ export default async function handler(req, res) {
       const sanitizedPrompt = correctionPrompt.replace(/pants/gi, 'lower garment');
       const kontextPrompt = `ONLY ${sanitizedPrompt} while keeping the same facial features, composition, background, pose, and ${artistDisplayName} painting style`;
       
-      // v77: 간결한 로그
-      console.log(`🔄 Kontext v77 | ${artistDisplayName} | "${correctionPrompt.substring(0, 50)}..."`);
+      console.log(`👨‍🎨 거장: ${masterKey} → ${artistDisplayName}`);
+      console.log(`📜 Kontext 프롬프트: ${kontextPrompt}`);
       
       // FLUX Kontext Pro API 호출 (스타일 유지하며 부분 수정) - 재시도 로직 포함
       const MAX_RETRIES = 3;
@@ -2637,7 +2895,10 @@ export default async function handler(req, res) {
       const endTime = Date.now();
       const duration = ((endTime - startTime) / 1000).toFixed(1);
       
-      console.log(`✅ Kontext 완료 (${duration}초)`);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log(`✅ 재변환 완료 (${duration}초)`);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('');
       
       // 클라이언트가 기대하는 형식으로 응답 (1차 변환과 동일)
       return res.status(200).json({
@@ -2657,132 +2918,10 @@ export default async function handler(req, res) {
     // (나중에 visionAnalysis 확인 후 조정됨)
     let landscapeStrengthBoost = false;
     
-    // v79: 일본 전통화 5분기 + identityPrompt + antiHallucination
-    // 여성→bijin-ga(우타마로) | 남성→yakusha-e(샤라쿠) | 풍경→meisho-e(히로시게)
-    // 반려동물→animal(쿠니요시) | 꽃/새→rinpa(코린/소타츠)
-    if (selectedStyle.category === 'oriental' && selectedStyle.id === 'japanese') {
-      let subjectInfo = '';
-      let japanVisionData = null;
-      let japanStyleKey = 'ukiyoe'; // default: bijin-ga
-      
-      // 1. Vision 분석
-      if (anthropicClient) {
-        try {
-          const cleanBase64 = image.replace(/^data:image\/\w+;base64,/, '');
-          
-          const visionPrompt = `Analyze this photo briefly. Return ONLY valid JSON:
-{
-  "subject_type": "person" or "animal" or "flower" or "bird" or "landscape" or "object",
-  "animal_type": "dog" or "cat" or "bird" or other animal name or null,
-  "person_count": number or 0,
-  "gender": "male" or "female" or "mixed" or null,
-  "ethnicity": "asian" or "caucasian" or "african" or "hispanic" or "middle_eastern" or "mixed" or null,
-  "age_range": "baby" or "child" or "teen" or "young_adult" or "adult" or "middle_aged" or "elderly" or null,
-  "hair": "short black hair" or "long brown hair" or other description or null
-}`;
-          
-          const visionResponse = await anthropicClient.messages.create({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 200,
-            messages: [{
-              role: 'user',
-              content: [
-                { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: cleanBase64 } },
-                { type: 'text', text: visionPrompt }
-              ]
-            }]
-          });
-          
-          const visionText = visionResponse.content[0]?.text || '{}';
-          japanVisionData = JSON.parse(visionText.replace(/```json\n?|\n?```/g, '').trim());
-          
-          // logData.vision 기록
-          logData.vision.count = japanVisionData.person_count || 0;
-          logData.vision.gender = japanVisionData.gender || '';
-          logData.vision.age = japanVisionData.age_range || '';
-          logData.vision.subjectType = japanVisionData.subject_type || '';
-          
-        } catch (e) {
-          console.log('⚠️ Japan Vision error:', e.message);
-        }
-      }
-      
-      // 2. 피사체별 5분기
-      if (japanVisionData) {
-        const st = japanVisionData.subject_type;
-        const at = japanVisionData.animal_type;
-        const gender = japanVisionData.gender;
-        
-        if (st === 'flower') {
-          japanStyleKey = 'rinpa';
-        } else if (st === 'bird' || at === 'bird') {
-          japanStyleKey = 'rinpa';
-          subjectInfo = `CRITICAL: The main subject is a bird. Draw the bird as the central subject in Rinpa decorative style. `;
-        } else if (st === 'animal' && at) {
-          japanStyleKey = 'ukiyoe_animal';
-          subjectInfo = `CRITICAL: The main subject is a ${at}. Draw the ${at} as the central expressive subject in Kuniyoshi ukiyo-e animal style. `;
-        } else if (st === 'landscape') {
-          japanStyleKey = 'ukiyoe_meishoe';
-          subjectInfo = '';
-        } else if (st === 'person' || japanVisionData.person_count > 0) {
-          if (gender === 'male') {
-            japanStyleKey = 'ukiyoe_yakushae';
-            subjectInfo = `CRITICAL: Draw the male person in hakama as shown in the photo. `;
-          } else {
-            japanStyleKey = 'ukiyoe';
-            const genderInfo = gender === 'female' ? 'female person in elegant kimono' : 'person in traditional Japanese attire';
-            subjectInfo = `CRITICAL: Draw the ${genderInfo} as shown in the photo. `;
-          }
-        } else {
-          japanStyleKey = 'ukiyoe_meishoe';
-        }
-      }
-      
-      // 3. 프롬프트 조립
-      const japanPromptData = getPrompt(japanStyleKey);
-      const basePrompt = japanPromptData ? japanPromptData.prompt : fallbackPrompts.japanese.prompt;
-      finalPrompt = subjectInfo + basePrompt;
-      selectedArtist = japanPromptData ? japanPromptData.nameEn : 'Japanese Ukiyo-e';
-      selectionMethod = `oriental_${japanStyleKey}`;
-      selectionDetails = { style: `japanese_${japanStyleKey}` };
-      
-      // 4. identityPrompt (얼굴/성별/인종 보존)
-      if (japanVisionData && japanVisionData.subject_type === 'person') {
-        const identityPromptJp = buildIdentityPrompt(japanVisionData);
-        if (identityPromptJp) {
-          finalPrompt = `ABSOLUTE REQUIREMENT: ${identityPromptJp}. ` + finalPrompt;
-        }
-      }
-      
-      // 5. antiHallucination (환각 방지)
-      let antiHallucinationJp = ' STRICT COMPOSITION: Keep ONLY elements from original photo. ';
-      if (japanVisionData) {
-        const count = japanVisionData.person_count;
-        const subjectType = japanVisionData.subject_type;
-        if (subjectType === 'person' && count) {
-          if (count === 1) {
-            antiHallucinationJp += 'Maintain EXACTLY 1 PERSON only, background must stay empty of people. ';
-          } else if (count === 2) {
-            antiHallucinationJp += 'Maintain EXACTLY 2 PEOPLE only, background must stay empty of additional people. ';
-          } else {
-            antiHallucinationJp += `Maintain EXACTLY ${count} PEOPLE only, background must stay empty of additional people. `;
-          }
-        } else if (subjectType === 'landscape') {
-          antiHallucinationJp += 'LANDSCAPE only, keep scene free of people and figures. ';
-        } else if (subjectType === 'animal') {
-          antiHallucinationJp += 'ANIMAL photo only, keep scene free of humans. ';
-        }
-        antiHallucinationJp += 'Keep composition faithful to original photo.';
-      }
-      finalPrompt = finalPrompt + antiHallucinationJp;
-      
-      // 6. logData.selection 기록
-      logData.selection.category = selectedStyle.category || '';
-      logData.selection.artist = selectedArtist || '';
-      logData.selection.masterwork = '';
-      logData.selection.reason = `japan_${japanStyleKey}`;
-      
-    } else if (process.env.ANTHROPIC_API_KEY) {
+    // v79: 일본도 한국/중국과 동일하게 AI 경로 사용 (Vision-only 경로 제거)
+    // 모든 동양화가 동일한 selectArtistWithAI → curated prompt 매핑 구조
+    
+    if (process.env.ANTHROPIC_API_KEY) {
       // console.log(`Trying AI artist selection for ${selectedStyle.name}...`);
       
       // ========================================
@@ -2809,8 +2948,6 @@ export default async function handler(req, res) {
         logData.vision.gender = visionAnalysis.gender || '';
         logData.vision.age = visionAnalysis.age_range || '';
         logData.vision.subjectType = visionAnalysis.subject_type || '';
-        // v79: Vision AI speech_bubble은 무시 (코드 랜덤으로 교체됨, 주입부에서 덮어씀)
-        logData.vision.speechBubble = visionAnalysis.speech_bubble || null;
       }
       
       // ========================================
@@ -2851,23 +2988,28 @@ export default async function handler(req, res) {
       if (aiResult.success) {
         // AI 성공!
         
-        // v73: 동양화는 통합 프롬프트 사용
+        // v79: 동양화는 AI 선택 결과 → art-api-prompts.js curated 프롬프트 매핑
         if (selectedStyle.category === 'oriental') {
           const styleKey = aiResult.selected_style || '';
           // 키 매핑 (AI 선택값 → art-api-prompts.js 키)
           const orientalKeyMap = {
-            'landscape': 'jingyeong',
-            'ink_wash': 'shuimohua',
+            // 한국
             'minhwa': 'minhwa',
             'pungsokdo': 'pungsokdo',
-            'gongbi': 'gongbi',
-            'ukiyoe': 'ukiyoe',
-            'ukiyoe_yakushae': 'ukiyoe_yakushae',
-            'ukiyoe_meishoe': 'ukiyoe_meishoe',
-            'ukiyoe_animal': 'ukiyoe_animal',
-            'rinpa': 'rinpa',
+            'landscape': 'jingyeong',
             'jingyeong': 'jingyeong',
-            'shuimohua': 'shuimohua'
+            // 중국
+            'ink_wash': 'shuimohua',
+            'shuimohua': 'shuimohua',
+            'gongbi': 'gongbi',
+            // 일본
+            'bijinga': 'ukiyoe',
+            'yakushae': 'ukiyoe_yakushae',
+            'meishoe': 'ukiyoe_meishoe',
+            'animal': 'ukiyoe_animal',
+            'rinpa': 'rinpa',
+            // fallback
+            'ukiyoe': 'ukiyoe'
           };
           const mappedKey = orientalKeyMap[styleKey] || styleKey;
           const orientalPromptData = getPrompt(mappedKey);
@@ -2875,6 +3017,7 @@ export default async function handler(req, res) {
           if (orientalPromptData) {
             finalPrompt = orientalPromptData.prompt;
             selectedArtist = orientalPromptData.nameEn || aiResult.artist;
+            console.log(`🎨 Oriental curated prompt: ${mappedKey} → ${selectedArtist}`);
             
             // calligraphy_text 추가
             if (aiResult.calligraphy_text) {
@@ -2882,6 +3025,7 @@ export default async function handler(req, res) {
             }
           } else {
             // fallback: AI 생성 프롬프트 사용
+            console.log(`⚠️ No curated prompt for: ${mappedKey}, using AI prompt`);
             finalPrompt = aiResult.prompt;
             selectedArtist = aiResult.artist;
           }
@@ -2889,7 +3033,6 @@ export default async function handler(req, res) {
           finalPrompt = aiResult.prompt;
           selectedArtist = aiResult.artist;
         }
-        
         selectedWork = aiResult.work;  // 거장 모드: 선택된 대표작
         selectionMethod = 'ai_auto';
         selectionDetails = {
@@ -2944,9 +3087,6 @@ export default async function handler(req, res) {
             photoAnalysisFromAI.count = 0;
             photoAnalysisFromAI.subject = visionAnalysis.subject_type;
             // console.log(`📸 [VISION-OVERRIDE] Subject is ${visionAnalysis.subject_type}, keeping count=0`);
-          } else if (visionAnalysis && visionAnalysis.person_count > 0) {
-            // Vision 결과 우선 사용
-            photoAnalysisFromAI.count = visionAnalysis.person_count;
           } else {
             // 인원수 추출 (인물 사진일 때만)
             if (analysisText.includes('group') || analysisText.includes('people') || analysisText.includes('family')) {
@@ -2959,10 +3099,8 @@ export default async function handler(req, res) {
             }
           }
           
-          // 성별 추출 - Vision 결과 우선 사용
-          if (visionAnalysis && visionAnalysis.gender) {
-            photoAnalysisFromAI.gender = visionAnalysis.gender;
-          } else if (analysisText.includes('woman') || analysisText.includes('female') || analysisText.includes('girl')) {
+          // 성별 추출
+          if (analysisText.includes('woman') || analysisText.includes('female') || analysisText.includes('girl')) {
             photoAnalysisFromAI.gender = 'female';
           } else if (analysisText.includes('man') || analysisText.includes('male') || analysisText.includes('boy')) {
             photoAnalysisFromAI.gender = 'male';
@@ -2989,7 +3127,7 @@ export default async function handler(req, res) {
           }
           
           if (weightSelectedArtist) {
-            console.log(`🎲 [WEIGHT-OVERRIDE] ${selectedArtist} → ${weightSelectedArtist} (gender:${photoAnalysisFromAI.gender}, count:${photoAnalysisFromAI.count})`);
+            // console.log(`🎲 [WEIGHT-OVERRIDE] Changing from "${selectedArtist}" to "${weightSelectedArtist}"`);
             // console.log(`   Photo analysis: count=${photoAnalysisFromAI.count}, gender=${photoAnalysisFromAI.gender}, age=${photoAnalysisFromAI.age}`);
             
             // 화가 교체
@@ -3002,12 +3140,8 @@ export default async function handler(req, res) {
               photoType: detectPhotoType(photoAnalysisFromAI)
             };
             
-            // v73: art-api-prompts.js에서 첫 번째 대표작 프롬프트 가져오기
-            const weightArtistKey = weightSelectedArtist.toLowerCase().trim();
-            const weightMasterworkList = getArtistMasterworkList(weightArtistKey);
-            const weightFirstWorkKey = weightMasterworkList && weightMasterworkList.length > 0 ? weightMasterworkList[0] : null;
-            const weightPromptData = weightFirstWorkKey ? getPrompt(weightFirstWorkKey) : null;
-            const artistStyle = weightPromptData ? weightPromptData.prompt : null;
+            // v66: 모든 사조 - artistStyles.js에서 통합 관리
+            const artistStyle = getArtistStyleByName(weightSelectedArtist);
             
             if (artistStyle) {
               // subjectType 전달 (풍경/정물/동물일 때 인물 관련 프롬프트 제거)
@@ -3033,7 +3167,7 @@ export default async function handler(req, res) {
             if (isNonPerson) {
               // console.log(`📸 [NON-PERSON] Subject is ${visionAnalysis.subject_type}, skipping gender prefix`);
               // 풍경/정물용 프롬프트
-              genderPrefix = `CRITICAL: Pure ${visionAnalysis.subject_type.toUpperCase()} scene only, empty of all human figures. `;
+              genderPrefix = `CRITICAL: This is a ${visionAnalysis.subject_type.toUpperCase()} photo - DO NOT add any people or human figures. Keep as pure ${visionAnalysis.subject_type}. `;
               
               // 🎨 풍경/정물일 때 control_strength boost 플래그 설정 (마지막에 적용)
               landscapeStrengthBoost = true;
@@ -3206,20 +3340,23 @@ export default async function handler(req, res) {
         const allowExtraImagery = artistLower.includes('chagall') || artistLower.includes('샤갈');
         
         // ========================================
-        // v73 대전제 (긍정 명령어로 통일, 유두 조항 삭제)
+        // v68 대전제 (긍정 명령어로 통일)
         // FLUX는 부정어 미지원 → 긍정형으로 변환
         // ========================================
         let CORE_RULES_BASE;
         if (skipEthnicityPreserve) {
           // 고갱/마티스/드랭/블라맹크: 피부색 변환이 화풍이라 ethnicity 제외
-          CORE_RULES_BASE = 'Preserve identity, gender exactly. ' +
+          CORE_RULES_BASE = 'Female nipples MUST be covered by clothing. ' +
+            'Preserve identity, gender exactly. ' +
             'Keep only original elements from photo.';
         } else if (allowExtraImagery) {
           // 샤갈: 환영/꿈 이미지 허용 (원본만 규칙 제외)
-          CORE_RULES_BASE = 'Preserve identity, gender, ethnicity exactly.';
+          CORE_RULES_BASE = 'Female nipples MUST be covered by clothing. ' +
+            'Preserve identity, gender, ethnicity exactly.';
         } else {
           // 기본값
-          CORE_RULES_BASE = 'Preserve identity, gender, ethnicity exactly. ' +
+          CORE_RULES_BASE = 'Female nipples MUST be covered by clothing. ' +
+            'Preserve identity, gender, ethnicity exactly. ' +
             'Keep only original elements from photo.';
         }
         
@@ -3227,8 +3364,8 @@ export default async function handler(req, res) {
           // 동양화 - 낙관/시문 허용
           coreRulesPrefix = CORE_RULES_BASE + ' ';
         } else {
-          // 서양화 - 텍스트 없는 깨끗한 화면 (긍정문)
-          coreRulesPrefix = CORE_RULES_BASE + ' Clean pure painting, unblemished artwork surface, pristine canvas. ';
+          // 서양화 - 텍스트 없는 깨끗한 화면
+          coreRulesPrefix = CORE_RULES_BASE + ' Clean artwork, text-free, signature-free, watermark-free. ';
         }
         
         // v68: 성별 보존 프롬프트 (간소화) - 나중에 적용
@@ -3270,14 +3407,37 @@ export default async function handler(req, res) {
           if (workKey) {
             const artistKey = workKey.split('-')[0];
             
-            // v70: 거장 7명 모두 통합 프롬프트에서 가져오기
+            // v70: 거장 7명 모두 masterworks에서 가져오기
             if (['vangogh', 'munch', 'klimt', 'matisse', 'chagall', 'frida', 'lichtenstein'].includes(artistKey)) {
-              const promptData = getPrompt(workKey);
-              if (promptData) {
-                // v73: 통합 프롬프트 적용 (화가+대표작 이미 합쳐짐)
-                finalPrompt = finalPrompt + ', ' + promptData.prompt;
-                logData.prompt.applied.artist = true;
+              const movementMasterwork = getMovementMasterwork(workKey);
+              if (movementMasterwork) {
+                console.log('');
+                console.log('🎨🎨🎨 거장 대표작 매칭 🎨🎨🎨');
+                console.log('   👤 화가:', selectedArtist);
+                console.log('   🖼️ 대표작:', movementMasterwork.name, `(${movementMasterwork.nameEn})`);
+                console.log('   📝 특징:', movementMasterwork.feature);
+                console.log('');
+                
+                // v66: 화가 프롬프트 먼저 (artistStyles.js)
+                const artistStylePrompt1 = getArtistStyle(artistKey);
+                if (artistStylePrompt1) {
+                  finalPrompt = finalPrompt + ', ' + artistStylePrompt1;
+                  logData.prompt.applied.artist = true;
+                  // console.log('🎨 [v66] 화가 프롬프트 적용:', artistKey);
+                }
+                
+                // 대표작 프롬프트 (우선)
+                finalPrompt = finalPrompt + ', ' + movementMasterwork.prompt;
                 logData.prompt.applied.masterwork = true;
+                // console.log('🖼️ [v65] 대표작 프롬프트 적용:', movementMasterwork.nameEn);
+                
+                // expressionRule 적용 (뭉크 등)
+                if (movementMasterwork.expressionRule) {
+                  finalPrompt = finalPrompt + ', ' + movementMasterwork.expressionRule;
+                  // console.log('🎭 [v65] Applied expressionRule:', movementMasterwork.expressionRule);
+                }
+              } else {
+                console.log('⚠️ 대표작 매칭 실패:', workKey);
               }
             }
             
@@ -3352,30 +3512,64 @@ export default async function handler(req, res) {
             if (masterworkList && masterworkList.length > 0) {
               // v67: AI가 선택한 대표작 사용 (랜덤 대신)
               let selectedMasterworkKey = null;
-              let promptData = null;
+              let masterwork = null;
               
               // AI가 대표작을 선택했으면 그것 사용
               if (selectedWork) {
                 selectedMasterworkKey = convertToWorkKey(selectedArtist, selectedWork);
                 if (selectedMasterworkKey) {
-                  promptData = getPrompt(selectedMasterworkKey);
+                  masterwork = getMovementMasterwork(selectedMasterworkKey);
                 }
               }
               
               // AI 선택이 없거나 찾을 수 없으면 fallback으로 랜덤 선택
-              if (!promptData) {
+              if (!masterwork) {
                 const randomIndex = Math.floor(Math.random() * masterworkList.length);
                 selectedMasterworkKey = masterworkList[randomIndex];
-                promptData = getPrompt(selectedMasterworkKey);
+                masterwork = getMovementMasterwork(selectedMasterworkKey);
+                console.log('⚠️ AI 대표작 선택 없음, 랜덤 fallback:', selectedMasterworkKey);
               }
               
-              if (promptData) {
-                // v73: 통합 프롬프트 적용 (화가+대표작 이미 합쳐짐)
-                finalPrompt = finalPrompt + ', ' + promptData.prompt;
-                logData.prompt.applied.artist = true;
+              if (masterwork) {
+                console.log('');
+                console.log('🎨🎨🎨 사조 대표작 매칭 🎨🎨🎨');
+                console.log('   👤 화가:', selectedArtist);
+                console.log('   🤖 AI 선택:', selectedWork || '(없음 - 랜덤)');
+                console.log('   🖼️ 적용 대표작:', masterwork.name, `(${masterwork.nameEn})`);
+                console.log('   📝 특징:', masterwork.feature);
+                console.log('');
+                
+                // v66: 화가 프롬프트 먼저 (artistStyles.js)
+                const artistStylePrompt2 = getArtistStyle(artistKey);
+                if (artistStylePrompt2) {
+                  finalPrompt = finalPrompt + ', ' + artistStylePrompt2;
+                  logData.prompt.applied.artist = true;
+                  // console.log('🎨 [v66] 화가 프롬프트 적용:', artistKey);
+                }
+                
+                // 대표작 프롬프트 (우선)
+                finalPrompt = finalPrompt + ', ' + masterwork.prompt;
                 logData.prompt.applied.masterwork = true;
+                // console.log('🖼️ [v67] 대표작 프롬프트 적용:', masterwork.nameEn);
               }
             }
+          }
+        }
+        
+        // ========================================
+        // v65: 리히텐슈타인 말풍선 추가
+        // ========================================
+        if (selectedArtist.toUpperCase().trim().includes('LICHTENSTEIN') || 
+            selectedArtist.includes('리히텐슈타인')) {
+          console.log('🎯 Lichtenstein detected - adding speech bubble...');
+          
+          // 말풍선 텍스트 선택 (사진 분석 결과 기반)
+          const speechText = selectSpeechBubbleText(visionAnalysis);
+          console.log(`💬 Speech bubble text: "${speechText}"`);
+          
+          // 프롬프트에 말풍선 + 스타일 강화 추가
+          if (!finalPrompt.includes('speech bubble')) {
+            finalPrompt = finalPrompt + `, WHITE SPEECH BUBBLE with THICK BLACK OUTLINE containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+, COMIC PANEL FRAME with THICK BLACK BORDER around entire image`;
           }
         }
         
@@ -3421,29 +3615,6 @@ export default async function handler(req, res) {
         selectionDetails = {
           ai_error: aiResult.error
         };
-        
-        // v78: fallback에서도 비중 기반 화가 랜덤 선택
-        if (selectedStyle.category === 'movements' && ARTIST_WEIGHTS[fallbackKey]) {
-          const defaultWeights = ARTIST_WEIGHTS[fallbackKey].default || ARTIST_WEIGHTS[fallbackKey].portrait;
-          if (defaultWeights) {
-            const randomArtist = weightedRandomSelect(defaultWeights);
-            if (randomArtist) {
-              const artistKey = randomArtist.toLowerCase().trim();
-              const masterworkList = getArtistMasterworkList(artistKey);
-              if (masterworkList && masterworkList.length > 0) {
-                const randomIndex = Math.floor(Math.random() * masterworkList.length);
-                const workKey = masterworkList[randomIndex];
-                const promptData = getPrompt(workKey);
-                if (promptData) {
-                  finalPrompt = promptData.prompt;
-                  selectedArtist = randomArtist;
-                  selectedWork = promptData.nameEn || workKey;
-                  console.log(`🎲 [FALLBACK-WEIGHT] 고정 ${fallback.name} → 랜덤 ${randomArtist}`);
-                }
-              }
-            }
-          }
-        }
         
         // v68.3: fallback에서도 로그 데이터 설정
         logData.selection.category = selectedStyle.category || '';
@@ -3505,29 +3676,6 @@ export default async function handler(req, res) {
       selectedWork = fallback.defaultWork || null;  // 거장 기본 작품
       selectionMethod = 'fallback_no_key';
       
-      // v78: fallback(no key)에서도 비중 기반 화가 랜덤 선택
-      if (selectedStyle.category === 'movements' && ARTIST_WEIGHTS[fallbackKey]) {
-        const defaultWeights = ARTIST_WEIGHTS[fallbackKey].default || ARTIST_WEIGHTS[fallbackKey].portrait;
-        if (defaultWeights) {
-          const randomArtist = weightedRandomSelect(defaultWeights);
-          if (randomArtist) {
-            const artistKey = randomArtist.toLowerCase().trim();
-            const masterworkList = getArtistMasterworkList(artistKey);
-            if (masterworkList && masterworkList.length > 0) {
-              const randomIndex = Math.floor(Math.random() * masterworkList.length);
-              const workKey = masterworkList[randomIndex];
-              const promptData = getPrompt(workKey);
-              if (promptData) {
-                finalPrompt = promptData.prompt;
-                selectedArtist = randomArtist;
-                selectedWork = promptData.nameEn || workKey;
-                console.log(`🎲 [FALLBACK-WEIGHT-NOKEY] 고정 ${fallback.name} → 랜덤 ${randomArtist}`);
-              }
-            }
-          }
-        }
-      }
-      
       // v68.3: fallback에서도 로그 데이터 설정
       logData.selection.category = selectedStyle.category || '';
       logData.selection.movement = selectedStyle.id || '';
@@ -3547,26 +3695,6 @@ export default async function handler(req, res) {
         // console.log('✅ Renaissance fallback (no key): control_strength 0.65');
       }
     }
-
-    // ========================================
-    // v65→v79: 리히텐슈타인 말풍선 (코드 랜덤 선택)
-    // - 짧은 문구만 사용 (FLUX 텍스트 렌더링 한계)
-    // - 상세 스타일 프롬프트로 말풍선 품질 향상
-    // ========================================
-    if (selectedArtist && (selectedArtist.toUpperCase().includes('LICHTENSTEIN') || 
-        selectedArtist.includes('리히텐슈타인'))) {
-      
-      const speechText = selectSpeechBubbleText({ person_count: logData.vision.count, gender: logData.vision.gender });
-      logData.vision.speechBubble = speechText;
-      
-      if (!finalPrompt.includes('speech bubble')) {
-        finalPrompt = finalPrompt + `, WHITE SPEECH BUBBLE with THICK BLACK OUTLINE containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+, COMIC PANEL FRAME with THICK BLACK BORDER around entire image`;
-      }
-    }
-
-    // ========================================
-    // v78: 노출 방지 → ① buildIdentityPrompt로 이동 (전체 적용)
-    // ========================================
 
     // console.log('Final prompt:', finalPrompt);
     
@@ -3599,7 +3727,10 @@ export default async function handler(req, res) {
     // 고통/왜곡이 핵심인 작품은 제외
     // ========================================
     const excludeAttractive = [
-      'munch-scream'      // 절규 - 공포/불안 왜곡
+      'munch-scream',      // 절규 - 공포/불안 왜곡
+      'picasso-guernica',  // 게르니카 - 전쟁 참상
+      'picasso-weepingwoman', // 우는 여인 - 슬픔 왜곡
+      'frida-brokencolumn' // 부러진 기둥 - 고통 시각화
     ];
     
     // v66: artistEnhancements.js 삭제됨 - excludeAttractive 리스트만 사용
@@ -3613,7 +3744,7 @@ export default async function handler(req, res) {
     // v71: 붓터치 크기 적용 (화풍 바로 다음, 대전제 앞)
     // 순서: [화풍 + 대표작] + [붓터치] + [대전제] + [성별] + [매력]
     // ========================================
-    const brushSize = getBrushSize(selectedArtist, selectedStyle.id, categoryType);
+    const brushSize = getBrushstrokeSize(selectedArtist, selectedStyle.id, categoryType);
     if (brushSize) {
       // 기존 붓터치 명령어 모두 제거 후 새로 추가
       finalPrompt = finalPrompt
@@ -3675,6 +3806,45 @@ export default async function handler(req, res) {
       const attractiveEnhancement = ' Render stunningly beautiful - male as handsome, dignified; female as gorgeous, elegant, graceful. Idealized flattering portrait.';
       finalPrompt = finalPrompt + attractiveEnhancement;
       logData.prompt.applied.attractive = true;
+    }
+    
+    // ========================================
+    // v79: 한중일 문화 DNA 후처리 (긍정어만, 수렴 방지)
+    // 매력 조항 적용 직후 → 각 나라 고유 시각적 특성 강화
+    // ========================================
+    if (categoryType === 'oriental') {
+      const styleId = selectedStyle?.id || '';
+      const pLower = finalPrompt.toLowerCase();
+      
+      if (styleId === 'korean' || pLower.includes('pungsokdo') || pLower.includes('korean genre')) {
+        if (pLower.includes('minhwa') || pLower.includes('folk')) {
+          // 민화: 꽉 채우되 한지+담채가 핵심
+          finalPrompt += ' KOREAN MINHWA DNA: ROUGH AGED HANJI PAPER with prominent fiber texture. Genuinely FADED OLD colors like 200-year museum artifact. Charming naive folk quality with warm humor.';
+          logData.prompt.applied.cultureDNA = 'korean-minhwa';
+        } else if (pLower.includes('jingyeong') || pLower.includes('landscape') || pLower.includes('sansu')) {
+          // 진경산수: 여백+먹 농담
+          finalPrompt += ' KOREAN JINGYEONG DNA: Bold expressive ink strokes on HANJI PAPER. EMPTY MISTY SPACE for sky and distance. MONOCHROME ink gradations - dark to pale grey.';
+          logData.prompt.applied.cultureDNA = 'korean-jingyeong';
+        } else {
+          // 풍속도: 여백의 미
+          finalPrompt += ' KOREAN PUNGSOKDO DNA: GENEROUS EMPTY HANJI SURFACE covering 60%+ of image. SPARSE MINIMAL brush strokes - capture figure in just a few ink lines. PALE DILUTED wash colors only. Quiet understated natural beauty.';
+          logData.prompt.applied.cultureDNA = 'korean-pungsokdo';
+        }
+      } else if (styleId === 'chinese' || pLower.includes('gongbi') || pLower.includes('chinese meticulous') || pLower.includes('shuimohua') || pLower.includes('ink wash')) {
+        if (pLower.includes('shuimohua') || pLower.includes('ink wash') || pLower.includes('monochrome')) {
+          // 수묵화: 여백+먹 농담 (한국 진경산수와 구분 = 선paper질감이 다름)
+          finalPrompt += ' CHINESE SHUIMOHUA DNA: XUAN RICE PAPER grain visible throughout. Philosophical EMPTY SPACE (留白) as Daoist element. Three ink intensities in single confident strokes. Spontaneous life energy (氣韻).';
+          logData.prompt.applied.cultureDNA = 'chinese-shuimohua';
+        } else {
+          // 공필화: 화려한 정밀
+          finalPrompt += ' CHINESE GONGBI DNA: RICHLY FILLED composition with elaborate details everywhere. ULTRA-FINE hair-thin brush lines painting every eyelash. SILK SURFACE with luminous sheen. Ornate jade and gold accessories. Regal imperial court splendor.';
+          logData.prompt.applied.cultureDNA = 'chinese-gongbi';
+        }
+      } else if (pLower.includes('ukiyo') || pLower.includes('woodblock') || pLower.includes('rinpa')) {
+        // 일본: 평면의 강렬 — 완전 2D, 굵은 선, 단색 면
+        finalPrompt += ' JAPANESE DNA: COMPLETELY FLAT 2D surface. EVERY element as SOLID COLOR AREA bounded by BOLD BLACK OUTLINES. Pure woodblock print aesthetic. All beauty through LINE QUALITY and PATTERN.';
+        logData.prompt.applied.cultureDNA = 'japanese';
+      }
     }
     
     // ========================================
@@ -3760,7 +3930,7 @@ export default async function handler(req, res) {
         'fauvism': '야수파',
         'expressionism': '표현주의', 
         'artNouveau': '아르누보',
-        'modernism': '모더니즘'
+        'modernism': '20세기 모더니즘'
       };
       logData.selection.movement = movementMap[selectedStyle.id] || selectedStyle.name || '';
     }
@@ -3769,18 +3939,39 @@ export default async function handler(req, res) {
       .map(([key, val]) => val ? `${key}✓` : `${key}✗`)
       .join(' ');
     
-    // v77: 간결한 로그 (한 줄) + Vision 분석 결과
-    console.log(`📍 FLUX v77 | ${logData.selection.category} | ${logData.selection.artist} | ${logData.selection.masterwork || '-'} | ${logData.prompt.wordCount}w | ctrl:${logData.flux.control}`);
+    console.log('');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('📍 FLUX Transfer v66');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('');
+    console.log('1️⃣ Vision 분석');
+    console.log(`   👤 인물: ${logData.vision.count}명 (${logData.vision.gender || '?'}, ${logData.vision.age || '?'})`);
+    console.log(`   📷 피사체: ${logData.vision.subjectType || 'unknown'}`);
+    console.log('');
+    console.log('2️⃣ AI 화가 선택');
+    console.log(`   📂 카테고리: ${logData.selection.category}`);
+    if (logData.selection.movement) console.log(`   🎨 사조: ${logData.selection.movement}`);
+    console.log(`   👨‍🎨 화가: ${logData.selection.artist}`);
+    if (logData.selection.masterwork) console.log(`   🖼️ 대표작: ${logData.selection.masterwork}`);
+    if (logData.selection.calligraphy) console.log(`   ✍️ 서예: ${logData.selection.calligraphy}`);
+    if (logData.selection.reason) console.log(`   💬 선택 이유: ${logData.selection.reason}`);
+    console.log('');
+    console.log('3️⃣ 프롬프트 조립');
+    console.log(`   📝 최종 길이: ${logData.prompt.wordCount} 단어`);
+    console.log(`   ${appliedList}`);
+    console.log('');
+    console.log('4️⃣ FLUX API 호출');
+    console.log(`   🔄 모델: ${logData.flux.model}`);
+    console.log(`   🎯 매핑: ${logData.flux.mapping}`);
+    console.log(`   ⚙️ Control: ${logData.flux.control}${landscapeStrengthBoost ? ' (풍경 +0.15 boost)' : ''}`);
+    console.log(`   🖌️ Brush: ${brushSize || 'none'}`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('');
     
-    // Vision 분석 결과 (항상 출력)
-    const visionInfo = [
-      logData.vision.subjectType || '-',
-      logData.vision.gender || '-',
-      logData.vision.age || '-',
-      logData.vision.count !== undefined ? `${logData.vision.count}명` : '-',
-      logData.vision.speechBubble ? `💬"${logData.vision.speechBubble}"` : ''
-    ].filter(Boolean).join(', ');
-    console.log(`👤 Vision: ${visionInfo}`);
+    // v70: FLUX에 전달되는 실제 프롬프트 로그
+    console.log('📜 FLUX 프롬프트 (처음 500자):');
+    console.log(`   ${finalPrompt.substring(0, 500)}...`);
+    console.log('');
     
     // ========================================
     // v77: 비동기 폴링 방식 (504 타임아웃 해결)
@@ -3925,9 +4116,12 @@ export default async function handler(req, res) {
     
     const data = pollResult.data;
     
-    // v77: 완료 로그
+    // v66: 완료 로그
     const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(1);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`✅ 완료 (${elapsedTime}초)`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('');
     
     // 결과에 선택 정보 포함
     res.status(200).json({
@@ -3936,9 +4130,9 @@ export default async function handler(req, res) {
       selected_work: selectedWork,  // 거장 모드: 선택된 대표작
       selection_method: selectionMethod,
       selection_details: selectionDetails,
-      // v77: 프론트엔드 로그용 데이터
+      // v66: 프론트엔드 로그용 데이터
       _debug: {
-        version: 'v77',
+        version: 'v66',
         elapsed: elapsedTime,
         vision: logData.vision,
         selection: logData.selection,
