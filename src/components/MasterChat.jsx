@@ -4,18 +4,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getMasterChat } from '../i18n';
 
+// v79: 거장 아바타 이미지 (자화상/본인사진 → 앱변환 → 120x120 크롭)
+import vangoghAvatar from '../assets/avatars/vangogh.webp';
+import klimtAvatar from '../assets/avatars/klimt.webp';
+import munchAvatar from '../assets/avatars/munch.webp';
+import chagallAvatar from '../assets/avatars/chagall.webp';
+import matisseAvatar from '../assets/avatars/matisse.webp';
+import fridaAvatar from '../assets/avatars/frida.webp';
+import lichtensteinAvatar from '../assets/avatars/lichtenstein.webp';
+
 // API 기본 URL
 const API_BASE_URL = 'https://mastervalley-v6.vercel.app';
 
 // 거장별 테마 색상 (7명) - 색상은 i18n 불필요
 const MASTER_THEMES = {
-  'VAN GOGH': { primary: '#F5A623', gradient: 'linear-gradient(135deg, #F5A623, #e8941a)', icon: '🌻' },
-  'KLIMT': { primary: '#D4AF37', gradient: 'linear-gradient(135deg, #D4AF37, #b8962e)', icon: '✨' },
-  'MUNCH': { primary: '#8B4513', gradient: 'linear-gradient(135deg, #8B4513, #6d360f)', icon: '😱' },
-  'CHAGALL': { primary: '#E6A8D7', gradient: 'linear-gradient(135deg, #E6A8D7, #7EB6D8)', icon: '🎻' },
-  'MATISSE': { primary: '#FF6B6B', gradient: 'linear-gradient(135deg, #FF6B6B, #ee5a5a)', icon: '💃' },
-  'FRIDA': { primary: '#C41E3A', gradient: 'linear-gradient(135deg, #C41E3A, #a01830)', icon: '🦜' },
-  'LICHTENSTEIN': { primary: '#FFD700', gradient: 'linear-gradient(135deg, #FFD700, #FF4500)', icon: '💥' }
+  'VAN GOGH': { primary: '#F5A623', gradient: 'linear-gradient(135deg, #F5A623, #e8941a)', icon: '🌻', avatar: vangoghAvatar },
+  'KLIMT': { primary: '#D4AF37', gradient: 'linear-gradient(135deg, #D4AF37, #b8962e)', icon: '✨', avatar: klimtAvatar },
+  'MUNCH': { primary: '#8B4513', gradient: 'linear-gradient(135deg, #8B4513, #6d360f)', icon: '😱', avatar: munchAvatar },
+  'CHAGALL': { primary: '#E6A8D7', gradient: 'linear-gradient(135deg, #E6A8D7, #7EB6D8)', icon: '🎻', avatar: chagallAvatar },
+  'MATISSE': { primary: '#FF6B6B', gradient: 'linear-gradient(135deg, #FF6B6B, #ee5a5a)', icon: '💃', avatar: matisseAvatar },
+  'FRIDA': { primary: '#C41E3A', gradient: 'linear-gradient(135deg, #C41E3A, #a01830)', icon: '🦜', avatar: fridaAvatar },
+  'LICHTENSTEIN': { primary: '#FFD700', gradient: 'linear-gradient(135deg, #FFD700, #FF4500)', icon: '💥', avatar: lichtensteinAvatar }
 };
 
 const MasterChat = ({ 
@@ -227,11 +236,9 @@ const MasterChat = ({
 
   return (
     <div className="master-chat-section" style={{ '--master-color': theme.primary }}>
-      {/* 헤더 (이모지만, 원 제거) */}
+      {/* 헤더 (v79: 원형 아바타 이미지) */}
       <div className="master-chat-header">
-        <div className="master-avatar-emoji">
-          {theme.icon}
-        </div>
+        <img className="master-avatar-img" src={theme.avatar} alt={masterName} />
         <div className="master-info">
           <h3>{masterName}<span className="ai-tag">(AI)</span></h3>
         </div>
@@ -242,7 +249,7 @@ const MasterChat = ({
         {messages.map((msg, idx) => (
           <div key={idx} className={`chat-message ${msg.role}`}>
             {msg.role === 'master' && (
-              <div className="avatar-emoji">{theme.icon}</div>
+              <img className="avatar-img-small" src={theme.avatar} alt={masterName} />
             )}
             {msg.role === 'system' ? (
               <div className="system-message">
@@ -265,7 +272,7 @@ const MasterChat = ({
         {/* 타이핑 인디케이터 */}
         {isLoading && (
           <div className="chat-message master">
-            <div className="avatar-emoji">{theme.icon}</div>
+            <img className="avatar-img-small" src={theme.avatar} alt={masterName} />
             <div className="bubble typing" style={{ 
               background: `${theme.primary}20`,
               borderColor: `${theme.primary}40`
@@ -372,9 +379,12 @@ const MasterChat = ({
           margin-bottom: 12px;
         }
 
-        .master-avatar-emoji {
-          font-size: 28px;
-          line-height: 1;
+        .master-avatar-img {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid rgba(255,255,255,0.2);
         }
 
         .master-info h3 {
@@ -413,10 +423,13 @@ const MasterChat = ({
           gap: 8px;
         }
 
-        .chat-message.master .avatar-emoji {
-          font-size: 18px;
-          line-height: 1;
+        .chat-message.master .avatar-img-small {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          object-fit: cover;
           flex-shrink: 0;
+          border: 1.5px solid rgba(255,255,255,0.15);
         }
 
         .chat-message .sender {
