@@ -88,6 +88,9 @@ const getModelForStyle = (style) => {
 const callFluxAPI = async (photoBase64, stylePrompt, onProgress) => {
   if (onProgress) onProgress({ status: 'processing' });
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000);
+
   const response = await fetch(`${API_BASE_URL}/api/flux-transfer`, {
     method: 'POST',
     headers: {
@@ -100,8 +103,11 @@ const callFluxAPI = async (photoBase64, stylePrompt, onProgress) => {
       control_strength: 0.5,
       num_inference_steps: 28,
       guidance_scale: 3.5
-    })
+    }),
+    signal: controller.signal
   });
+
+  clearTimeout(timeout);
 
   if (!response.ok) {
     throw new Error(`FLUX API error: ${response.status}`);
@@ -130,13 +136,19 @@ const callFluxWithAI = async (photoBase64, selectedStyle, onProgress, correction
     console.log('   - selectedStyle.category:', selectedStyle?.category);
   }
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 60000);
+
   const response = await fetch(`${API_BASE_URL}/api/flux-transfer`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(requestBody)
+    body: JSON.stringify(requestBody),
+    signal: controller.signal
   });
+
+  clearTimeout(timeout);
 
   if (!response.ok) {
     throw new Error(`FLUX API error: ${response.status}`);
