@@ -229,7 +229,7 @@ export const ANCIENT_MEDIEVAL_PROMPTS = {
   'mosaic': {
     name: '로마 모자이크',
     nameEn: 'Roman Mosaic',
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette terracotta ochre umber ivory. PRESERVE ORIGINAL SKIN TONE AND FACIAL FEATURES using appropriate tile colors. Subject wears classical draped toga or stola. Style reference mosaics: Alexander Mosaic, Oceanus and Tethys, Nile Mosaic, Medusa Mosaic.`
+    prompt: `Ancient mosaic art style. PRESERVE ORIGINAL FACE AND SKIN TONE exactly using appropriate colored tiles. Large visible tesserae tiles 50mm, thick black grout lines between every tile, earth tone palette terracotta ochre umber ivory. Subject wears classical draped toga or stola. Opus tessellatum technique with geometric borders.`
   },
 
   // ─────────────────────────────────────────
@@ -1270,7 +1270,7 @@ export const ORIENTAL_PROMPTS = {
   'minhwa': {
     name: '민화',
     nameEn: 'Korean Folk Painting (Minhwa)',
-    prompt: `Korean folk painting (Minhwa) style from late Joseon Dynasty. MINERAL PIGMENTS on AGED YELLOWED HANJI PAPER with visible fiber texture. BOLD VIBRANT Obangsaek colors (red, blue, yellow, white, black) applied in LAYERS from light to dark. Various brush sizes creating different textures and lines. SIMPLIFIED EXAGGERATED FORMS with humor and naive charm. SYMBOLIC MOTIFS: tigers and magpies (호작도), peonies (모란), cranes, carp, ten longevity symbols. Unconventional compositions filling entire surface. Primitive folk art quality. Traditional Korean hanbok clothing if people present. Natural unadorned beauty - warm approachable charm with innocent smile.`
+    prompt: `Korean folk painting (Minhwa) style from late Joseon Dynasty. MINERAL PIGMENTS on WARM YELLOWED HANJI PAPER with visible fiber texture. BOLD VIBRANT Obangsaek colors (red, blue, yellow, white, black) applied in LAYERS from light to dark. Various brush sizes creating different textures and lines. SIMPLIFIED EXAGGERATED FORMS with humor and naive charm. SYMBOLIC MOTIFS: tigers and magpies (호작도), peonies (모란), cranes, carp, ten longevity symbols. Unconventional compositions filling entire surface. Primitive folk art quality. Traditional Korean hanbok clothing if people present. Natural unadorned beauty - warm approachable charm with innocent smile.`
   },
 
   'pungsokdo': {
@@ -1335,7 +1335,7 @@ export const ORIENTAL_PROMPTS = {
   'rinpa': {
     name: '린파',
     nameEn: 'Japanese Rinpa School Decorative Painting',
-    prompt: `Japanese Rinpa school (琳派) decorative painting style by masters Sotatsu and Korin. BRILLIANT GOLD LEAF BACKGROUND (金箔) with metallic sheen catching light. TARASHIKOMI technique (垂らし込み) - ink or pigment pooling on wet surface creating soft bleeding edges and marbled effects. MOKKOTSU boneless style (沒骨法) - PURELY BONELESS forms defined purely by color areas alone. STYLIZED NATURAL MOTIFS: irises (燕子花), plum blossoms (梅), waves, cranes, autumn grasses (秋草). BOLD ASYMMETRICAL COMPOSITION with dramatic use of negative space. FLAT TWO-DIMENSIONAL decorative aesthetic - pattern over realism. Vivid colors (deep indigo, vermillion, malachite green, white) against gold ground. Elegant Edo period aristocratic refinement. Transform clothing to traditional KIMONO with decorative Rinpa-style patterns.`
+    prompt: `Japanese Rinpa school (琳派) decorative painting style by masters Sotatsu and Korin. BRILLIANT GOLD OR SILVER LEAF BACKGROUND (金箔/銀箔) with metallic sheen catching light. TARASHIKOMI technique (垂らし込み) - ink or pigment pooling on wet surface creating soft bleeding edges and marbled effects. MOKKOTSU boneless style (沒骨法) - PURELY BONELESS forms defined purely by color areas alone. STYLIZED NATURAL MOTIFS: irises (燕子花), plum blossoms (梅), waves, cranes, autumn grasses (秋草). BOLD ASYMMETRICAL COMPOSITION with dramatic use of negative space. FLAT TWO-DIMENSIONAL decorative aesthetic - pattern over realism. Vivid colors (deep indigo, vermillion, malachite green, white) against gold ground. Elegant Edo period aristocratic refinement. Transform clothing to traditional KIMONO with decorative Rinpa-style patterns.`
   }
 };
 
@@ -1450,7 +1450,7 @@ export const ARTIST_STYLES = {
   'frida': 'Old oil painting by Frida Kahlo, Frida Kahlo art style, intense direct gaze, symbolic personal elements, vibrant Mexican folk colors, lush tropical foliage background, raw emotional honesty.',
 
   // 🎎 동양화
-  'minhwa': 'Korean folk painting (Minhwa) style from late Joseon Dynasty. MINERAL PIGMENTS on AGED YELLOWED HANJI PAPER with visible paper texture. OLD FADED WEATHERED colors like antique painting 200+ years old. Muted earthy tones - faded ochre, dusty red, weathered green, pale greyish blue. ROUGH FOLK ART brush strokes with uneven pigment. Visible hanji paper texture throughout. Primitive naive quality. Museum artifact quality with aged patina. Traditional Korean clothing (hanbok) if people present.',
+  'minhwa': 'Korean folk painting (Minhwa) style from late Joseon Dynasty. MINERAL PIGMENTS on WARM YELLOWED HANJI PAPER with visible fiber texture. BOLD VIBRANT Obangsaek colors (red, blue, yellow, white, black) on warm-toned natural hanji. ROUGH FOLK ART brush strokes with naive charm. Simplified exaggerated forms with humor. Traditional Korean clothing (hanbok) if people present.',
   'pungsokdo': 'Korean genre painting (Pungsokdo) style by master Kim Hongdo. SOFT WATERCOLOR WASHES on traditional Korean paper. DELICATE FLOWING BRUSH LINES for figures. Everyday life scenes of Joseon Dynasty Korea. Limited subtle color palette - soft browns, muted greens, pale blues. EMPTY SPACE as compositional element. Light loose brushwork. Traditional Korean clothing (hanbok). Gentle humorous narrative quality.',
   'jingyeong': 'Korean true-view landscape painting (Jingyeong Sansu) style by master Jeong Seon. BOLD EXPRESSIVE BRUSH STROKES for mountains. Korean mountain scenery with distinctive granite peaks. Strong ink work with dynamic energy. Traditional Korean landscape composition. Misty atmospheric perspective. Pine trees with characteristic Korean style.',
   'shuimohua': 'Chinese ink wash painting (Shuimohua) style. BLACK INK on RICE PAPER with VISIBLE PAPER GRAIN texture. MONOCHROME ink with subtle grey gradations. EMPTY NEGATIVE SPACE as key compositional element. SPONTANEOUS EXPRESSIVE brush strokes. Soft atmospheric perspective. Traditional Chinese clothing (hanfu). Misty mountain backgrounds. Poetry and philosophy in visual form.',
@@ -1460,7 +1460,7 @@ export const ARTIST_STYLES = {
   'ukiyoe_yakushae': 'Japanese Ukiyo-e woodblock print yakusha-e style by Toshusai Sharaku. BOLD DRAMATIC masculine portrait, intense expression, dark mica background, strong angular outlines. HAKAMA with HAORI jacket. Edo period woodblock aesthetic.',
   'ukiyoe_meishoe': 'Japanese Ukiyo-e woodblock print meisho-e landscape style by Utagawa Hiroshige. Atmospheric perspective, BOKASHI gradation, limited palette. Completely flat two-dimensional Edo period scenic masterpiece.',
   'ukiyoe_animal': 'Japanese Ukiyo-e woodblock print animal style by Utagawa Kuniyoshi. ADORABLE EXPRESSIVE animal as central subject, bold outlines, flat color areas. Edo period charming animal portrait.',
-  'rinpa': 'Japanese Rinpa school decorative painting by Sotatsu and Korin. GOLD LEAF BACKGROUND, TARASHIKOMI ink pooling technique, boneless color forms, stylized natural motifs. Elegant Edo period aristocratic refinement.'
+  'rinpa': 'Japanese Rinpa school decorative painting by Sotatsu and Korin. GOLD OR SILVER LEAF BACKGROUND, TARASHIKOMI ink pooling technique, boneless color forms, stylized natural motifs. Elegant Edo period aristocratic refinement.'
 };
 
 
