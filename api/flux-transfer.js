@@ -3561,7 +3561,7 @@ export default async function handler(req, res) {
           
           // 프롬프트에 말풍선 + 스타일 강화 추가
           if (!finalPrompt.includes('speech bubble')) {
-            finalPrompt = finalPrompt + `, exactly ONE WHITE SPEECH BUBBLE with THICK BLACK OUTLINE in upper area of image above the subject, small pointed tail extending down toward subject, containing ONLY the text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+, COMIC PANEL FRAME with THICK BLACK BORDER around entire image`;
+            finalPrompt = finalPrompt + `, white comic speech bubble with text "${speechText}" in bold font, position bubble at least 3% away from image edges, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+, COMIC PANEL FRAME with THICK BLACK BORDER around entire image`;
           }
         }
         
