@@ -215,6 +215,7 @@ export const ALIASES = {
   'korean-genre': 'korean-pungsokdo',
   'korean_genre': 'korean-pungsokdo',
   'korean genre painting': 'korean-pungsokdo',
+  'korean genre painting (pungsokdo)': 'korean-pungsokdo',
   'pungsokdo': 'korean-pungsokdo',
   'pungsokdo genre painting': 'korean-pungsokdo',
   '풍속도': 'korean-pungsokdo',
@@ -250,6 +251,8 @@ export const ALIASES = {
   'chinese-gongbi': 'chinese-gongbi',
   'chinese_gongbi': 'chinese-gongbi',
   'chinese gongbi': 'chinese-gongbi',
+  'chinese meticulous court painting (gongbi)': 'chinese-gongbi',
+  'chinese meticulous court painting': 'chinese-gongbi',
   'chinese gongbi meticulous painting': 'chinese-gongbi',
   'chinesegongbi': 'chinese-gongbi',
   'gongbi': 'chinese-gongbi',
@@ -528,6 +531,13 @@ export function normalizeKey(input) {
   const collapsed = lower.replace(/[\s-]/g, '');
   if (ALIASES[collapsed]) {
     return ALIASES[collapsed];
+  }
+  
+  // 4차: 괄호 내용 제거 후 재시도 (v79: API 풀네임 대응)
+  // "Korean Genre Painting (Pungsokdo)" → "korean genre painting"
+  const withoutParens = lower.replace(/\s*\([^)]*\)\s*/g, '').trim();
+  if (withoutParens !== lower && ALIASES[withoutParens]) {
+    return ALIASES[withoutParens];
   }
   
   // 그대로 반환 (표준 키일 수 있음)
