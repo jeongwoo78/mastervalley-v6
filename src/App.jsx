@@ -267,9 +267,8 @@ const App = () => {
         />
       )}
 
-      {/* 메인 앱 */}
-      {!showGallery && (
-        <>
+      {/* 메인 앱 - 갤러리 시 숨기기만 (언마운트 X → blob URL 보존) */}
+      <div style={{ display: showGallery ? 'none' : 'block' }}>
           {currentScreen === 'category' && (
             <CategorySelection 
               onSelect={handleCategorySelect}
@@ -348,8 +347,7 @@ const App = () => {
               lang={lang}
             />
           )}
-        </>
-      )}
+      </div>
 
       <style>{`
         .app {
