@@ -358,21 +358,21 @@ export const ORIENTAL = {
         en: 'Minhwa',
         description: '민중의 소망을 담은 화려한 색채와 해학',
         descriptionEn: 'Folk dreams on canvas',
-        aliases: ['korean minhwa', 'korean-minhwa', '한국 민화', '민화']
+        aliases: ['korean minhwa', 'korean-minhwa', '한국 민화', '민화', 'korean folk painting (minhwa)', 'korean folk painting']
       },
       'pungsokdo': { 
         ko: '풍속도', 
         en: 'Pungsokdo',
         description: '조선 서민의 일상을 생동감 있게 포착',
         descriptionEn: 'Daily life of the people',
-        aliases: ['korean pungsokdo', 'korean-pungsokdo', 'korean-genre', '풍속화', '한국 풍속도']
+        aliases: ['korean pungsokdo', 'korean-pungsokdo', 'korean-genre', '풍속화', '한국 풍속도', 'korean genre painting (pungsokdo)', 'korean genre painting']
       },
       'jingyeong': { 
         ko: '진경산수화', 
         en: 'Jingyeong Sansuhwa',
         description: '실제 산수를 사실적으로 담아낸 조선의 풍경화',
         descriptionEn: 'Korean landscapes through Joseon eyes',
-        aliases: ['korean jingyeong', 'korean-jingyeong', 'korean jingyeong landscape', '진경산수', '한국 진경산수화']
+        aliases: ['korean jingyeong', 'korean-jingyeong', 'korean jingyeong landscape', '진경산수', '한국 진경산수화', 'korean true-view landscape (jingyeong)', 'korean true-view landscape']
       }
     }
   },
@@ -389,7 +389,7 @@ export const ORIENTAL = {
         en: 'Gongbi',
         description: '세밀한 필치와 화려한 채색의 궁정 회화',
         descriptionEn: 'Precision crafted by brush',
-        aliases: ['chinese gongbi', 'chinese-gongbi', '중국 공필화', '공필화']
+        aliases: ['chinese gongbi', 'chinese-gongbi', '중국 공필화', '공필화', 'chinese meticulous court painting (gongbi)', 'chinese meticulous court painting']
       },
       'ink-wash': { 
         ko: '수묵화', 
@@ -993,6 +993,49 @@ export const findOrientalStyle = (styleName) => {
             styleId,
             key: `${countryId}-${styleId}`
           };
+        }
+      }
+    }
+  }
+  
+  // 1.5단계: 괄호 내용 추출 후 재시도 (API가 "Korean Genre Painting (Pungsokdo)" 같은 형식 반환 시)
+  const parenMatch = normalized.match(/\(([^)]+)\)/);
+  if (parenMatch) {
+    const insideParen = parenMatch[1].toLowerCase().trim();
+    for (const [countryId, country] of Object.entries(ORIENTAL)) {
+      if (country.styles) {
+        for (const [styleId, style] of Object.entries(country.styles)) {
+          if (styleId === insideParen ||
+              style.en?.toLowerCase() === insideParen ||
+              style.aliases?.some(a => a.toLowerCase() === insideParen)) {
+            return { 
+              country, 
+              style, 
+              styleId,
+              key: `${countryId}-${styleId}`
+            };
+          }
+        }
+      }
+    }
+  }
+  
+  // 1.6단계: 괄호 제거 후 재시도
+  const withoutParens = normalized.replace(/\s*\([^)]*\)\s*/g, '').trim();
+  if (withoutParens !== normalized) {
+    for (const [countryId, country] of Object.entries(ORIENTAL)) {
+      if (country.styles) {
+        for (const [styleId, style] of Object.entries(country.styles)) {
+          if (styleId === withoutParens ||
+              style.en?.toLowerCase() === withoutParens ||
+              style.aliases?.some(a => a.toLowerCase() === withoutParens)) {
+            return { 
+              country, 
+              style, 
+              styleId,
+              key: `${countryId}-${styleId}`
+            };
+          }
         }
       }
     }
