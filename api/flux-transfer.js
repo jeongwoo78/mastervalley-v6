@@ -79,38 +79,38 @@ const LICHTENSTEIN_SPEECH_BUBBLES = {
   // 감탄/기쁨 (12개) - 그룹/밝은 분위기
   excited: [
     "WOW!", "AMAZING!", "INCREDIBLE!", "PERFECT!", "YES!",
-    "THIS IS THE BEST DAY EVER!", "I CAN'T BELIEVE THIS IS HAPPENING!",
-    "EVERYTHING IS GOING TO BE ALRIGHT!", "WE DID IT!", "THIS IS SO EXCITING!",
-    "I KNEW WE COULD DO IT!", "NOTHING CAN STOP US NOW!"
+    "BEST DAY EVER!", "I CAN'T BELIEVE IT!",
+    "IT'LL BE ALRIGHT!", "WE DID IT!", "SO EXCITING!",
+    "WE DID IT!", "NOTHING STOPS US!"
   ],
   // 로맨틱 (10개) - 커플
   romantic: [
     "I LOVE YOU!", "KISS ME!", "MY DARLING!", "YOU'RE THE ONE!",
-    "I'VE BEEN WAITING FOR THIS MOMENT!", "MY HEART BEATS ONLY FOR YOU!",
-    "I NEVER WANT THIS TO END!", "YOU MAKE EVERYTHING BETTER!",
-    "STAY WITH ME FOREVER!", "THIS FEELS LIKE A DREAM!"
+    "THIS MOMENT!", "ONLY FOR YOU!",
+    "NEVER LET GO!", "YOU'RE EVERYTHING!",
+    "STAY FOREVER!", "LIKE A DREAM!"
   ],
   // 드라마틱 (10개) - 강렬한 감정/여성
   dramatic: [
-    "I CAN'T BELIEVE IT!", "HOW COULD THIS HAPPEN?!", "IT'S OVER!",
-    "I DON'T CARE ANYMORE!", "WHY DIDN'T ANYONE TELL ME?!",
-    "I SHOULD HAVE KNOWN!", "EVERYTHING HAS CHANGED NOW!",
-    "I NEVER THOUGHT IT WOULD END LIKE THIS!", "THIS CAN'T BE REAL!",
-    "I WON'T LET THIS STOP ME!"
+    "I CAN'T BELIEVE IT!", "HOW COULD YOU?!", "IT'S OVER!",
+    "I DON'T CARE!", "WHY ME?!",
+    "I SHOULD'VE KNOWN!", "EVERYTHING CHANGED!",
+    "NOT LIKE THIS!", "CAN'T BE REAL!",
+    "WATCH ME!"
   ],
   // 대화체/독백 (10개) - 원작 스타일
   dialogue: [
-    "MAYBE HE'LL CALL ME TOMORROW...", "I WONDER WHAT HAPPENS NEXT...",
-    "THEY SAID IT COULDN'T BE DONE!", "SHE TOLD ME TO WAIT HERE!",
-    "HE PROMISED HE WOULD COME BACK!", "I THOUGHT I SAW SOMETHING!",
-    "SOMEONE HAS TO DO SOMETHING!", "THAT'S EXACTLY WHAT I NEEDED!",
-    "I KNEW SOMETHING WAS DIFFERENT TODAY!", "THIS CHANGES EVERYTHING!"
+    "MAYBE TOMORROW...", "WHAT HAPPENS NEXT?",
+    "THEY SAID NO!", "WAIT HERE!",
+    "HE'LL COME BACK!", "I SAW SOMETHING!",
+    "DO SOMETHING!", "JUST WHAT I NEEDED!",
+    "SOMETHING'S DIFFERENT!", "THIS CHANGES EVERYTHING!"
   ],
   // 놀람/생각 (8개) - 중립
   surprised: [
     "WHAT?!", "OH MY!", "REALLY?!", "WAIT... WHAT?!",
-    "I NEVER EXPECTED THIS!", "COULD IT BE TRUE?!",
-    "SOMETHING DOESN'T FEEL RIGHT...", "WHAT JUST HAPPENED?!"
+    "NO WAY!", "COULD IT BE?!",
+    "NOT RIGHT...", "WHAT HAPPENED?!"
   ]
 };
 
@@ -3561,7 +3561,7 @@ export default async function handler(req, res) {
           
           // 프롬프트에 말풍선 + 스타일 강화 추가
           if (!finalPrompt.includes('speech bubble')) {
-            finalPrompt = finalPrompt + `, WHITE SPEECH BUBBLE with THICK BLACK OUTLINE containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+, COMIC PANEL FRAME with THICK BLACK BORDER around entire image`;
+            finalPrompt = finalPrompt + `, WHITE SPEECH BUBBLE with THICK BLACK OUTLINE in upper area of image above the subject, small pointed tail extending down toward subject, containing ONLY text "${speechText}" in BOLD COMIC FONT, EXTREMELY LARGE Ben-Day dots 15mm+ halftone pattern on ALL skin and surfaces, ULTRA THICK BLACK OUTLINES 20mm+, COMIC PANEL FRAME with THICK BLACK BORDER around entire image`;
           }
         }
         
