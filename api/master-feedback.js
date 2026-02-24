@@ -165,7 +165,7 @@ Respond in ${responseLanguage}.
 
 ## CRITICAL: 수정 버튼 안내 (correctionPrompt가 비어있지 않을 때)
 - correctionPrompt를 작성했으면, masterResponse 마지막에 반드시 아래 '수정' 버튼을 눌러달라고 안내
-- 한국어: "아래 '수정' 버튼을 눌러주시오" 또는 "아래 수정 버튼을 눌러 확인해주시오"
+- 반드시 위 Speaking Style에 맞는 말투로 안내할 것 (예: ~주시오/~눌러줘/~누르게나 등 캐릭터에 맞게)
 - 영어: "Please press the 'Modify' button below"
 - 이 안내가 없으면 사용자가 수정이 적용되는 줄 알고 기다리게 됨
 
@@ -214,7 +214,7 @@ ${commonRules}`;
 - 수정 요청 처리
 
 ## 수정 확정 시
-masterResponse에 "아래 '수정' 버튼을 눌러달라"고 안내.`
+masterResponse에 아래 '수정' 버튼을 눌러달라고, 캐릭터 말투에 맞게 안내.`
       : `## Conversation Scope
 - The converted artwork result
 - Your life, artistic world, the era you lived in
