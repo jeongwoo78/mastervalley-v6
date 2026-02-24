@@ -44,15 +44,15 @@
 // ========================================
 // v64: 사조별 대표작 매칭 시스템
 // ========================================
+// v79: masterworks.js 통합 → art-api-prompts.js로 이전
 import {
-  getMovementMasterwork,
+  getPrompt,
   getMasterworkGuideForAI,
   getArtistMasterworkList,
   getMovementMasterworkGuide,
   getArtistMasterworkGuide,
-  allMovementMasterworks,
   masterworkNameMapping
-} from './masterworks.js';
+} from './art-api-prompts.js';
 
 // ========================================
 // v72: Anthropic 클라이언트 (일본 우키요에 Vision용)
@@ -74,9 +74,6 @@ import {
   getArtistStyle,
   getArtistStyleByName
 } from './artistStyles.js';
-
-// v79: 동양화 curated 프롬프트 (한중일 AI 선택 → 고품질 프롬프트 매핑)
-import { getPrompt } from './art-api-prompts.js';
 
 // ========================================
 // v65: 리히텐슈타인 말풍선 텍스트 (50개)
@@ -3409,7 +3406,7 @@ export default async function handler(req, res) {
             
             // v70: 거장 7명 모두 masterworks에서 가져오기
             if (['vangogh', 'munch', 'klimt', 'matisse', 'chagall', 'frida', 'lichtenstein'].includes(artistKey)) {
-              const movementMasterwork = getMovementMasterwork(workKey);
+              const movementMasterwork = getPrompt(workKey);
               if (movementMasterwork) {
                 console.log('');
                 console.log('🎨🎨🎨 거장 대표작 매칭 🎨🎨🎨');
@@ -3518,7 +3515,7 @@ export default async function handler(req, res) {
               if (selectedWork) {
                 selectedMasterworkKey = convertToWorkKey(selectedArtist, selectedWork);
                 if (selectedMasterworkKey) {
-                  masterwork = getMovementMasterwork(selectedMasterworkKey);
+                  masterwork = getPrompt(selectedMasterworkKey);
                 }
               }
               
@@ -3526,7 +3523,7 @@ export default async function handler(req, res) {
               if (!masterwork) {
                 const randomIndex = Math.floor(Math.random() * masterworkList.length);
                 selectedMasterworkKey = masterworkList[randomIndex];
-                masterwork = getMovementMasterwork(selectedMasterworkKey);
+                masterwork = getPrompt(selectedMasterworkKey);
                 console.log('⚠️ AI 대표작 선택 없음, 랜덤 fallback:', selectedMasterworkKey);
               }
               
