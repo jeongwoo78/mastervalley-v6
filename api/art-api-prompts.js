@@ -229,7 +229,7 @@ export const ANCIENT_MEDIEVAL_PROMPTS = {
   'mosaic': {
     name: '로마 모자이크',
     nameEn: 'Roman Mosaic',
-    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette terracotta ochre umber ivory. Subject wears classical draped toga or stola. Style reference mosaics: Alexander Mosaic, Oceanus and Tethys, Nile Mosaic, Medusa Mosaic.`
+    prompt: `Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette terracotta ochre umber ivory. PRESERVE ORIGINAL SKIN TONE AND FACIAL FEATURES using appropriate tile colors. Subject wears classical draped toga or stola. Style reference mosaics: Alexander Mosaic, Oceanus and Tethys, Nile Mosaic, Medusa Mosaic.`
   },
 
   // ─────────────────────────────────────────
@@ -1381,7 +1381,7 @@ export const ARTIST_STYLES = {
   
   // 🏛️ 고대 (특수 질감)
   'classical-sculpture': 'Ancient Greek-Roman marble sculpture style. Pure white Carrara marble with smooth polished surface, carved stone texture.',
-  'roman-mosaic': 'Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. Transform clothing to Roman toga or tunic with draped folds.',
+  'roman-mosaic': 'Roman floor mosaic style. Large visible tesserae tiles 50mm, thick black grout lines, earth tone palette. PRESERVE ORIGINAL SKIN TONE AND FACIAL FEATURES using appropriate tile colors. Transform clothing to Roman toga or tunic with draped folds.',
 
   // ⛪ 중세
   'byzantine': 'Byzantine sacred icon style. Brilliant gold leaf background, flat frontal pose, large solemn eyes, rich jewel colors.',
