@@ -44,14 +44,20 @@
 // ========================================
 // v64: 사조별 대표작 매칭 시스템
 // ========================================
-// v79: masterworks.js 통합 → art-api-prompts.js로 이전
+// v79: masterworks.js + artistStyles.js 통합 → art-api-prompts.js
 import {
   getPrompt,
   getMasterworkGuideForAI,
   getArtistMasterworkList,
   getMovementMasterworkGuide,
   getArtistMasterworkGuide,
-  masterworkNameMapping
+  masterworkNameMapping,
+  ARTIST_STYLES,
+  PAINT_TEXTURE,
+  VINTAGE_TEXTURE,
+  EXCLUDE_VINTAGE,
+  getArtistStyle,
+  getArtistStyleByName
 } from './art-api-prompts.js';
 
 // ========================================
@@ -63,17 +69,7 @@ const anthropicClient = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
   : null;
 
-// ========================================
-// v66: 통합 화풍 프롬프트
-// ========================================
-import {
-  ARTIST_STYLES,
-  PAINT_TEXTURE,
-  VINTAGE_TEXTURE,
-  EXCLUDE_VINTAGE,
-  getArtistStyle,
-  getArtistStyleByName
-} from './artistStyles.js';
+// v79: artistStyles.js → art-api-prompts.js 통합 완료
 
 // ========================================
 // v65: 리히텐슈타인 말풍선 텍스트 (50개)
@@ -1830,7 +1826,7 @@ const fallbackPrompts = {
   },
   
   japanese: {
-    name: '일본 우키요에',
+    name: '일본 전통화',
     prompt: 'Japanese Ukiyo-e woodblock print, Ukiyo-e art style, flat areas of bold solid colors, strong clear black outlines, completely flat two-dimensional composition, CLOTHING: MUST transform to traditional Japanese attire (elegant kimono for women, hakama pants with haori jacket for men), decorative patterns, stylized simplified forms, elegant refined Japanese aesthetic, authentic Japanese ukiyo-e masterpiece quality, CRITICAL ANTI-HALLUCINATION preserve EXACT number of people from original photo, if 1 person then ONLY 1 person in result, CRITICAL ANIMAL PRESERVATION if photo has animals (dogs cats birds) MUST include them drawn in ukiyo-e style with bold outlines, simple scenic background ONLY Mt Fuji or cherry blossom or waves or sky, VISIBLE WOODBLOCK PRINT TEXTURE 20mm+'
   },
   
@@ -2127,36 +2123,19 @@ CRITICAL: Keep prompt field UNDER 150 WORDS to avoid truncation.`;
       }
       
       if (styleId === 'japanese') {
-        // v79: 일본 - Claude가 5가지 스타일 중 선택 (한국/중국과 동일 구조)
+        // v79.1: 일본 - Claude가 2가지 스타일 중 선택 (우키요에/린파)
+        // 우키요에 내 세부 분기(미인화/역자회/명소회/동물화)는 피사체에 따라 코드에서 자동 매핑
         promptText = `Analyze this photo and select the BEST Japanese traditional painting style.
 
-You must choose ONE of these FIVE styles:
+You must choose ONE of these TWO styles:
 
-Style 1: Ukiyo-e Bijin-ga (美人画) - Beautiful Woman Portrait
-- Best for: FEMALE person, young woman, girl, feminine beauty
-- Artist: Kitagawa Utamaro style
-- Characteristics: Elegant elongated figure, captivating almond eyes, porcelain skin as FLAT COLOR, luxurious KIMONO with decorative patterns
-- When: Photo shows a female person
+Style 1: Ukiyo-e (浮世絵) - Woodblock Print
+- Best for: people (portraits), landscapes, animals, daily life, objects
+- Characteristics: FLAT COLOR AREAS with BOLD BLACK OUTLINES, limited woodblock ink palette, CHERRY WOOD BLOCK TEXTURE, completely flat two-dimensional aesthetic
+- Sub-genres are auto-selected by subject: bijin-ga for women (Utamaro), yakusha-e for men (Sharaku), meisho-e for landscapes (Hiroshige), animal prints (Kuniyoshi)
+- When: Most subjects - people, landscapes, animals, objects, food
 
-Style 2: Ukiyo-e Yakusha-e (役者絵) - Kabuki Actor Portrait  
-- Best for: MALE person, man, boy, masculine subjects
-- Artist: Toshusai Sharaku style
-- Characteristics: Powerful intense expression, strong angular jawline, DARK MICA BACKGROUND, bold 4mm outlines, HAKAMA with HAORI jacket
-- When: Photo shows a male person
-
-Style 3: Ukiyo-e Meisho-e (名所絵) - Famous Places Landscape
-- Best for: landscapes, buildings, scenery, food, objects, still life
-- Artist: Utagawa Hiroshige style
-- Characteristics: Atmospheric perspective with layered planes, BOKASHI gradation in sky, rain as fine parallel lines, mist dissolving distant forms
-- When: Photo has landscape, architecture, food, or objects (NO people, NO animals)
-
-Style 4: Ukiyo-e Animal Print (動物画)
-- Best for: dogs, cats, pets, animals (NOT birds)
-- Artist: Utagawa Kuniyoshi style
-- Characteristics: ADORABLE EXPRESSIVE animal as central subject, bright sparkling eyes, playful charm, bold outlines defining fur texture
-- When: Photo has dogs, cats, or other mammals
-
-Style 5: Rinpa School (琳派) - Decorative Painting
+Style 2: Rinpa School (琳派) - Decorative Painting
 - Best for: flowers, birds, plants, nature close-ups, botanical subjects
 - Artists: Sotatsu and Korin style
 - Characteristics: GOLD LEAF BACKGROUND, TARASHIKOMI ink pooling technique, boneless color forms, stylized natural motifs (irises, plum blossoms, cranes)
@@ -2164,7 +2143,7 @@ Style 5: Rinpa School (琳派) - Decorative Painting
 
 Analyze the photo and choose the MOST suitable style.
 
-JAPANESE VISUAL DNA (MUST follow in generated prompt):
+JAPANESE VISUAL DNA (MUST follow for Ukiyo-e):
 - COMPLETELY FLAT 2D surface - every element as SOLID COLOR AREA
 - BOLD BLACK OUTLINES 3mm+ thick separating all color areas
 - CHERRY WOOD BLOCK TEXTURE (桜板) visible throughout
@@ -2203,8 +2182,8 @@ Return ONLY valid JSON (no markdown):
   "age_range": "baby/child/teen/young_adult/adult/middle_aged/elderly" or null,
   "physical_description": "brief physical features" or null,
   "animal_type": "dog" or "cat" or "bird" or null,
-  "selected_artist": "Japanese Ukiyo-e Bijin-ga" or "Japanese Ukiyo-e Yakusha-e" or "Japanese Ukiyo-e Meisho-e Landscape" or "Japanese Ukiyo-e Animal Print" or "Japanese Rinpa School Decorative Painting",
-  "selected_style": "bijinga" or "yakushae" or "meishoe" or "animal" or "rinpa",
+  "selected_artist": "Japanese Ukiyo-e" or "Japanese Rinpa",
+  "selected_style": "ukiyoe" or "rinpa",
   "calligraphy_text": "positive text you chose",
   "reason": "why this style fits (1 sentence)",
   "prompt": "KEEP UNDER 150 WORDS. [Gender rule] Japanese [style] with key characteristics. Calligraphy text '[your calligraphy_text]'."
@@ -2462,7 +2441,7 @@ Return JSON only:
       success: true,
       artist: result.selected_artist,
       work: result.selected_work,  // 거장 모드: 선택된 대표작
-      selected_style: result.selected_style || null,  // v79: 동양화 서브스타일 (bijinga, pungsokdo 등)
+      selected_style: result.selected_style || null,  // v79.1: 동양화 서브스타일 (ukiyoe, rinpa, pungsokdo 등)
       reason: result.reason,
       prompt: result.prompt,
       analysis: result.analysis,
@@ -2999,16 +2978,32 @@ export default async function handler(req, res) {
             'ink_wash': 'shuimohua',
             'shuimohua': 'shuimohua',
             'gongbi': 'gongbi',
-            // 일본
-            'bijinga': 'ukiyoe',
-            'yakushae': 'ukiyoe_yakushae',
-            'meishoe': 'ukiyoe_meishoe',
-            'animal': 'ukiyoe_animal',
-            'rinpa': 'rinpa',
-            // fallback
-            'ukiyoe': 'ukiyoe'
+            // 일본 - 린파는 직접 매핑
+            'rinpa': 'rinpa'
           };
-          const mappedKey = orientalKeyMap[styleKey] || styleKey;
+          
+          let mappedKey;
+          
+          if (styleKey === 'ukiyoe') {
+            // v79.1: 우키요에 내 피사체별 자동 분기
+            const subjectType = aiResult.subject_type || '';
+            const gender = aiResult.gender || '';
+            
+            if (subjectType === 'animal') {
+              mappedKey = 'ukiyoe_animal';
+            } else if (subjectType === 'landscape' || subjectType === 'object') {
+              mappedKey = 'ukiyoe_meishoe';
+            } else if (gender === 'male') {
+              mappedKey = 'ukiyoe_yakushae';
+            } else {
+              // 여성, 기타 인물 → 기본 우키요에 (미인화)
+              mappedKey = 'ukiyoe';
+            }
+            console.log(`🎎 Ukiyo-e auto sub-style: ${subjectType}/${gender} → ${mappedKey}`);
+          } else {
+            mappedKey = orientalKeyMap[styleKey] || styleKey;
+          }
+          
           const orientalPromptData = getPrompt(mappedKey);
           
           if (orientalPromptData) {
