@@ -483,6 +483,7 @@ const ResultScreen = ({
             styleId: failed.style?.id || '',
             isRetransform: false
           });
+          hasSavedRef.current = true;  // useEffect 이중 저장 방지
         } else {
           // console.log(`❌ 다시 시도 실패: ${failed.style?.name} - ${result.error}`);
         }
@@ -541,6 +542,7 @@ const ResultScreen = ({
           styleId: selectedStyle.id || '',
           isRetransform: false
         });
+        hasSavedRef.current = true;  // useEffect 이중 저장 방지
         
         alert(t.retrySuccess);
       } else {

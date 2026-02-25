@@ -4094,35 +4094,21 @@ export default async function handler(req, res) {
       });
     }
     
-    // 2. 폴링으로 결과 대기
-    console.log(`⏳ 결과 대기 중... (최대 ${MAX_POLL_TIME / 1000}초)`);
-    const pollResult = await pollForResult(prediction.id);
-    
-    if (!pollResult.success) {
-      console.error('FLUX 처리 실패:', pollResult.error);
-      return res.status(500).json({
-        error: 'FLUX processing failed',
-        details: pollResult.error
-      });
-    }
-    
-    const data = pollResult.data;
-    
-    // v66: 완료 로그
+    // 2. Prediction ID + 메타데이터 즉시 반환 (폴링은 클라이언트에서)
     const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(1);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log(`✅ 완료 (${elapsedTime}초)`);
+    console.log(`📤 Prediction ID 반환 (${elapsedTime}초) → 클라이언트 폴링으로 전환`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('');
     
-    // 결과에 선택 정보 포함
+    // 클라이언트에게 predictionId와 메타데이터 반환
     res.status(200).json({
-      ...data,
+      status: 'polling_required',
+      predictionId: prediction.id,
       selected_artist: selectedArtist,
-      selected_work: selectedWork,  // 거장 모드: 선택된 대표작
+      selected_work: selectedWork,
       selection_method: selectionMethod,
       selection_details: selectionDetails,
-      // v66: 프론트엔드 로그용 데이터
       _debug: {
         version: 'v66',
         elapsed: elapsedTime,
@@ -4143,4 +4129,3 @@ export default async function handler(req, res) {
       stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
-}

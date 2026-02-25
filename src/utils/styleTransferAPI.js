@@ -89,7 +89,7 @@ const callFluxAPI = async (photoBase64, stylePrompt, onProgress) => {
   if (onProgress) onProgress({ status: 'processing' });
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60000);
+  const timeout = setTimeout(() => controller.abort(), 120000);
 
   const response = await fetch(`${API_BASE_URL}/api/flux-transfer`, {
     method: 'POST',
@@ -137,7 +137,7 @@ const callFluxWithAI = async (photoBase64, selectedStyle, onProgress, correction
   }
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 60000);
+  const timeout = setTimeout(() => controller.abort(), 120000);
 
   const response = await fetch(`${API_BASE_URL}/api/flux-transfer`, {
     method: 'POST',
@@ -161,39 +161,62 @@ const pollPrediction = async (predictionId, modelConfig, onProgress) => {
   let attempts = 0;
   const maxAttempts = 90;
   
-  while (attempts < maxAttempts) {
-    await sleep(2000);
-    attempts++;
+  // 백그라운드 복귀 시 즉시 폴링 재개
+  let resolveWait = null;
+  const onVisible = () => {
+    if (document.visibilityState === 'visible' && resolveWait) {
+      resolveWait();  // sleep 즉시 종료 → 바로 상태 체크
+    }
+  };
+  document.addEventListener('visibilitychange', onVisible);
+  
+  const smartSleep = (ms) => new Promise(resolve => {
+    resolveWait = resolve;
+    setTimeout(() => { resolveWait = null; resolve(); }, ms);
+  });
+  
+  try {
+    while (attempts < maxAttempts) {
+      await smartSleep(2000);
+      attempts++;
 
-    const checkResponse = await fetch(`${API_BASE_URL}/api/check-prediction?id=${predictionId}`);
-    
-    if (!checkResponse.ok) {
-      throw new Error('Failed to check status');
+      try {
+        const checkResponse = await fetch(`${API_BASE_URL}/api/check-prediction?id=${predictionId}`);
+        
+        if (!checkResponse.ok) {
+          console.warn(`⚠️ Poll check failed: ${checkResponse.status}, retrying...`);
+          continue;
+        }
+
+        const result = await checkResponse.json();
+
+        if (result.status === 'succeeded') {
+          return result;
+        }
+
+        if (result.status === 'failed' || result.status === 'canceled') {
+          console.error('❌ FLUX Processing Failed:', {
+            error: result.error,
+            predictionId: predictionId
+          });
+          throw new Error(`Processing failed: ${result.error || 'Unknown error'}`);
+        }
+
+        if (onProgress) {
+          const progress = Math.min(95, 10 + (attempts * 1.0));
+          onProgress({ status: 'processing', progress: Math.floor(progress) });
+        }
+      } catch (fetchError) {
+        // 네트워크 에러(백그라운드 복귀 등) → 재시도
+        if (fetchError.message?.includes('Processing failed')) throw fetchError;
+        console.warn(`⚠️ Poll network error: ${fetchError.message}, retrying...`);
+      }
     }
 
-    const result = await checkResponse.json();
-
-    if (result.status === 'succeeded') {
-      return result;
-    }
-
-    if (result.status === 'failed') {
-      // 상세 에러 정보 로깅
-      console.error('❌ FLUX Processing Failed:', {
-        error: result.error,
-        logs: result.logs,
-        predictionId: predictionId
-      });
-      throw new Error(`Processing failed: ${result.error || 'Unknown error'}`);
-    }
-
-    if (onProgress) {
-      const progress = Math.min(95, 10 + (attempts * 1.0));
-      onProgress({ status: 'processing', progress: Math.floor(progress) });
-    }
+    throw new Error('Processing timeout');
+  } finally {
+    document.removeEventListener('visibilitychange', onVisible);
   }
-
-  throw new Error('Processing timeout');
 };
 
 export const processStyleTransfer = async (photoFile, selectedStyle, correctionPrompt = null, onProgress = null) => {
@@ -237,15 +260,15 @@ export const processStyleTransfer = async (photoFile, selectedStyle, correctionP
 
     // ========== 이미 완료된 응답인 경우 polling 건너뛰기 ==========
     let result;
-    // console.log('🔍 Checking prediction status:', prediction.status);
-    // console.log('🔍 Has output:', !!prediction.output);
     if (prediction.status === 'succeeded' && prediction.output) {
-      // console.log('✅ Already completed (Prefer: wait mode)');
       result = prediction;
     } else {
-      // console.log('⏳ Status not succeeded or no output, polling...');
-      // console.log('   prediction.id:', prediction.id);
-      result = await pollPrediction(prediction.id, modelConfig, onProgress);
+      // v79: 서버가 predictionId 반환 → 클라이언트에서 폴링
+      const pollId = prediction.predictionId || prediction.id;
+      if (!pollId) {
+        throw new Error('No prediction ID received from server');
+      }
+      result = await pollPrediction(pollId, modelConfig, onProgress);
     }
 
     // console.log('');

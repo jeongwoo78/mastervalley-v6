@@ -3,7 +3,7 @@
 // v71: displayConfig.js 컨트롤 타워 사용
 // v73: 통합 스타일 표시 함수 사용
 // v77: i18n 지원
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { processStyleTransfer } from '../utils/styleTransferAPI';
 import { educationContent } from '../data/educationContent';
 // v77: 원클릭 교육자료 (i18n)
@@ -50,7 +50,11 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
   const styles = isFullTransform ? (selectedStyle?.styles || []) : [];
   const totalCount = styles.length;
 
+  const startedRef = useRef(false);
+
   useEffect(() => {
+    if (startedRef.current) return;  // StrictMode 이중 실행 방지
+    startedRef.current = true;
     startProcess();
   }, []);
 
