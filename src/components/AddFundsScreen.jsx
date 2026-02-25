@@ -42,7 +42,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
     <div className="funds-screen">
       {/* Header */}
       <header className="funds-header">
-        <button className="back-btn" onClick={onBack}>←</button>
+        <button className="back-btn" onClick={onBack}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
         <span className="header-title">{t.title}</span>
         <span className="header-spacer"></span>
       </header>
@@ -105,7 +105,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         .funds-header {
           display: flex;
           align-items: center;
-          padding: 14px 20px;
+          padding: 16px 20px;
           border-bottom: 1px solid #2a2a2a;
         }
 
@@ -113,15 +113,16 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           background: none;
           border: none;
           color: #fff;
-          font-size: 18px;
           cursor: pointer;
-          width: 36px;
+          padding: 4px 8px;
+          display: flex;
+          align-items: center;
         }
 
         .header-title {
           flex: 1;
           color: #fff;
-          font-size: 16px;
+          font-size: 17px;
           font-weight: 600;
           text-align: center;
         }

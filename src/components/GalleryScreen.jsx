@@ -456,8 +456,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       ) : (
         <div style={styles.header}>
           <button style={styles.backButton} onClick={onBack}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            {t.back}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
           </button>
           <h2 style={styles.titleCenter}>{t.title}</h2>
           <button style={styles.homeButtonClean} onClick={onHome}>
@@ -818,13 +817,11 @@ const styles = {
   backButton: {
     background: 'none',
     border: 'none',
-    color: 'rgba(255,255,255,0.7)',
-    padding: '8px',
+    color: '#fff',
+    padding: '4px 8px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
     display: 'flex',
     alignItems: 'center',
-    gap: '4px',
     zIndex: 1,
   },
   
@@ -845,7 +842,7 @@ const styles = {
     left: '50%',
     transform: 'translateX(-50%)',
     margin: 0,
-    fontSize: '1.2rem',
+    fontSize: '17px',
     fontWeight: '600',
     whiteSpace: 'nowrap',
   },

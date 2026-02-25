@@ -353,7 +353,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     <div className="style-screen">
       {/* Header */}
       <header className="style-header">
-        <button className="back-btn" onClick={onBack}>←</button>
+        <button className="back-btn" onClick={onBack}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
         <span className="header-title">{categoryData[activeCategory].name}</span>
       </header>
 
@@ -373,7 +373,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           <img src={photoPreview} alt="Selected" className="photo-preview" />
         ) : (
           <div className="photo-placeholder">
-            <span className="photo-icon">📷</span>
+            <span className="photo-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg></span>
             <span className="photo-text">{ps.tapToSelectPhoto}</span>
           </div>
         )}
@@ -429,9 +429,10 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           background: none;
           border: none;
           color: #fff;
-          font-size: 20px;
           cursor: pointer;
           padding: 4px 8px;
+          display: flex;
+          align-items: center;
         }
 
         .header-title {
@@ -475,8 +476,8 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         }
 
         .photo-icon {
-          font-size: 32px;
           opacity: 0.4;
+          display: flex;
         }
 
         .photo-text {
