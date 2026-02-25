@@ -36,6 +36,8 @@ import { normalizeKey, getDisplayInfo, getArtistName, getMovementDisplayInfo, ge
 import { getEducationKey, getEducationContent, getMasterEducationKey } from '../utils/educationMatcher';
 // v74: 모바일 공유/저장 유틸리티
 import { saveImage, shareImage, isNativePlatform, addWatermark } from '../utils/mobileShare';
+// v80: 풀스크린 이미지 뷰어 (핀치줌)
+import ImageFullscreenViewer from './ImageFullscreenViewer';
 
 
 const ResultScreen = ({ 
@@ -101,6 +103,8 @@ const ResultScreen = ({
   
   // ========== Save/Share 메뉴 ==========
   const [showSaveShareMenu, setShowSaveShareMenu] = useState(false);
+  // ========== 풀스크린 뷰어 ==========
+  const [fullscreenImage, setFullscreenImage] = useState(null);
   
   // v79: Original 이미지 URL (useMemo로 동기 생성 → 갤러리 왕복 시 깜빡임 완전 제거)
   const originalPhotoUrl = useMemo(() => {
@@ -1205,7 +1209,7 @@ const ResultScreen = ({
         {isFullTransform && viewIndex >= 0 && results[viewIndex] && (
           <div className="oneclick-result-section">
             {/* 결과 이미지만 (목업: 248×248, 원본 없음) */}
-            <div className="oneclick-image">
+            <div className="oneclick-image" onClick={() => setFullscreenImage(masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl)} style={{ cursor: 'pointer' }}>
               <img src={masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl} alt="Result" />
             </div>
             
@@ -1303,10 +1307,10 @@ const ResultScreen = ({
         {!isFullTransform && viewIndex >= 0 && finalDisplayImage && (
           <div className="single-result-section">
             <div className="ba-section">
-              <div className="ba-image">
+              <div className="ba-image" onClick={() => setFullscreenImage(originalPhotoUrl)} style={{ cursor: 'pointer' }}>
                 <img src={originalPhotoUrl} alt="Before" />
               </div>
-              <div className="ba-image">
+              <div className="ba-image" onClick={() => setFullscreenImage(finalDisplayImage)} style={{ cursor: 'pointer' }}>
                 <img src={finalDisplayImage} alt="After" />
               </div>
             </div>
@@ -1541,7 +1545,7 @@ const ResultScreen = ({
                   handleDownload();
                 }}
               >
-                <span className="menu-icon">💾</span>
+                <span className="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
                 {t.saveToDevice}
               </button>
               <button 
@@ -1551,7 +1555,7 @@ const ResultScreen = ({
                   handleShare();
                 }}
               >
-                <span className="menu-icon">📤</span>
+                <span className="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
                 {t.shareArt}
               </button>
               <button 
@@ -1562,6 +1566,27 @@ const ResultScreen = ({
               </button>
             </div>
           </div>
+        )}\n
+
+        {/* v80: 풀스크린 이미지 뷰어 */}
+        {fullscreenImage && (
+          <ImageFullscreenViewer
+            imageUrl={fullscreenImage}
+            onClose={() => setFullscreenImage(null)}
+            actions={[
+              {
+                icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+                label: `${t.save}/${t.share}`,
+                onClick: () => setShowSaveShareMenu(true),
+                style: { color: '#7c3aed' },
+              },
+              {
+                icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>,
+                label: t.gallery,
+                onClick: () => { setFullscreenImage(null); onGallery(); },
+              },
+            ]}
+          />
         )}
         
       </div>
@@ -2001,7 +2026,8 @@ const ResultScreen = ({
 
         .menu-icon {
           margin-right: 8px;
-          font-size: 1.1rem;
+          display: flex;
+          align-items: center;
         }
 
         .menu-cancel {
