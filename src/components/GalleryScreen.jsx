@@ -1205,15 +1205,5 @@ const modalStyles = {
     gap: '8px',
   },
 };
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    borderRadius: '14px',
-    color: '#fff',
-    fontSize: '14px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-  },
-};
 
 export default GalleryScreen;
