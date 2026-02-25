@@ -1,6 +1,6 @@
 // PhotoStyleScreen.jsx - Style Selection Screen (Dark Theme)
 // Based on mockup: 03-style-select.html
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { getUi } from '../i18n';
 
 // Thumbnail imports - Movements
@@ -35,6 +35,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [selectedStyle, setSelectedStyle] = useState(null);
+
+  // 카테고리 스와이프
+  const categoryOrder = ['movements', 'masters', 'oriental'];
+  const [activeCategory, setActiveCategory] = useState(mainCategory || 'movements');
+  const [transition, setTransition] = useState('');
+  const isTransitioning = useRef(false);
+  const touchStartRef = useRef({ x: 0, y: 0 });
 
   const ui = getUi(lang);
   const ps = ui.photoStyle;
@@ -130,7 +137,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     }
   };
 
-  const currentCategory = categoryData[mainCategory];
+  const currentCategory = categoryData[activeCategory];
 
   // Auto-start when both photo and style selected
   useEffect(() => {
@@ -170,8 +177,51 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     setSelectedStyle(currentCategory.fullTransform);
   };
 
+  // ─── 카테고리 전환 ───
+  const changeCategory = useCallback((newIdx, direction) => {
+    if (isTransitioning.current) return;
+    const clamped = Math.max(0, Math.min(2, newIdx));
+    if (clamped === categoryOrder.indexOf(activeCategory)) return;
+    isTransitioning.current = true;
+
+    // 나가는 애니메이션
+    setTransition(direction === 'left' ? 'slide-out-left' : 'slide-out-right');
+
+    setTimeout(() => {
+      setActiveCategory(categoryOrder[clamped]);
+      setSelectedStyle(null); // 카테고리 전환 시 선택 해제
+
+      // 들어오는 위치에서 시작
+      setTransition(direction === 'left' ? 'slide-in-right' : 'slide-in-left');
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTransition('');
+          isTransitioning.current = false;
+        });
+      });
+    }, 200);
+  }, [activeCategory]);
+
+  // ─── 터치 스와이프 ───
+  const handleTouchStart = useCallback((e) => {
+    touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, []);
+
+  const handleTouchEnd = useCallback((e) => {
+    const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+
+    // 수평이고 충분한 거리
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      const idx = categoryOrder.indexOf(activeCategory);
+      if (dx < 0 && idx < 2) changeCategory(idx + 1, 'left');
+      else if (dx > 0 && idx > 0) changeCategory(idx - 1, 'right');
+    }
+  }, [activeCategory, changeCategory]);
+
   return (
-    <div className="style-screen">
+    <div className="style-screen" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
       {/* Header */}
       <header className="style-header">
         <button className="back-btn" onClick={onBack}>←</button>
@@ -200,63 +250,81 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         )}
       </div>
 
-      {/* Full Transform Button */}
-      <button
-        className={`full-transform-btn ${selectedStyle?.isFullTransform ? 'selected' : ''}`}
-        onClick={handleFullTransform}
-        style={{
-          background: currentCategory.gradient,
-          boxShadow: selectedStyle?.isFullTransform 
-            ? `0 0 0 2px ${currentCategory.accent}, 0 0 12px ${currentCategory.accent}66`
-            : currentCategory.boxShadow,
-          color: currentCategory.color
-        }}
-      >
-        <span className="ft-sparkles">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-            <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
-          </svg>
-        </span>
-        <div className="ft-content">
-          <div className="ft-row-1">
-            <span className="ft-label">{ps.fullTransform}</span>
-            <span className="ft-price">{currentCategory.fullPrice}</span>
-          </div>
-          <div className="ft-row-2">
-            <span className="ft-desc">{currentCategory.fullTransform.title}</span>
-            <span className="ft-emojis">{currentCategory.emojis}</span>
-          </div>
-        </div>
-      </button>
-
-      {/* Select label + per-transform price */}
-      <div className="select-price-row">
-        <span className="select-label">{currentCategory.selectLabel}</span>
-        <span className="per-transform-price">{currentCategory.priceLabel}</span>
+      {/* 도트 인디케이터 */}
+      <div className="swipe-dots">
+        {categoryOrder.map((cat, i) => (
+          <span
+            key={cat}
+            className={`swipe-dot ${activeCategory === cat ? 'active' : ''}`}
+            data-cat={cat}
+            onClick={() => {
+              const idx = categoryOrder.indexOf(activeCategory);
+              if (i !== idx) changeCategory(i, i > idx ? 'left' : 'right');
+            }}
+          />
+        ))}
       </div>
 
-      {/* Style Grid */}
-      <div className="style-grid">
-        {currentCategory.styles.map(style => (
-          <button
-            key={style.id}
-            className={`style-card ${selectedStyle?.id === style.id ? 'selected' : ''}`}
-            onClick={() => handleStyleSelect(style)}
-            style={selectedStyle?.id === style.id ? {
-              borderColor: currentCategory.accent,
-              boxShadow: `0 0 12px ${currentCategory.accent}66`
-            } : {}}
-          >
-            <div className="style-thumb">
-              <img src={style.thumbnail} alt={style.name} />
-              <div className="style-overlay">
-                <span className="style-name">{style.name}</span>
-                <span className="style-period">{style.period}</span>
-              </div>
+      {/* 카테고리 콘텐츠 (데이터 전환) */}
+      <div className={`category-content ${transition}`}>
+        {/* Full Transform Button */}
+        <button
+          className={`full-transform-btn ${selectedStyle?.isFullTransform ? 'selected' : ''}`}
+          onClick={handleFullTransform}
+          style={{
+            background: currentCategory.gradient,
+            boxShadow: selectedStyle?.isFullTransform 
+              ? `0 0 0 2px ${currentCategory.accent}, 0 0 12px ${currentCategory.accent}66`
+              : currentCategory.boxShadow,
+            color: currentCategory.color
+          }}
+        >
+          <span className="ft-sparkles">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+              <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+            </svg>
+          </span>
+          <div className="ft-content">
+            <div className="ft-row-1">
+              <span className="ft-label">{ps.fullTransform}</span>
+              <span className="ft-price">{currentCategory.fullPrice}</span>
             </div>
-          </button>
-        ))}
+            <div className="ft-row-2">
+              <span className="ft-desc">{currentCategory.fullTransform.title}</span>
+              <span className="ft-emojis">{currentCategory.emojis}</span>
+            </div>
+          </div>
+        </button>
+
+        {/* Select label + per-transform price */}
+        <div className="select-price-row">
+          <span className="select-label">{currentCategory.selectLabel}</span>
+          <span className="per-transform-price">{currentCategory.priceLabel}</span>
+        </div>
+
+        {/* Style Grid */}
+        <div className="style-grid">
+          {currentCategory.styles.map(style => (
+            <button
+              key={style.id}
+              className={`style-card ${selectedStyle?.id === style.id ? 'selected' : ''}`}
+              onClick={() => handleStyleSelect(style)}
+              style={selectedStyle?.id === style.id ? {
+                borderColor: currentCategory.accent,
+                boxShadow: `0 0 12px ${currentCategory.accent}66`
+              } : {}}
+            >
+              <div className="style-thumb">
+                <img src={style.thumbnail} alt={style.name} />
+                <div className="style-overlay">
+                  <span className="style-name">{style.name}</span>
+                  <span className="style-period">{style.period}</span>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       <style>{`
@@ -344,9 +412,62 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           border-radius: 12px;
         }
 
+        /* 도트 인디케이터 */
+        .swipe-dots {
+          display: flex;
+          justify-content: center;
+          gap: 6px;
+          padding: 10px 0 0;
+        }
+
+        .swipe-dot {
+          height: 6px;
+          border-radius: 3px;
+          background: rgba(255,255,255,0.2);
+          transition: all 0.25s ease;
+          cursor: pointer;
+          border: none;
+        }
+
+        .swipe-dot.active { width: 18px; }
+        .swipe-dot:not(.active) { width: 6px; }
+        .swipe-dot[data-cat="movements"].active { background: #a855f7; }
+        .swipe-dot[data-cat="masters"].active { background: #daa520; }
+        .swipe-dot[data-cat="oriental"].active { background: #f472b6; }
+
+        /* 카테고리 콘텐츠 전환 */
+        .category-content {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .category-content.slide-out-left {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+
+        .category-content.slide-out-right {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+
+        .category-content.slide-in-right {
+          opacity: 0;
+          transform: translateX(30px);
+          transition: none;
+        }
+
+        .category-content.slide-in-left {
+          opacity: 0;
+          transform: translateX(-30px);
+          transition: none;
+        }
+
         /* Full Transform Button */
         .full-transform-btn {
-          margin: 0 28px 6px;
+          margin: 14px 28px 6px;
           padding: 14px 18px;
           border: none;
           border-radius: 12px;
@@ -408,7 +529,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         }
 
         .ft-emojis {
-          font-size: 14px;
+          font-size: 18px;
           margin-left: 8px;
         }
 
