@@ -89,7 +89,7 @@ const MenuScreen = ({
   return (
     <div className="menu-screen">
       <header className="menu-header">
-        <button className="back-btn" onClick={onBack}>←</button>
+        <button className="back-btn" onClick={onBack}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
         <span className="header-title">{t.title}</span>
         <span className="header-spacer"></span>
       </header>
@@ -206,10 +206,11 @@ const menuStyles = `
     background: none;
     border: none;
     color: #fff;
-    font-size: 20px;
     cursor: pointer;
     padding: 4px 8px;
     width: 40px;
+    display: flex;
+    align-items: center;
   }
   .header-title {
     flex: 1;

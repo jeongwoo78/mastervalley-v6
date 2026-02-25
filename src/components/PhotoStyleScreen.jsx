@@ -351,7 +351,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     <div className="style-screen">
       {/* Header */}
       <header className="style-header">
-        <button className="back-btn" onClick={onBack}>←</button>
+        <button className="back-btn" onClick={onBack}><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
         <span className="header-title">{categoryData[activeCategory].name}</span>
       </header>
 
@@ -422,9 +422,10 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           background: none;
           border: none;
           color: #fff;
-          font-size: 20px;
           cursor: pointer;
           padding: 4px 8px;
+          display: flex;
+          align-items: center;
         }
 
         .header-title {
