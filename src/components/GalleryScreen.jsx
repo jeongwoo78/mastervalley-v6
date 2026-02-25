@@ -480,7 +480,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {galleryItems.length === 0 ? (
         <div style={styles.empty}>
           <div className="gallery-empty-icon">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
               <circle cx="8.5" cy="8.5" r="1.5"/>
               <polyline points="21 15 16 10 5 21"/>
@@ -598,13 +598,14 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
 // CSS 애니메이션 스타일
 const animationStyle = `
   .gallery-empty-icon {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.2;
-    margin-bottom: 4px;
+    margin-bottom: 16px;
   }
   @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -879,13 +880,15 @@ const styles = {
   },
   
   emptyText: {
-    fontSize: '1.2rem',
-    margin: '20px 0 10px',
+    fontSize: '15px',
+    fontWeight: 500,
+    color: 'rgba(255,255,255,0.6)',
+    margin: '0 0 6px',
   },
   
   emptySubtext: {
-    fontSize: '0.9rem',
-    opacity: 0.7,
+    fontSize: '13px',
+    color: 'rgba(255,255,255,0.3)',
     margin: 0,
   },
   
