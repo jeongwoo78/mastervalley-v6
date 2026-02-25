@@ -2012,12 +2012,11 @@ const ResultScreen = ({
         }
 
         .save-share-menu {
-          background: #1e1e2e;
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 14px;
-          padding: 6px;
+          background: none;
+          border: none;
+          border-radius: 0;
+          padding: 0;
           min-width: 200px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
           animation: slideUp 0.2s ease;
         }
 
@@ -2037,18 +2036,20 @@ const ResultScreen = ({
           align-items: center;
           justify-content: center;
           width: 100%;
-          padding: 14px 16px;
+          padding: 16px 40px;
           border: none;
           background: transparent;
-          font-size: 0.9rem;
-          color: rgba(255, 255, 255, 0.8);
+          font-size: 1rem;
+          font-weight: 600;
+          color: #a78bfa;
           cursor: pointer;
-          border-radius: 8px;
-          transition: background 0.2s;
+          border-radius: 0;
+          letter-spacing: 0.3px;
+          transition: opacity 0.2s;
         }
 
         .menu-item:hover {
-          background: rgba(255, 255, 255, 0.05);
+          opacity: 0.8;
         }
 
         .menu-icon {
@@ -2059,9 +2060,11 @@ const ResultScreen = ({
         .menu-cancel {
           color: rgba(255, 255, 255, 0.35);
           justify-content: center;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          font-size: 0.875rem;
+          font-weight: 500;
           margin-top: 4px;
-          padding-top: 14px;
+          border-top: none;
+          padding-top: 16px;
         }
 
         /* 다시 시도 섹션 */
@@ -2378,30 +2381,34 @@ const ResultScreen = ({
         }
         .image-modal-actions {
           display: flex;
-          gap: 10px;
-          padding: 20px;
+          justify-content: center;
+          gap: 60px;
+          padding: 14px 20px 20px;
+          border-top: 1px solid rgba(255,255,255,0.08);
         }
         .image-modal-btn {
-          flex: 1;
-          padding: 14px;
-          border-radius: 10px;
+          padding: 8px 4px;
+          border: none;
+          border-radius: 0;
+          background: none;
           cursor: pointer;
-          font-size: 0.9rem;
+          font-size: 13px;
           font-weight: 600;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
+          gap: 6px;
+          color: rgba(255,255,255,0.7);
         }
         .image-modal-btn.save-share {
-          background: rgba(167,139,250,0.15);
-          border: 1px solid rgba(167,139,250,0.3);
-          color: #a78bfa;
+          background: none;
+          border: none;
+          color: #7c3aed;
         }
         .image-modal-btn.gallery {
-          background: rgba(255,255,255,0.15);
-          border: 1px solid rgba(255,255,255,0.2);
-          color: white;
+          background: none;
+          border: none;
+          color: rgba(255,255,255,0.7);
         }
 
       `}</style>

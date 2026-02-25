@@ -1016,19 +1016,20 @@ const styles = {
   
   modalActions: {
     display: 'flex',
-    gap: '10px',
-    padding: '0 20px 20px',
+    justifyContent: 'center',
+    gap: '60px',
+    padding: '14px 20px 20px',
+    borderTop: '1px solid rgba(255,255,255,0.08)',
   },
   
   saveShareButton: {
-    flex: 1,
-    background: 'rgba(102,126,234,0.15)',
-    border: '1px solid rgba(102,126,234,0.3)',
+    background: 'none',
+    border: 'none',
     color: '#7c3aed',
-    padding: '14px',
-    borderRadius: '10px',
+    padding: '8px 4px',
+    borderRadius: '0',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '13px',
     fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
@@ -1037,14 +1038,13 @@ const styles = {
   },
   
   deleteButton: {
-    flex: 1,
-    background: 'rgba(255,107,107,0.1)',
-    border: '1px solid rgba(255,107,107,0.3)',
+    background: 'none',
+    border: 'none',
     color: '#ff6b6b',
-    padding: '14px',
-    borderRadius: '10px',
+    padding: '8px 4px',
+    borderRadius: '0',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '13px',
     fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
@@ -1067,12 +1067,11 @@ const styles = {
   },
   
   saveShareMenu: {
-    background: '#1e1e2e',
-    border: '1px solid rgba(255,255,255,0.1)',
-    borderRadius: '14px',
-    padding: '6px',
+    background: 'none',
+    border: 'none',
+    borderRadius: '0',
+    padding: '0',
     minWidth: '200px',
-    boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
   },
   
   menuItem: {
@@ -1080,14 +1079,15 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    padding: '14px 16px',
+    padding: '16px 40px',
     border: 'none',
     background: 'transparent',
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: '0.9rem',
+    color: '#a78bfa',
+    fontSize: '1rem',
+    fontWeight: '600',
     cursor: 'pointer',
-    borderRadius: '8px',
-    transition: 'background 0.2s',
+    borderRadius: '0',
+    letterSpacing: '0.3px',
   },
   
   menuIcon: {
@@ -1099,9 +1099,10 @@ const styles = {
   menuCancel: {
     color: 'rgba(255,255,255,0.35)',
     justifyContent: 'center',
-    borderTop: '1px solid rgba(255,255,255,0.08)',
+    fontSize: '0.875rem',
+    fontWeight: '500',
     marginTop: '4px',
-    paddingTop: '14px',
+    paddingTop: '16px',
   },
 };
 
