@@ -147,6 +147,7 @@ export const ui = {
     countUnit: '',
     delete: 'Delete',
     saveToDevice: 'Save',
+    shareArt: 'Share',
     select: 'Select',
     selectAll: 'All',
     deselectAll: 'None',

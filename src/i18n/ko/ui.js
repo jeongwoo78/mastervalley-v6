@@ -147,6 +147,7 @@ export const ui = {
     countUnit: '개',
     delete: '삭제',
     saveToDevice: '저장하기',
+    shareArt: '공유하기',
     select: '선택',
     selectAll: '전체 선택',
     deselectAll: '전체 해제',
