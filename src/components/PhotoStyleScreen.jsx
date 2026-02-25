@@ -528,17 +528,19 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         .swipe-viewport {
           flex: 1;
           overflow: hidden;
+          position: relative;
         }
 
         .swipe-track {
           display: flex;
+          width: 300%;
           height: 100%;
           will-change: transform;
           transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
 
         .swipe-page {
-          min-width: 100%;
+          width: calc(100% / 3);
           flex-shrink: 0;
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;

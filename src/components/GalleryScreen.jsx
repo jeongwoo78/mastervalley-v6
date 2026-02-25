@@ -5,7 +5,7 @@ import { saveImage as saveToDevice, shareImage, addWatermark, isNativePlatform, 
 import { getMovementDisplayInfo, getOrientalDisplayInfo, getMasterInfo } from '../utils/displayConfig';
 import { getUi } from '../i18n';
 // v80: 풀스크린 이미지 뷰어 (핀치줌)
-import ImageFullscreenViewer from './ImageFullscreenViewer';
+// ImageFullscreenViewer removed - using simple fullimage overlay
 
 // ========== IndexedDB 설정 ==========
 const DB_NAME = 'PicoArtGallery';
@@ -498,7 +498,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
             <div
               key={item.id}
               className={`gallery-item ${selectMode && selectedIds.has(item.id) ? 'selected' : ''}`}
-              onClick={() => selectMode ? toggleSelect(item.id) : setSelectedItem(item)}
+              onClick={() => selectMode ? toggleSelect(item.id) : (() => { setSelectedItem(item); setFullscreenImage(item.imageData); })()}
             >
               <div style={{ position: 'relative' }}>
                 <img
@@ -529,102 +529,64 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
         </div>
       )}
 
-      {/* 상세 보기 모달 */}
-      {selectedItem && (
-        <div style={styles.modal} onClick={() => setSelectedItem(null)}>
-          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button
-              style={styles.closeButton}
-              onClick={() => setSelectedItem(null)}
-            >
-              ✕
-            </button>
-            
-            <img
-              src={selectedItem.imageData}
-              alt={selectedItem.styleName}
-              style={{ ...styles.modalImage, cursor: 'pointer' }}
-              onClick={() => setFullscreenImage(selectedItem.imageData)}
-            />
-            
-            <div style={styles.modalInfo}>
-              <h3 style={styles.modalTitle}>
-                {getGalleryDisplay(selectedItem).badge && <span style={{...styles.reText, fontSize: '0.85rem'}}>{getGalleryDisplay(selectedItem).badge} </span>}
-                {getGalleryDisplay(selectedItem).title}
-              </h3>
-              {getGalleryDisplay(selectedItem).subtitle && (
-                <p style={styles.modalCategory}>{getGalleryDisplay(selectedItem).subtitle}</p>
-              )}
-              <p style={styles.modalDate}>{formatDate(selectedItem.createdAt)}</p>
-            </div>
-            
-            <div style={styles.modalActions}>
-              <button
-                style={styles.saveShareButton}
-                onClick={() => setShowSaveShareMenu(true)}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                {t.saveShare}
-              </button>
-              <button
-                style={styles.deleteButton}
-                onClick={() => handleDelete(selectedItem.id)}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> {t.delete}
-              </button>
-            </div>
-            
-            {/* 저장/공유 팝업 메뉴 */}
-            {showSaveShareMenu && (
-              <div style={styles.saveShareOverlay} onClick={() => setShowSaveShareMenu(false)}>
-                <div style={styles.saveShareMenu} onClick={(e) => e.stopPropagation()}>
-                  <button 
-                    style={styles.menuItem}
-                    onClick={() => handleDownload(selectedItem)}
-                  >
-                    <span style={styles.menuIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
-                    {t.save}
-                  </button>
-                  <button 
-                    style={styles.menuItem}
-                    onClick={() => handleShare(selectedItem)}
-                  >
-                    <span style={styles.menuIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
-                    {t.share}
-                  </button>
-                  <button 
-                    style={{...styles.menuItem, ...styles.menuCancel}}
-                    onClick={() => setShowSaveShareMenu(false)}
-                  >
-                    {t.close}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* v80: 풀스크린 이미지 뷰어 */}
+      {/* 풀이미지 보기 */}
       {fullscreenImage && (
-        <ImageFullscreenViewer
-          imageUrl={fullscreenImage}
-          onClose={() => setFullscreenImage(null)}
-          actions={[
-            {
-              icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
-              label: t.saveShare || `${t.save}/${t.share}`,
-              onClick: () => setShowSaveShareMenu(true),
-              style: { color: '#7c3aed' },
-            },
-            {
-              icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
-              label: t.delete,
-              onClick: () => { setFullscreenImage(null); if(selectedItem) handleDelete(selectedItem.id); },
-              style: { color: '#ff6b6b' },
-            },
-          ]}
-        />
+        <div style={fullimageStyles.overlay} onClick={() => { setFullscreenImage(null); setSelectedItem(null); }}>
+          <button style={fullimageStyles.closeBtn} onClick={() => { setFullscreenImage(null); setSelectedItem(null); }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+          <img 
+            src={fullscreenImage} 
+            alt="Full view" 
+            style={fullimageStyles.img}
+            onClick={(e) => e.stopPropagation()}
+          />
+          {selectedItem && (
+            <p style={fullimageStyles.meta}>
+              {getGalleryDisplay(selectedItem).title} · {formatDate(selectedItem.createdAt)}
+            </p>
+          )}
+          <div style={fullimageStyles.actions} onClick={(e) => e.stopPropagation()}>
+            <button style={fullimageStyles.btn} onClick={() => setShowSaveShareMenu(true)}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              {t.saveShare || `${t.save}/${t.share}`}
+            </button>
+            <button style={{...fullimageStyles.btn, color: '#ff6b6b'}} onClick={() => { setFullscreenImage(null); if(selectedItem) handleDelete(selectedItem.id); setSelectedItem(null); }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              {t.delete}
+            </button>
+          </div>
+
+          {/* 저장/공유 팝업 메뉴 */}
+          {showSaveShareMenu && (
+            <div style={styles.saveShareOverlay} onClick={() => setShowSaveShareMenu(false)}>
+              <div style={styles.saveShareMenu} onClick={(e) => e.stopPropagation()}>
+                <button 
+                  style={styles.menuItem}
+                  onClick={() => handleDownload(selectedItem)}
+                >
+                  <span style={styles.menuIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                  {t.save}
+                </button>
+                <button 
+                  style={styles.menuItem}
+                  onClick={() => handleShare(selectedItem)}
+                >
+                  <span style={styles.menuIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
+                  {t.share}
+                </button>
+                <button 
+                  style={{...styles.menuItem, ...styles.menuCancel}}
+                  onClick={() => setShowSaveShareMenu(false)}
+                >
+                  {t.close}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       {/* CSS 애니메이션 */}
@@ -1092,7 +1054,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 2000,
+    zIndex: 10001,
   },
   
   saveShareMenu: {
@@ -1131,6 +1093,68 @@ const styles = {
     borderTop: '1px solid rgba(255,255,255,0.08)',
     marginTop: '4px',
     paddingTop: '14px',
+  },
+};
+
+const fullimageStyles = {
+  overlay: {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(0, 0, 0, 0.95)',
+    zIndex: 9998,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+  },
+  closeBtn: {
+    position: 'absolute',
+    top: 'max(16px, env(safe-area-inset-top))',
+    right: '16px',
+    background: 'rgba(0, 0, 0, 0.5)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: '50%',
+    width: 44,
+    height: 44,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    zIndex: 2,
+  },
+  img: {
+    maxWidth: '92%',
+    maxHeight: '70vh',
+    objectFit: 'contain',
+    borderRadius: '8px',
+  },
+  meta: {
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontSize: '13px',
+    marginTop: '12px',
+    textAlign: 'center',
+  },
+  actions: {
+    display: 'flex',
+    gap: '12px',
+    marginTop: '16px',
+    padding: '0 20px',
+  },
+  btn: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    padding: '14px 24px',
+    background: 'rgba(255, 255, 255, 0.15)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: '14px',
+    color: '#fff',
+    fontSize: '14px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
   },
 };
 
