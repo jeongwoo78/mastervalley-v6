@@ -1176,9 +1176,9 @@ const modalStyles = {
   },
   saveShareButton: {
     flex: 1,
-    background: 'rgba(255,255,255,0.15)',
-    border: '1px solid rgba(255,255,255,0.2)',
-    color: 'white',
+    background: 'rgba(167,139,250,0.15)',
+    border: '1px solid rgba(167,139,250,0.3)',
+    color: '#a78bfa',
     padding: '14px',
     borderRadius: '10px',
     cursor: 'pointer',
