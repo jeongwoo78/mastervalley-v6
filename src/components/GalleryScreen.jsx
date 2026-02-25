@@ -177,7 +177,6 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showSaveShareMenu, setShowSaveShareMenu] = useState(false);
-  const [fullscreenImage, setFullscreenImage] = useState(null);
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [isBatchSaving, setIsBatchSaving] = useState(false);
@@ -499,7 +498,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
             <div
               key={item.id}
               className={`gallery-item ${selectMode && selectedIds.has(item.id) ? 'selected' : ''}`}
-              onClick={() => selectMode ? toggleSelect(item.id) : (() => { setSelectedItem(item); setFullscreenImage(item.imageData); })()}
+              onClick={() => selectMode ? toggleSelect(item.id) : setSelectedItem(item)}
             >
               <div style={{ position: 'relative' }}>
                 <img
@@ -530,64 +529,69 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
         </div>
       )}
 
-      {/* 풀이미지 보기 */}
-      {fullscreenImage && (
-        <div style={fullimageStyles.overlay} onClick={() => { if (!showSaveShareMenu) { setFullscreenImage(null); setSelectedItem(null); } }}>
-          <div style={fullimageStyles.contentWrap} onClick={(e) => e.stopPropagation()}>
-            <button style={fullimageStyles.closeBtn} onClick={() => { setFullscreenImage(null); setSelectedItem(null); }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      {/* 상세 보기 카드 모달 */}
+      {selectedItem && (
+        <div style={styles.modal} onClick={() => { if (!showSaveShareMenu) setSelectedItem(null); }}>
+          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button style={styles.closeButton} onClick={() => setSelectedItem(null)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
               </svg>
             </button>
-            <img 
-              src={fullscreenImage} 
-              alt="Full view" 
-              style={fullimageStyles.img}
+            
+            <img
+              src={selectedItem.imageData}
+              alt={selectedItem.styleName}
+              style={styles.modalImage}
             />
-          </div>
-          {selectedItem && (
-            <p style={fullimageStyles.meta}>
-              {getGalleryDisplay(selectedItem).title} · {formatDate(selectedItem.createdAt)}
-            </p>
-          )}
-          <div style={fullimageStyles.actions} onClick={(e) => e.stopPropagation()}>
-            <button style={fullimageStyles.btn} onClick={() => setShowSaveShareMenu(true)}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              {t.saveShare || `${t.save}/${t.share}`}
-            </button>
-            <button style={{...fullimageStyles.btn, color: '#ff6b6b'}} onClick={() => { setFullscreenImage(null); if(selectedItem) handleDelete(selectedItem.id); setSelectedItem(null); }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              {t.delete}
-            </button>
-          </div>
-
-          {/* 저장/공유 팝업 메뉴 */}
-          {showSaveShareMenu && (
-            <div style={styles.saveShareOverlay} onClick={() => setShowSaveShareMenu(false)}>
-              <div style={styles.saveShareMenu} onClick={(e) => e.stopPropagation()}>
-                <button 
-                  style={styles.menuItem}
-                  onClick={() => handleDownload(selectedItem)}
-                >
-                  <span style={styles.menuIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
-                  {t.saveToDevice}
-                </button>
-                <button 
-                  style={styles.menuItem}
-                  onClick={() => handleShare(selectedItem)}
-                >
-                  <span style={styles.menuIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
-                  {t.shareArt}
-                </button>
-                <button 
-                  style={{...styles.menuItem, ...styles.menuCancel}}
-                  onClick={() => setShowSaveShareMenu(false)}
-                >
-                  {t.close}
-                </button>
-              </div>
+            
+            <div style={styles.modalInfo}>
+              <h3 style={styles.modalTitle}>{getGalleryDisplay(selectedItem).title}</h3>
+              <p style={styles.modalDate}>{formatDate(selectedItem.createdAt)}</p>
+              {getGalleryDisplay(selectedItem).subtitle && (
+                <p style={styles.modalCategory}>{getGalleryDisplay(selectedItem).subtitle}</p>
+              )}
             </div>
-          )}
+            
+            <div style={styles.modalActions}>
+              <button style={styles.saveShareButton} onClick={() => setShowSaveShareMenu(true)}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                {t.saveShare || `${t.save}/${t.share}`}
+              </button>
+              <button style={styles.deleteButton} onClick={() => { handleDelete(selectedItem.id); setSelectedItem(null); }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                {t.delete}
+              </button>
+            </div>
+            
+            {/* 저장/공유 팝업 메뉴 */}
+            {showSaveShareMenu && (
+              <div style={styles.saveShareOverlay} onClick={() => setShowSaveShareMenu(false)}>
+                <div style={styles.saveShareMenu} onClick={(e) => e.stopPropagation()}>
+                  <button 
+                    style={styles.menuItem}
+                    onClick={() => handleDownload(selectedItem)}
+                  >
+                    <span style={styles.menuIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    {t.saveToDevice}
+                  </button>
+                  <button 
+                    style={styles.menuItem}
+                    onClick={() => handleShare(selectedItem)}
+                  >
+                    <span style={styles.menuIcon}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
+                    {t.shareArt}
+                  </button>
+                  <button 
+                    style={{...styles.menuItem, ...styles.menuCancel}}
+                    onClick={() => setShowSaveShareMenu(false)}
+                  >
+                    {t.close}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -1101,63 +1105,106 @@ const styles = {
   },
 };
 
-const fullimageStyles = {
-  overlay: {
+// 모달 스타일
+const modalStyles = {
+  modal: {
     position: 'fixed',
-    inset: 0,
-    background: 'rgba(0, 0, 0, 0.95)',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0,0,0,0.9)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 9998,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    padding: '20px',
   },
-  contentWrap: {
+  modalContent: {
+    background: '#1a1a2e',
+    borderRadius: '16px',
+    maxWidth: '500px',
+    width: '100%',
+    maxHeight: '90vh',
+    overflow: 'auto',
     position: 'relative',
-    maxWidth: '92%',
-    maxHeight: '70vh',
   },
-  closeBtn: {
+  closeButton: {
     position: 'absolute',
-    top: -12,
-    right: -12,
-    background: 'rgba(0, 0, 0, 0.6)',
-    border: '1px solid rgba(255, 255, 255, 0.25)',
+    top: '10px',
+    right: '10px',
+    background: 'rgba(0,0,0,0.5)',
+    border: '1px solid rgba(255,255,255,0.2)',
+    color: 'white',
+    width: '36px',
+    height: '36px',
     borderRadius: '50%',
-    width: 36,
-    height: 36,
+    cursor: 'pointer',
+    zIndex: 10,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    cursor: 'pointer',
-    zIndex: 2,
   },
-  img: {
-    maxWidth: '100%',
-    maxHeight: '70vh',
-    objectFit: 'contain',
-    borderRadius: '8px',
+  modalImage: {
+    width: '100%',
     display: 'block',
+    borderRadius: '16px 16px 0 0',
   },
-  meta: {
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontSize: '13px',
-    marginTop: '12px',
+  modalInfo: {
+    padding: '20px',
     textAlign: 'center',
   },
-  actions: {
-    display: 'flex',
-    gap: '12px',
-    marginTop: '16px',
-    padding: '0 20px',
+  modalTitle: {
+    margin: '0 0 8px',
+    fontSize: '1.3rem',
+    color: '#a78bfa',
   },
-  btn: {
+  modalDate: {
+    margin: 0,
+    fontSize: '0.9rem',
+    opacity: 0.7,
+  },
+  modalCategory: {
+    margin: '8px 0 0',
+    fontSize: '0.85rem',
+    color: '#67e8f9',
+  },
+  modalActions: {
+    display: 'flex',
+    gap: '10px',
+    padding: '0 20px 20px',
+  },
+  saveShareButton: {
+    flex: 1,
+    background: 'rgba(255,255,255,0.15)',
+    border: '1px solid rgba(255,255,255,0.2)',
+    color: 'white',
+    padding: '14px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '8px',
-    padding: '14px 24px',
-    background: 'rgba(255, 255, 255, 0.15)',
+  },
+  deleteButton: {
+    flex: 1,
+    background: 'rgba(255,100,100,0.1)',
+    border: '1px solid rgba(255,100,100,0.3)',
+    color: '#ff6b6b',
+    padding: '14px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    fontWeight: '600',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+  },
+};
     border: '1px solid rgba(255, 255, 255, 0.2)',
     borderRadius: '14px',
     color: '#fff',
