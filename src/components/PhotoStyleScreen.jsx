@@ -168,6 +168,15 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
     return () => window.removeEventListener('resize', measure);
   }, []);
 
+  // activeCategory 변경 시 트랙 위치 동기화
+  useEffect(() => {
+    const idx = categoryOrder.indexOf(activeCategory);
+    if (trackRef.current?.parentElement) {
+      PAGE_W_REF.current = trackRef.current.parentElement.offsetWidth;
+    }
+    setTrackTransform(-idx * PAGE_W_REF.current, true);
+  }, [activeCategory]);
+
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
   };
@@ -401,7 +410,6 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         <div
           ref={trackRef}
           className="swipe-track"
-          style={{ transform: `translate3d(-${currentIndex * 100}%, 0, 0)` }}
         >
           {categoryOrder.map(catKey => renderCategoryPage(catKey))}
         </div>
@@ -524,14 +532,13 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
 
         .swipe-track {
           display: flex;
-          width: 300%;
           height: 100%;
           will-change: transform;
           transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
 
         .swipe-page {
-          width: 33.333%;
+          min-width: 100%;
           flex-shrink: 0;
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
