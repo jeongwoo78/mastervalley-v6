@@ -114,7 +114,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           border: none;
           color: #fff;
           cursor: pointer;
-          width: 36px;
+          padding: 4px 8px;
           display: flex;
           align-items: center;
         }
@@ -128,7 +128,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         }
 
         .header-spacer {
-          width: 36px;
+          width: 40px;
         }
 
         /* Balance Section */

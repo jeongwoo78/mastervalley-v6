@@ -328,6 +328,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
 
   // 이미지 저장 (mobileShare 사용)
   const handleDownload = async (item) => {
+    if (!item) return;
     try {
       const fileName = `mastervalley_${item.styleName.replace(/\s+/g, '_')}_${Date.now()}.jpg`;
       
@@ -354,6 +355,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
 
   // 이미지 공유 (워터마크 포함)
   const handleShare = async (item) => {
+    if (!item) return;
     try {
       // 워터마크 추가
       const watermarkedImage = await addWatermark(item.imageData);
@@ -530,7 +532,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
 
       {/* 풀이미지 보기 */}
       {fullscreenImage && (
-        <div style={fullimageStyles.overlay} onClick={() => { setFullscreenImage(null); setSelectedItem(null); }}>
+        <div style={fullimageStyles.overlay} onClick={() => { if (!showSaveShareMenu) { setFullscreenImage(null); setSelectedItem(null); } }}>
           <div style={fullimageStyles.contentWrap} onClick={(e) => e.stopPropagation()}>
             <button style={fullimageStyles.closeBtn} onClick={() => { setFullscreenImage(null); setSelectedItem(null); }}>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
