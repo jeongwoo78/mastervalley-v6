@@ -128,7 +128,7 @@ export const ui = {
     saved: '저장됨',
     empty: '아직 저장된 이미지가 없습니다',
     emptySubtext: '사진을 변환하면 여기에 자동 저장됩니다',
-    saveShare: '💾 저장/공유',
+    saveShare: '저장/공유',
     save: '저장하기',
     share: '공유하기',
     close: '닫기',

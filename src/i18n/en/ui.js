@@ -128,7 +128,7 @@ export const ui = {
     saved: 'Saved',
     empty: 'No saved images yet',
     emptySubtext: 'Converted images will be saved here',
-    saveShare: '💾 Save/Share',
+    saveShare: 'Save/Share',
     save: 'Save',
     share: 'Share',
     close: 'Close',

@@ -414,8 +414,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
         <div className="select-header">
           <div className="select-header-row1">
             <button className="select-header-back" onClick={exitSelectMode}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-              {t.back}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </button>
             <div className="select-header-actions">
               <button 
@@ -532,17 +531,18 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {/* 풀이미지 보기 */}
       {fullscreenImage && (
         <div style={fullimageStyles.overlay} onClick={() => { setFullscreenImage(null); setSelectedItem(null); }}>
-          <button style={fullimageStyles.closeBtn} onClick={() => { setFullscreenImage(null); setSelectedItem(null); }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-          <img 
-            src={fullscreenImage} 
-            alt="Full view" 
-            style={fullimageStyles.img}
-            onClick={(e) => e.stopPropagation()}
-          />
+          <div style={fullimageStyles.contentWrap} onClick={(e) => e.stopPropagation()}>
+            <button style={fullimageStyles.closeBtn} onClick={() => { setFullscreenImage(null); setSelectedItem(null); }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+            <img 
+              src={fullscreenImage} 
+              alt="Full view" 
+              style={fullimageStyles.img}
+            />
+          </div>
           {selectedItem && (
             <p style={fullimageStyles.meta}>
               {getGalleryDisplay(selectedItem).title} · {formatDate(selectedItem.createdAt)}
@@ -1107,15 +1107,20 @@ const fullimageStyles = {
     justifyContent: 'center',
     flexDirection: 'column',
   },
+  contentWrap: {
+    position: 'relative',
+    maxWidth: '92%',
+    maxHeight: '70vh',
+  },
   closeBtn: {
     position: 'absolute',
-    top: 'max(16px, env(safe-area-inset-top))',
-    right: '16px',
-    background: 'rgba(0, 0, 0, 0.5)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
+    top: -12,
+    right: -12,
+    background: 'rgba(0, 0, 0, 0.6)',
+    border: '1px solid rgba(255, 255, 255, 0.25)',
     borderRadius: '50%',
-    width: 44,
-    height: 44,
+    width: 36,
+    height: 36,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -1123,10 +1128,11 @@ const fullimageStyles = {
     zIndex: 2,
   },
   img: {
-    maxWidth: '92%',
+    maxWidth: '100%',
     maxHeight: '70vh',
     objectFit: 'contain',
     borderRadius: '8px',
+    display: 'block',
   },
   meta: {
     color: 'rgba(255, 255, 255, 0.6)',
