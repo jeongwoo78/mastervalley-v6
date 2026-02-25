@@ -505,7 +505,7 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           display: flex;
           justify-content: center;
           gap: 6px;
-          padding: 10px 0 6px;
+          padding: 10px 0 4px;
           flex-shrink: 0;
         }
 
@@ -545,11 +545,15 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
           overscroll-behavior: contain;
+          scrollbar-width: none;
+        }
+        .swipe-page::-webkit-scrollbar {
+          display: none;
         }
 
         /* Full Transform Button */
         .full-transform-btn {
-          margin: 0 28px 6px;
+          margin: 10px 28px 8px;
           padding: 14px 18px;
           border: none;
           border-radius: 12px;
