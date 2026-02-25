@@ -36,8 +36,6 @@ import { normalizeKey, getDisplayInfo, getArtistName, getMovementDisplayInfo, ge
 import { getEducationKey, getEducationContent, getMasterEducationKey } from '../utils/educationMatcher';
 // v74: 모바일 공유/저장 유틸리티
 import { saveImage, shareImage, isNativePlatform, addWatermark } from '../utils/mobileShare';
-// v80: 풀스크린 이미지 뷰어 (핀치줌)
-// ImageFullscreenViewer removed - using simple fullimage overlay instead
 
 
 const ResultScreen = ({ 
@@ -103,8 +101,6 @@ const ResultScreen = ({
   
   // ========== Save/Share 메뉴 ==========
   const [showSaveShareMenu, setShowSaveShareMenu] = useState(false);
-  // ========== 풀스크린 뷰어 ==========
-  const [fullscreenImage, setFullscreenImage] = useState(null);
   
   // v79: Original 이미지 URL (useMemo로 동기 생성 → 갤러리 왕복 시 깜빡임 완전 제거)
   const originalPhotoUrl = useMemo(() => {
@@ -1209,7 +1205,7 @@ const ResultScreen = ({
         {isFullTransform && viewIndex >= 0 && results[viewIndex] && (
           <div className="oneclick-result-section">
             {/* 결과 이미지만 (목업: 248×248, 원본 없음) */}
-            <div className="oneclick-image" onClick={() => setFullscreenImage(masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl)} style={{ cursor: 'pointer' }}>
+            <div className="oneclick-image">
               <img src={masterResultImages[getMasterKey(results[viewIndex]?.aiSelectedArtist)] || results[viewIndex]?.resultUrl} alt="Result" />
             </div>
             
@@ -1307,10 +1303,10 @@ const ResultScreen = ({
         {!isFullTransform && viewIndex >= 0 && finalDisplayImage && (
           <div className="single-result-section">
             <div className="ba-section">
-              <div className="ba-image" onClick={() => setFullscreenImage(originalPhotoUrl)} style={{ cursor: 'pointer' }}>
+              <div className="ba-image">
                 <img src={originalPhotoUrl} alt="Before" />
               </div>
-              <div className="ba-image" onClick={() => setFullscreenImage(finalDisplayImage)} style={{ cursor: 'pointer' }}>
+              <div className="ba-image">
                 <img src={finalDisplayImage} alt="After" />
               </div>
             </div>
@@ -1545,7 +1541,7 @@ const ResultScreen = ({
                   handleDownload();
                 }}
               >
-                <span className="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                <span className="menu-icon">💾</span>
                 {t.saveToDevice}
               </button>
               <button 
@@ -1555,7 +1551,7 @@ const ResultScreen = ({
                   handleShare();
                 }}
               >
-                <span className="menu-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span>
+                <span className="menu-icon">📤</span>
                 {t.shareArt}
               </button>
               <button 
@@ -1563,33 +1559,6 @@ const ResultScreen = ({
                 onClick={() => setShowSaveShareMenu(false)}
               >
                 {t.close || '닫기'}
-              </button>
-            </div>
-          </div>
-        )}\n
-
-        {/* 풀이미지 보기 (잘린 이미지 전체 확인용) */}
-        {fullscreenImage && (
-          <div className="fullimage-overlay" onClick={() => setFullscreenImage(null)}>
-            <button className="fullimage-close" onClick={() => setFullscreenImage(null)}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
-            <img 
-              src={fullscreenImage} 
-              alt="Full view" 
-              className="fullimage-img"
-              onClick={(e) => e.stopPropagation()}
-            />
-            <div className="fullimage-actions" onClick={(e) => e.stopPropagation()}>
-              <button className="fullimage-btn" onClick={() => setShowSaveShareMenu(true)}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                {t.save}/{t.share}
-              </button>
-              <button className="fullimage-btn" onClick={() => { setFullscreenImage(null); onGallery(); }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-                {t.gallery}
               </button>
             </div>
           </div>
@@ -1970,71 +1939,6 @@ const ResultScreen = ({
           color: rgba(255,255,255,0.9);
         }
 
-        /* 풀이미지 보기 */
-        .fullimage-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(0, 0, 0, 0.95);
-          z-index: 9998;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-direction: column;
-          animation: fadeIn 0.2s ease;
-        }
-
-        .fullimage-close {
-          position: absolute;
-          top: max(16px, env(safe-area-inset-top));
-          right: 16px;
-          background: rgba(0, 0, 0, 0.5);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 50%;
-          width: 44px;
-          height: 44px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          z-index: 2;
-        }
-
-        .fullimage-img {
-          max-width: 92%;
-          max-height: 75vh;
-          object-fit: contain;
-          border-radius: 8px;
-        }
-
-        .fullimage-actions {
-          display: flex;
-          gap: 12px;
-          margin-top: 20px;
-          padding: 0 20px;
-        }
-
-        .fullimage-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          padding: 14px 24px;
-          background: rgba(255, 255, 255, 0.15);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 14px;
-          color: #fff;
-          font-size: 14px;
-          font-weight: 600;
-          cursor: pointer;
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          transition: background 0.2s;
-        }
-
-        .fullimage-btn:active {
-          background: rgba(255, 255, 255, 0.25);
-        }
-
         /* Save/Share 팝업 메뉴 */
         .save-share-overlay {
           position: fixed;
@@ -2046,7 +1950,7 @@ const ResultScreen = ({
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 10001;
+          z-index: 9999;
           animation: fadeIn 0.2s ease;
         }
 
@@ -2097,8 +2001,7 @@ const ResultScreen = ({
 
         .menu-icon {
           margin-right: 8px;
-          display: flex;
-          align-items: center;
+          font-size: 1.1rem;
         }
 
         .menu-cancel {

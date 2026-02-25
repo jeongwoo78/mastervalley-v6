@@ -71,7 +71,7 @@ const BottomSheet = ({ isOpen, onClose, title, content }) => {
         {/* 헤더 */}
         <div className="sheet-header">
           <h3>{title}</h3>
-          <button className="close-btn" onClick={onClose}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+          <button className="close-btn" onClick={onClose}>✕</button>
         </div>
 
         {/* 내용 */}
@@ -151,12 +151,11 @@ const BottomSheet = ({ isOpen, onClose, title, content }) => {
         .close-btn {
           background: none;
           border: none;
+          font-size: 1.5rem;
           color: #999;
           cursor: pointer;
           padding: 4px 8px;
           border-radius: 4px;
-          display: flex;
-          align-items: center;
         }
 
         .close-btn:hover {
