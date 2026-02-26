@@ -473,7 +473,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
           <button style={styles.selectButton} onClick={() => setSelectMode(true)}>
             {t.select}
           </button>
-          <span style={{fontSize: '11px', color: 'rgba(255,255,255,0.4)'}}>Total {galleryItems.length}</span>
+          <span style={{fontSize: '14px', color: 'rgba(255,255,255,0.4)'}}>Total {galleryItems.length}</span>
         </div>
       )}
 
@@ -832,7 +832,7 @@ const styles = {
     color: '#7c3aed',
     padding: '4px 0',
     cursor: 'pointer',
-    fontSize: '13px',
+    fontSize: '14px',
     fontWeight: 600,
   },
   
