@@ -1,6 +1,6 @@
 // GalleryScreen.jsx - 갤러리 컴포넌트 (IndexedDB 버전)
 // 대용량 이미지 저장 + 그리드 UI + 저장/공유/삭제 기능
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { saveImage as saveToDevice, shareImage, addWatermark, isNativePlatform, WATERMARK_ON_SAVE } from '../utils/mobileShare';
 import { getMovementDisplayInfo, getOrientalDisplayInfo, getMasterInfo } from '../utils/displayConfig';
 import { getUi } from '../i18n';
@@ -180,6 +180,38 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   const [selectMode, setSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [isBatchSaving, setIsBatchSaving] = useState(false);
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
+
+  // 모달 스와이프 네비게이션
+  const navigateModal = (direction) => {
+    if (!selectedItem || !galleryItems.length) return;
+    const currentIndex = galleryItems.findIndex(item => item.id === selectedItem.id);
+    if (currentIndex === -1) return;
+    const newIndex = direction === 'next' 
+      ? (currentIndex + 1) % galleryItems.length 
+      : (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+    setShowSaveShareMenu(false);
+    setSelectedItem(galleryItems[newIndex]);
+  };
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+    touchStartX.current = null;
+    touchStartY.current = null;
+    // 수평 스와이프가 수직보다 클 때만 (최소 50px)
+    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX < 0) navigateModal('next');
+      else navigateModal('prev');
+    }
+  };
 
   // i18n texts from ui.js
   const t = getUi(lang).gallery;
@@ -230,6 +262,18 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   useEffect(() => {
     loadGallery();
   }, []);
+
+  // 키보드 좌우 화살표로 모달 네비게이션 (PC)
+  useEffect(() => {
+    if (!selectedItem) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') navigateModal('prev');
+      else if (e.key === 'ArrowRight') navigateModal('next');
+      else if (e.key === 'Escape') setSelectedItem(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedItem, galleryItems]);
 
   const loadGallery = async () => {
     setIsLoading(true);
@@ -532,7 +576,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
       {/* 상세 보기 카드 모달 */}
       {selectedItem && (
         <div style={styles.modal} onClick={() => { if (!showSaveShareMenu) setSelectedItem(null); }}>
-          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div style={styles.modalContent} onClick={(e) => e.stopPropagation()} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
             <button style={styles.closeButton} onClick={() => setSelectedItem(null)}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
