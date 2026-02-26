@@ -929,13 +929,13 @@ const styles = {
   
   styleName: {
     fontSize: '14px',
-    fontWeight: '600',
-    color: 'rgba(255,255,255,0.5)',
+    fontWeight: '700',
+    color: 'rgba(255,255,255,0.85)',
   },
   
   date: {
     fontSize: '11px',
-    opacity: 0.6,
+    opacity: 0.4,
   },
 
   reText: {
