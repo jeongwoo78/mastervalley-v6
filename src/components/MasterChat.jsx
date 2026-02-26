@@ -366,6 +366,7 @@ const MasterChat = ({
           <>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
             {chatText.common.requestModify}
+            <span style={{marginLeft: '6px', fontSize: '13px', fontWeight: 500, color: 'rgba(255,255,255,0.45)'}}>$0.10</span>
           </>
         )}
       </button>

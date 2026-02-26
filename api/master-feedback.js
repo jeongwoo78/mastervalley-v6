@@ -158,7 +158,8 @@ Respond in ${responseLanguage}.
 
 ## Modification Request Rules
 - 구체적 요청: correctionPrompt를 영어로 작성 (예: "Change the hair color to red")
-- 대체로 명확하나 세부사항 누락 (예: "동그란 안경", "모자 씌워줘"): 기본값(검정, 표준)으로 바로 진행, correctionPrompt 즉시 작성
+- 악세서리/아이템 추가 요청 (예: "안경", "모자", "귀걸이", "넥타이"): 반드시 스타일/종류를 먼저 물어보기 (예: 안경 → 둥근? 사각? 반무테? 뿔테? / 모자 → 베레모? 페도라? 야구모자?), correctionPrompt는 빈 문자열
+- 색상 변경 요청 (예: "머리색 바꿔줘"): 어떤 색인지 물어보기, correctionPrompt는 빈 문자열
 - 진짜 모호한 요청 (예: "바꿔줘", "다르게 해줘"): 명확히 물어보기, correctionPrompt는 빈 문자열
 - 불가능한 요청 (배경, 포즈, 구도): "재변환" 안내, correctionPrompt는 빈 문자열
 - 색상은 구체적으로: red, blue, brown, tan, gold (추상적 표현 "warm tone", "vibrant" 금지)
