@@ -169,7 +169,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
 
         .pack-item.featured {
           border: 1.5px solid #7c3aed;
-          background: rgba(124, 58, 237, 0.06);
+          background: #1e1a2e;
         }
 
         .pack-info {

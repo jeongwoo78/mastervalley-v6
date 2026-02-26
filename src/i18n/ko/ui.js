@@ -186,7 +186,7 @@ export const ui = {
     tagStarter: '지금 시작하세요',
     tagStandard: '당신의 아름다움을 공유하세요',
     tagPlus: '영감을 얻으세요',
-    info1: '잔액은 만료 없음',
+    info1: '잔액은 만료되지 않습니다',
     info2: '구독 필요 없음'
   },
 
