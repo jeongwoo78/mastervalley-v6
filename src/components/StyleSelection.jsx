@@ -309,7 +309,7 @@ const StyleSelection = ({ onSelect }) => {
       <style>{`
         .style-selection {
           min-height: 100vh;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #7c3aed 0%, #764ba2 100%);
           padding: 2rem;
         }
 
@@ -409,15 +409,15 @@ const StyleSelection = ({ onSelect }) => {
         }
 
         .sub-category-tab:hover {
-          border-color: #667eea;
-          box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+          border-color: #7c3aed;
+          box-shadow: 0 8px 20px rgba(124, 58, 237, 0.2);
           transform: translateY(-4px);
         }
 
         .sub-category-tab.active {
-          border-color: #667eea;
+          border-color: #7c3aed;
           border-width: 3px;
-          box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+          box-shadow: 0 8px 24px rgba(124, 58, 237, 0.3);
           transform: translateY(-2px);
         }
 
@@ -431,7 +431,7 @@ const StyleSelection = ({ onSelect }) => {
         }
 
         .sub-category-tab.active .tab-name {
-          color: #667eea;
+          color: #7c3aed;
         }
 
         .sub-category-tab .tab-period {
@@ -440,22 +440,22 @@ const StyleSelection = ({ onSelect }) => {
         }
 
         .sub-category-tab.active .tab-period {
-          color: #667eea;
+          color: #7c3aed;
           opacity: 0.8;
         }
 
         .sub-category-tab .tab-count {
           font-size: 0.75rem;
           padding: 0.25rem 0.6rem;
-          background: rgba(102, 126, 234, 0.1);
+          background: rgba(124, 58, 237, 0.1);
           border-radius: 12px;
           margin-top: 0.25rem;
           font-weight: 600;
         }
 
         .sub-category-tab.active .tab-count {
-          background: rgba(102, 126, 234, 0.15);
-          color: #667eea;
+          background: rgba(124, 58, 237, 0.15);
+          color: #7c3aed;
         }
 
         /* 3단계: 화가 선택 */
@@ -487,7 +487,7 @@ const StyleSelection = ({ onSelect }) => {
 
         .section-price {
           font-size: 1rem;
-          color: #7c3aed;
+          color: rgba(255,255,255,0.6);
           font-weight: 600;
           margin: 0;
         }
@@ -582,8 +582,8 @@ const StyleSelection = ({ onSelect }) => {
         }
 
         .style-card:hover {
-          border-color: #667eea;
-          box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+          border-color: #7c3aed;
+          box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
           transform: translateY(-4px);
         }
 

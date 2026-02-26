@@ -514,7 +514,7 @@ const MasterChat = ({
         }
 
         .chat-message.user .bubble {
-          background: rgba(102, 126, 234, 0.3);
+          background: rgba(124, 58, 237, 0.3);
           border-radius: 14px;
           padding: 10px 12px;
           color: rgba(255,255,255,0.9);

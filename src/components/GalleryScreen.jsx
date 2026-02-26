@@ -823,7 +823,7 @@ const styles = {
     padding: '10px 20px',
     borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '14px',
   },
   
   selectButton: {
@@ -847,7 +847,7 @@ const styles = {
   
   countText: {
     margin: '8px 0 0',
-    color: '#a78bfa',
+    color: 'rgba(255,255,255,0.5)',
     fontWeight: '600',
   },
   
@@ -928,9 +928,9 @@ const styles = {
   },
   
   styleName: {
-    fontSize: '0.9rem',
+    fontSize: '14px',
     fontWeight: '600',
-    color: '#a78bfa',
+    color: 'rgba(255,255,255,0.5)',
   },
   
   date: {
@@ -939,7 +939,7 @@ const styles = {
   },
 
   reText: {
-    color: '#a78bfa',
+    color: 'rgba(255,255,255,0.5)',
     fontSize: '0.75rem',
     fontWeight: '600',
     opacity: 0.7,
@@ -1083,7 +1083,7 @@ const styles = {
     border: 'none',
     background: 'transparent',
     color: '#a78bfa',
-    fontSize: '1rem',
+    fontSize: '16px',
     fontWeight: '600',
     cursor: 'pointer',
     borderRadius: '0',
@@ -1099,7 +1099,7 @@ const styles = {
   menuCancel: {
     color: 'rgba(255,255,255,0.35)',
     justifyContent: 'center',
-    fontSize: '0.875rem',
+    fontSize: '14px',
     fontWeight: '500',
     marginTop: '4px',
     paddingTop: '16px',
@@ -1158,11 +1158,11 @@ const modalStyles = {
   modalTitle: {
     margin: '0 0 8px',
     fontSize: '1.3rem',
-    color: '#a78bfa',
+    color: '#fff',
   },
   modalDate: {
     margin: 0,
-    fontSize: '0.9rem',
+    fontSize: '14px',
     opacity: 0.7,
   },
   modalCategory: {
@@ -1179,11 +1179,11 @@ const modalStyles = {
     flex: 1,
     background: 'rgba(167,139,250,0.15)',
     border: '1px solid rgba(167,139,250,0.3)',
-    color: '#a78bfa',
+    color: 'rgba(255,255,255,0.5)',
     padding: '14px',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '14px',
     fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
@@ -1198,7 +1198,7 @@ const modalStyles = {
     padding: '14px',
     borderRadius: '10px',
     cursor: 'pointer',
-    fontSize: '0.9rem',
+    fontSize: '14px',
     fontWeight: '600',
     display: 'flex',
     alignItems: 'center',

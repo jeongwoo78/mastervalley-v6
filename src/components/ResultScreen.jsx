@@ -1889,7 +1889,7 @@ const ResultScreen = ({
           font-size: 0.75rem;
           font-weight: 600;
           letter-spacing: 0.5px;
-          box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+          box-shadow: 0 2px 4px rgba(124, 58, 237, 0.3);
         }
 
         .loading-education {
@@ -1901,7 +1901,7 @@ const ResultScreen = ({
           width: 50px;
           height: 50px;
           border: 4px solid #f3f3f3;
-          border-top: 4px solid #667eea;
+          border-top: 4px solid #7c3aed;
           border-radius: 50%;
           animation: spin 1s linear infinite;
           margin: 0 auto 1rem auto;
@@ -1914,7 +1914,7 @@ const ResultScreen = ({
 
         .loading-education p {
           color: rgba(255,255,255,0.6);
-          font-size: 1rem;
+          font-size: 16px;
         }
 
         .technique-explanation {
@@ -2041,7 +2041,7 @@ const ResultScreen = ({
           padding: 16px 40px;
           border: none;
           background: transparent;
-          font-size: 1rem;
+          font-size: 16px;
           font-weight: 600;
           color: #a78bfa;
           cursor: pointer;
@@ -2056,13 +2056,13 @@ const ResultScreen = ({
 
         .menu-icon {
           margin-right: 8px;
-          font-size: 1.1rem;
+          font-size: 18px;
         }
 
         .menu-cancel {
           color: rgba(255, 255, 255, 0.35);
           justify-content: center;
-          font-size: 0.875rem;
+          font-size: 14px;
           font-weight: 500;
           margin-top: 4px;
           border-top: none;
@@ -2127,7 +2127,7 @@ const ResultScreen = ({
           width: 40px;
           height: 40px;
           border: 3px solid rgba(139, 92, 246, 0.3);
-          border-top-color: #8b5cf6;
+          border-top-color: #7c3aed;
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -2240,7 +2240,7 @@ const ResultScreen = ({
           color: rgba(255,255,255,0.4);
         }
         .nav-dot.edu.active {
-          color: #7c3aed;
+          color: #fff;
           transform: none;
           background: none;
         }
@@ -2313,7 +2313,7 @@ const ResultScreen = ({
           font-weight: 500;
         }
         .preview-card .preview-subtitle.sub2 {
-          font-size: 0.9rem;
+          font-size: 14px;
           color: #888;
           margin-top: 4px;
         }
@@ -2326,7 +2326,7 @@ const ResultScreen = ({
           background: transparent;
         }
         .preview-card .edu-card h3 {
-          color: #667eea;
+          color: #fff;
           margin: 0 0 10px;
           font-size: 15px;
         }

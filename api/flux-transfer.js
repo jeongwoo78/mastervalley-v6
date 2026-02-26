@@ -2811,75 +2811,45 @@ export default async function handler(req, res) {
       console.log(`👨‍🎨 거장: ${masterKey} → ${artistDisplayName}`);
       console.log(`📜 Kontext 프롬프트: ${kontextPrompt}`);
       
-      // FLUX Kontext Pro API 호출 (스타일 유지하며 부분 수정) - 재시도 로직 포함
-      const MAX_RETRIES = 3;
-      let response;
-      let lastError;
-      
-      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-        try {
-          response = await fetch(
-            'https://api.replicate.com/v1/models/black-forest-labs/flux-kontext-pro/predictions',
-            {
-              method: 'POST',
-              headers: {
-                'Authorization': `Token ${process.env.REPLICATE_API_KEY}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'wait'
-              },
-              body: JSON.stringify({
-                input: {
-                  input_image: image,
-                  prompt: kontextPrompt
-                }
-              })
+      // v80: Kontext도 predictionId 즉시 반환 (Prefer:wait 제거 → Vercel 60초 타임아웃 방지)
+      const response = await fetch(
+        'https://api.replicate.com/v1/models/black-forest-labs/flux-kontext-pro/predictions',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Token ${process.env.REPLICATE_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            input: {
+              input_image: image,
+              prompt: kontextPrompt
             }
-          );
-          
-          // 502/503 에러 시 재시도
-          if (response.status === 502 || response.status === 503) {
-            console.log(`🔄 FLUX Kontext 재시도 (${attempt}/${MAX_RETRIES})... ${response.status} 에러`);
-            if (attempt < MAX_RETRIES) {
-              await new Promise(r => setTimeout(r, 2000 * attempt)); // 2초, 4초 대기
-              continue;
-            }
-          }
-          
-          // 성공 또는 다른 에러면 루프 탈출
-          break;
-        } catch (err) {
-          lastError = err;
-          console.log(`🔄 FLUX Kontext 재시도 (${attempt}/${MAX_RETRIES})... 네트워크 에러`);
-          if (attempt < MAX_RETRIES) {
-            await new Promise(r => setTimeout(r, 2000 * attempt));
-            continue;
-          }
+          })
         }
-      }
+      );
 
-      if (!response || !response.ok) {
-        const errorText = response ? await response.text() : 'No response';
-        const statusCode = response ? response.status : 500;
-        console.error('FLUX Kontext error (retransform):', statusCode, errorText);
-        return res.status(statusCode).json({ 
-          error: `FLUX Kontext API error: ${statusCode}`,
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('FLUX Kontext error (retransform):', response.status, errorText);
+        return res.status(response.status).json({ 
+          error: `FLUX Kontext API error: ${response.status}`,
           details: errorText
         });
       }
 
-      const data = await response.json();
-      const endTime = Date.now();
-      const duration = ((endTime - startTime) / 1000).toFixed(1);
+      const prediction = await response.json();
+      const elapsedTime = ((Date.now() - startTime) / 1000).toFixed(1);
       
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(`✅ 재변환 완료 (${duration}초)`);
+      console.log(`📤 Kontext Prediction ID 반환 (${elapsedTime}초) → 클라이언트 폴링으로 전환`);
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.log('');
       
-      // 클라이언트가 기대하는 형식으로 응답 (1차 변환과 동일)
+      // 클라이언트에게 predictionId 반환 (1차 변환과 동일 패턴)
       return res.status(200).json({
-        status: 'succeeded',
-        output: data.output,
+        status: 'polling_required',
+        predictionId: prediction.id,
         selected_artist: '재변환',
         selected_work: correctionPrompt,
         isRetransform: true

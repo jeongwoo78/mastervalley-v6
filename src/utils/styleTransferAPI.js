@@ -1,8 +1,11 @@
-// PicoArt v30 - Style Transfer API (첫 응답에서 AI 정보 저장)
+// PicoArt v80 - Style Transfer API (이중 차감 방지 + predictionId 폴링)
 import { MODEL_CONFIG } from './modelConfig';
 
 // API 기본 URL (앱에서는 절대 경로 필요)
 const API_BASE_URL = 'https://mastervalley-v6.vercel.app';
+
+// v80: 이중 차감 방지 - 이미 차감된 transformId 추적
+const chargedTransformIds = new Set();
 
 const fileToBase64 = async (file) => {
   return new Promise((resolve, reject) => {
@@ -85,36 +88,8 @@ const getModelForStyle = (style) => {
   return MODEL_CONFIG[model];
 };
 
-const callFluxAPI = async (photoBase64, stylePrompt, onProgress) => {
-  if (onProgress) onProgress({ status: 'processing' });
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 120000);
-
-  const response = await fetch(`${API_BASE_URL}/api/flux-transfer`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      image: photoBase64,
-      prompt: stylePrompt,
-      control_type: 'depth',
-      control_strength: 0.5,
-      num_inference_steps: 28,
-      guidance_scale: 3.5
-    }),
-    signal: controller.signal
-  });
-
-  clearTimeout(timeout);
-
-  if (!response.ok) {
-    throw new Error(`FLUX API error: ${response.status}`);
-  }
-
-  return response.json();
-};
+// v80: callFluxAPI 제거 (masterData에 prompt 필드 없어 데드 코드)
+// 모든 스타일이 callFluxWithAI 경유
 
 const callFluxWithAI = async (photoBase64, selectedStyle, onProgress, correctionPrompt = null) => {
   // 진행 상태 전달
@@ -220,6 +195,10 @@ const pollPrediction = async (predictionId, modelConfig, onProgress) => {
 };
 
 export const processStyleTransfer = async (photoFile, selectedStyle, correctionPrompt = null, onProgress = null) => {
+  // v80: 멱등성 키 생성 (이중 차감 방지)
+  const transformId = crypto.randomUUID ? crypto.randomUUID() : 
+    `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  
   try {
     const resizedPhoto = await resizeImage(photoFile, 1024);
     const photoBase64 = await fileToBase64(resizedPhoto);
@@ -230,15 +209,12 @@ export const processStyleTransfer = async (photoFile, selectedStyle, correctionP
     }
 
     let prediction;
-    // v71: 재변환 시에는 항상 callFluxWithAI 사용 (correctionPrompt 전송 필수)
+    // v80: 모든 경로를 callFluxWithAI로 통일 (서버가 predictionId 즉시 반환)
     if (correctionPrompt) {
       // 재변환 모드 - correctionPrompt 필수 전달
       prediction = await callFluxWithAI(photoBase64, selectedStyle, onProgress, correctionPrompt);
-    } else if (modelConfig.model.includes('flux') && selectedStyle.prompt) {
-      // 일반 변환 + 직접 프롬프트 (미술사조/동양화 등)
-      prediction = await callFluxAPI(photoBase64, selectedStyle.prompt, onProgress);
     } else {
-      // 일반 변환 + AI 자동 선택 (거장 모드)
+      // 일반 변환 (거장/미술사조/동양화 모두)
       prediction = await callFluxWithAI(photoBase64, selectedStyle, onProgress, null);
     }
 
@@ -304,6 +280,7 @@ export const processStyleTransfer = async (photoFile, selectedStyle, correctionP
 
     return {
       success: true,
+      transformId,  // v80: 이중 차감 방지용 멱등성 키
       resultUrl: localUrl,
       blob: finalBlob,
       remoteUrl: resultUrl,
@@ -322,6 +299,37 @@ export const processStyleTransfer = async (photoFile, selectedStyle, correctionP
       success: false,
       error: error.message
     };
+  }
+};
+
+// v80: 안전한 크레딧 차감 (이중 차감 방지)
+// 호출 측에서 result.success 확인 후 사용
+export const deductCredit = async (transformId, cost, userId) => {
+  // 1차 방어: 클라이언트 메모리 (같은 세션 내 이중 차감 방지)
+  if (chargedTransformIds.has(transformId)) {
+    console.warn(`⚠️ 이미 차감된 transformId: ${transformId}`);
+    return { success: true, alreadyCharged: true };
+  }
+  
+  try {
+    // 2차 방어: 서버 멱등성 체크 (Firestore transaction)
+    const response = await fetch(`${API_BASE_URL}/api/deduct-credit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transformId, cost, userId })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      chargedTransformIds.add(transformId);  // 메모리에도 기록
+    }
+    
+    return data;  // { success, balance, alreadyCharged }
+  } catch (error) {
+    console.error('Credit deduction error:', error);
+    // 네트워크 에러 시 차감 안 함 (소비자 보호 우선)
+    return { success: false, error: error.message };
   }
 };
 

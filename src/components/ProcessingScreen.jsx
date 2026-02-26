@@ -646,7 +646,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
         .edu-card.secondary {
           background: transparent;
         }
-        .edu-card h3 { color: #7c3aed; margin: 0 0 10px; font-size: 15px; }
+        .edu-card h3 { color: #fff; margin: 0 0 10px; font-size: 15px; }
         .edu-card h4 { color: #4CAF50; margin: 0 0 8px; font-size: 14px; }
         .edu-card p { color: rgba(255,255,255,0.65); line-height: 1.8; font-size: 13px; margin: 0; white-space: pre-line; }
         .hint { color: rgba(255,255,255,0.4); font-size: 12px; text-align: center; margin-top: 12px !important; }
@@ -801,7 +801,7 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
           color: rgba(255,255,255,0.4);
         }
         .dot.edu.active {
-          color: #7c3aed;
+          color: #fff;
           transform: none;
           background: none;
         }

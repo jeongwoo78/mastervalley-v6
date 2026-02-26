@@ -113,7 +113,7 @@ const LanguageScreen = ({ onBack, onSelect, currentLang = 'en' }) => {
         }
 
         .language-item.active {
-          border-color: #8b5cf6;
+          border-color: #7c3aed;
           background: rgba(139, 92, 246, 0.1);
         }
 
@@ -141,7 +141,7 @@ const LanguageScreen = ({ onBack, onSelect, currentLang = 'en' }) => {
         }
 
         .lang-check {
-          color: #8b5cf6;
+          color: #7c3aed;
           font-size: 20px;
           font-weight: bold;
         }
