@@ -703,7 +703,7 @@ const animationStyle = `
   }
   
   .select-header-count {
-    font-size: 11px;
+    font-size: 14px;
     color: rgba(255,255,255,0.4);
   }
   
