@@ -163,7 +163,8 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
           justify-content: space-between;
           align-items: center;
           padding: 20px 18px;
-          background: #1a1a1a;
+          background: transparent;
+          border: 1px solid rgba(255,255,255,0.12);
           border-radius: 14px;
         }
 
