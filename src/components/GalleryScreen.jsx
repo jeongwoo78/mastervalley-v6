@@ -266,8 +266,8 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
   useEffect(() => {
     if (!selectedItem) return;
     const handleKeyDown = (e) => {
-      if (e.key === 'ArrowLeft') navigateModal('prev');
-      else if (e.key === 'ArrowRight') navigateModal('next');
+      if (e.key === 'ArrowLeft') { e.preventDefault(); navigateModal('prev'); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); navigateModal('next'); }
       else if (e.key === 'Escape') setSelectedItem(null);
     };
     window.addEventListener('keydown', handleKeyDown);
