@@ -26,7 +26,7 @@ export const ui = {
     movementsFullDesc: '11 art movements',
     mastersFullTitle: 'Into the world of 7 masters',
     mastersFullDesc: 'Connect with 7 masters',
-    orientalFullTitle: 'A Thousand Years of Eastern Beauty',
+    orientalFullTitle: '1000 Years of Eastern Beauty',
     orientalFullDesc: 'Korea · China · Japan',
     selectMovement: 'Select a movement',
     selectMaster: 'Select a master',
