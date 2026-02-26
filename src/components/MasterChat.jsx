@@ -18,13 +18,13 @@ const API_BASE_URL = 'https://mastervalley-v6.vercel.app';
 
 // 거장별 테마 색상 (7명) - 색상은 i18n 불필요
 const MASTER_THEMES = {
-  'VAN GOGH': { primary: '#F5A623', gradient: 'linear-gradient(135deg, #F5A623, #e8941a)', icon: '🌻', avatar: vangoghAvatar },
+  'VAN GOGH': { primary: '#2E8B7E', gradient: 'linear-gradient(135deg, #2E8B7E, #257568)', icon: '🌻', avatar: vangoghAvatar },
   'KLIMT': { primary: '#D4AF37', gradient: 'linear-gradient(135deg, #D4AF37, #b8962e)', icon: '✨', avatar: klimtAvatar },
-  'MUNCH': { primary: '#8B4513', gradient: 'linear-gradient(135deg, #8B4513, #6d360f)', icon: '😱', avatar: munchAvatar },
+  'MUNCH': { primary: '#C4784A', gradient: 'linear-gradient(135deg, #C4784A, #a5623b)', icon: '😱', avatar: munchAvatar },
   'CHAGALL': { primary: '#E6A8D7', gradient: 'linear-gradient(135deg, #E6A8D7, #7EB6D8)', icon: '🎻', avatar: chagallAvatar },
   'MATISSE': { primary: '#FF6B6B', gradient: 'linear-gradient(135deg, #FF6B6B, #ee5a5a)', icon: '💃', avatar: matisseAvatar },
-  'FRIDA': { primary: '#C41E3A', gradient: 'linear-gradient(135deg, #C41E3A, #a01830)', icon: '🦜', avatar: fridaAvatar },
-  'LICHTENSTEIN': { primary: '#FFD700', gradient: 'linear-gradient(135deg, #FFD700, #FF4500)', icon: '💥', avatar: lichtensteinAvatar }
+  'FRIDA': { primary: '#4EC9A0', gradient: 'linear-gradient(135deg, #4EC9A0, #3db88e)', icon: '🦜', avatar: fridaAvatar },
+  'LICHTENSTEIN': { primary: '#F5A623', gradient: 'linear-gradient(135deg, #F5A623, #e8941a)', icon: '💥', avatar: lichtensteinAvatar }
 };
 
 const MasterChat = ({ 
