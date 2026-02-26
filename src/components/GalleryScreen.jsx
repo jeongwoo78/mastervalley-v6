@@ -188,9 +188,8 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
     if (!selectedItem || !galleryItems.length) return;
     const currentIndex = galleryItems.findIndex(item => item.id === selectedItem.id);
     if (currentIndex === -1) return;
-    const newIndex = direction === 'next' 
-      ? (currentIndex + 1) % galleryItems.length 
-      : (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+    const newIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+    if (newIndex < 0 || newIndex >= galleryItems.length) return;
     setShowSaveShareMenu(false);
     setSelectedItem(galleryItems[newIndex]);
   };
