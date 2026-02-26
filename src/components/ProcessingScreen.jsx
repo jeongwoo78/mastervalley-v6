@@ -130,13 +130,12 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete, lang = 'en' }) => 
       if (typeof progressObj === 'string') return progressObj;
       
       const { status, progress } = progressObj;
-      const pct = progress ? ` ${progress}%` : '';
       
       switch (status) {
         case 'analyzing':   return t.analyzing;
         case 'downloading': return t.downloading || t.done;
         case 'processing':  
-        default:            return `${styleName} ${t.inProgress}${pct}`;
+        default:            return `${styleName} ${t.inProgress}`;
       }
     };
 
