@@ -2806,7 +2806,11 @@ export default async function handler(req, res) {
       
       // pants → lower garment 치환 (FLUX가 다리 피부와 혼동 방지)
       const sanitizedPrompt = correctionPrompt.replace(/pants/gi, 'lower garment');
-      const kontextPrompt = `ONLY ${sanitizedPrompt} while keeping the same facial features, composition, background, pose, and ${artistDisplayName} painting style`;
+      // v80: BFL 공식 가이드 기반 프롬프트 개선
+      // - 구체적 주어 사용 (portrait → the person in the painting)
+      // - focused edit 패턴 ("Add X to the person" not "ONLY X")
+      // - "maintain all other aspects" 추가 (BFL 권장)
+      const kontextPrompt = `${sanitizedPrompt}. Maintain all other aspects of the original image including the ${artistDisplayName} painting style, brushwork, color palette, composition, background, pose, and facial features.`;
       
       console.log(`👨‍🎨 거장: ${masterKey} → ${artistDisplayName}`);
       console.log(`📜 Kontext 프롬프트: ${kontextPrompt}`);

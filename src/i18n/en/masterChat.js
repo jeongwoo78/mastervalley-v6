@@ -43,13 +43,13 @@ export const masterChat = {
 
   // ===== Suggested Questions (7 × 3 = 21) =====
   suggestedQuestions: {
-    'VAN GOGH': ['Change my hair color', 'Add round glasses', 'Tell me about your ear', 'Why do you love sunflowers?'],
-    'KLIMT': ['Change my lip color', 'Add gold earrings', 'Who was the model for The Kiss?', 'Why do you love gold?'],
-    'MUNCH': ['Change my hair color', 'Add round glasses', 'Were you married?', 'Why did you paint The Scream?'],
+    'VAN GOGH': ['Change my hair color', 'Add earrings', 'Tell me about your ear', 'Why do you love sunflowers?'],
+    'KLIMT': ['Change my lip color', 'Add earrings', 'Who was the model for The Kiss?', 'Why do you love gold?'],
+    'MUNCH': ['Change my hair color', 'Add a necklace', 'Were you married?', 'Why did you paint The Scream?'],
     'CHAGALL': ['Change my hair color', 'Add earrings', 'Have you been in love?', 'Do you like animals?'],
-    'MATISSE': ['Change my lip color', 'Add glasses', 'Tell me about yourself', 'Why are your colors so bright?'],
-    'FRIDA': ['Change my lip color', 'Add flower earrings', 'Tell me about your accident', 'Why so many self-portraits?'],
-    'LICHTENSTEIN': ['Change my hair color', 'Add pop art glasses', 'Tell me about yourself', 'Why do you paint like comics?']
+    'MATISSE': ['Change my lip color', 'Add earrings', 'Tell me about yourself', 'Why are your colors so bright?'],
+    'FRIDA': ['Change my lip color', 'Add earrings', 'Tell me about your accident', 'Why so many self-portraits?'],
+    'LICHTENSTEIN': ['Change my hair color', 'Add earrings', 'Tell me about yourself', 'Why do you paint like comics?']
   },
 
   // ===== Result Messages (7) =====
