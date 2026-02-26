@@ -473,7 +473,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
           <button style={styles.selectButton} onClick={() => setSelectMode(true)}>
             {t.select}
           </button>
-          <span style={{fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)'}}>Total {galleryItems.length}</span>
+          <span style={{fontSize: '11px', color: 'rgba(255,255,255,0.4)'}}>Total {galleryItems.length}</span>
         </div>
       )}
 
@@ -519,7 +519,7 @@ const GalleryScreen = ({ onBack, onHome, lang = 'en' }) => {
                   {display.title}
                 </span>
                 {display.subtitle && (
-                  <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>{display.subtitle}</span>
+                  <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)' }}>{display.subtitle}</span>
                 )}
                 <span style={styles.date}>{formatDate(item.createdAt)}</span>
               </div>
@@ -683,7 +683,7 @@ const animationStyle = `
     background: none;
     border: none;
     color: rgba(255,255,255,0.6);
-    font-size: 13px;
+    font-size: 14px;
     cursor: pointer;
     padding: 0;
     display: flex;
@@ -703,7 +703,7 @@ const animationStyle = `
   }
   
   .select-header-count {
-    font-size: 12px;
+    font-size: 11px;
     color: rgba(255,255,255,0.4);
   }
   
@@ -712,7 +712,7 @@ const animationStyle = `
     border: none;
     background: none;
     color: #6b8afd;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     display: flex;
@@ -725,7 +725,7 @@ const animationStyle = `
     border: none;
     background: none;
     color: rgba(255,255,255,0.5);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     display: flex;
@@ -743,7 +743,7 @@ const animationStyle = `
     border: none;
     background: none;
     color: rgba(255,255,255,0.3);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     cursor: pointer;
     display: flex;
@@ -841,7 +841,7 @@ const styles = {
     borderRadius: '8px',
     padding: '12px 16px',
     marginBottom: '20px',
-    fontSize: '0.85rem',
+    fontSize: '13px',
     opacity: 0.9,
   },
   
@@ -857,7 +857,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '50vh',
-    fontSize: '1.1rem',
+    fontSize: '14px',
     gap: '15px',
   },
   
@@ -886,7 +886,7 @@ const styles = {
   },
   
   emptyText: {
-    fontSize: '15px',
+    fontSize: '14px',
     fontWeight: 500,
     color: 'rgba(255,255,255,0.6)',
     margin: '0 0 6px',
@@ -934,13 +934,13 @@ const styles = {
   },
   
   date: {
-    fontSize: '0.75rem',
+    fontSize: '11px',
     opacity: 0.6,
   },
 
   reText: {
     color: 'rgba(255,255,255,0.5)',
-    fontSize: '0.75rem',
+    fontSize: '11px',
     fontWeight: '600',
     opacity: 0.7,
   },
@@ -981,7 +981,7 @@ const styles = {
     height: '36px',
     borderRadius: '50%',
     cursor: 'pointer',
-    fontSize: '1.2rem',
+    fontSize: '17px',
     zIndex: 10,
   },
   
@@ -998,19 +998,19 @@ const styles = {
   
   modalTitle: {
     margin: '0 0 4px',
-    fontSize: '1.2rem',
+    fontSize: '17px',
     color: '#fff',
   },
   
   modalDate: {
     margin: 0,
-    fontSize: '0.8rem',
+    fontSize: '11px',
     color: 'rgba(255,255,255,0.3)',
   },
   
   modalCategory: {
     margin: '4px 0 0',
-    fontSize: '0.8rem',
+    fontSize: '13px',
     color: 'rgba(255,255,255,0.4)',
   },
   
@@ -1029,7 +1029,7 @@ const styles = {
     padding: '8px 4px',
     borderRadius: '0',
     cursor: 'pointer',
-    fontSize: '13px',
+    fontSize: '14px',
     fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
@@ -1044,7 +1044,7 @@ const styles = {
     padding: '8px 4px',
     borderRadius: '0',
     cursor: 'pointer',
-    fontSize: '13px',
+    fontSize: '14px',
     fontWeight: '600',
     display: 'flex',
     alignItems: 'center',
@@ -1082,8 +1082,8 @@ const styles = {
     padding: '16px 40px',
     border: 'none',
     background: 'transparent',
-    color: '#a78bfa',
-    fontSize: '16px',
+    color: '#7c3aed',
+    fontSize: '14px',
     fontWeight: '600',
     cursor: 'pointer',
     borderRadius: '0',
@@ -1157,17 +1157,17 @@ const modalStyles = {
   },
   modalTitle: {
     margin: '0 0 8px',
-    fontSize: '1.3rem',
+    fontSize: '17px',
     color: '#fff',
   },
   modalDate: {
     margin: 0,
-    fontSize: '14px',
+    fontSize: '11px',
     opacity: 0.7,
   },
   modalCategory: {
     margin: '8px 0 0',
-    fontSize: '0.85rem',
+    fontSize: '13px',
     color: '#67e8f9',
   },
   modalActions: {

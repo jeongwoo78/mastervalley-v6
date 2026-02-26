@@ -250,7 +250,7 @@ const LoginScreen = ({ onLoginSuccess }) => {
           gap: 12px;
           padding: 14px 20px;
           border-radius: 12px;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 500;
           cursor: pointer;
           transition: all 0.2s;
@@ -313,7 +313,7 @@ const LoginScreen = ({ onLoginSuccess }) => {
           border: 1px solid #333;
           background: #1a1a1a;
           color: #fff;
-          font-size: 15px;
+          font-size: 14px;
         }
 
         .email-form input::placeholder {
@@ -331,7 +331,7 @@ const LoginScreen = ({ onLoginSuccess }) => {
           border: none;
           background: #7c3aed;
           color: white;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 600;
           cursor: pointer;
           transition: background 0.2s;

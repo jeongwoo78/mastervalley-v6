@@ -131,7 +131,7 @@ const LanguageScreen = ({ onBack, onSelect, currentLang = 'en' }) => {
 
         .lang-native {
           color: #fff;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 600;
         }
 
@@ -157,7 +157,7 @@ const LanguageScreen = ({ onBack, onSelect, currentLang = 'en' }) => {
           }
 
           .lang-native {
-            font-size: 15px;
+            font-size: 14px;
           }
         }
       `}</style>

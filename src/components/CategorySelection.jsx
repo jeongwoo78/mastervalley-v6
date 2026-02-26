@@ -231,7 +231,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
 
         .card-name {
           color: #fff;
-          font-size: 16px;
+          font-size: 17px;
           font-weight: 600;
           text-align: left;
         }

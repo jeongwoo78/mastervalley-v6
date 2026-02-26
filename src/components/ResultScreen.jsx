@@ -1723,7 +1723,7 @@ const ResultScreen = ({
         }
 
         .oneclick-style-info .subtitle2 {
-          font-size: 12px;
+          font-size: 14px;
           color: rgba(255,255,255,0.5);
           margin-bottom: 10px;
         }
@@ -1839,7 +1839,7 @@ const ResultScreen = ({
           text-align: center;
         }
         .card-header .subtitle2 {
-          font-size: 12px;
+          font-size: 14px;
           color: rgba(255,255,255,0.5);
           text-align: center;
         }
@@ -1957,7 +1957,7 @@ const ResultScreen = ({
           border: none;
           border-radius: 0;
           background: none;
-          font-size: 13px;
+          font-size: 14px;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s;
@@ -2041,9 +2041,9 @@ const ResultScreen = ({
           padding: 16px 40px;
           border: none;
           background: transparent;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 600;
-          color: #a78bfa;
+          color: #7c3aed;
           cursor: pointer;
           border-radius: 0;
           letter-spacing: 0.3px;
@@ -2100,7 +2100,7 @@ const ResultScreen = ({
 
         .placeholder-text {
           color: rgba(255, 255, 255, 0.35);
-          font-size: 13px;
+          font-size: 14px;
         }
 
         .btn-retry-inline {
@@ -2394,7 +2394,7 @@ const ResultScreen = ({
           border-radius: 0;
           background: none;
           cursor: pointer;
-          font-size: 13px;
+          font-size: 14px;
           font-weight: 600;
           display: flex;
           align-items: center;

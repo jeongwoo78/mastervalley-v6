@@ -247,7 +247,7 @@ const menuStyles = `
     justify-content: center;
     flex-shrink: 0;
   }
-  .menu-label { flex: 1; color: #e5e5e5; font-size: 15px; }
+  .menu-label { flex: 1; color: #e5e5e5; font-size: 14px; }
   .menu-value { color: #555; font-size: 14px; margin-right: 4px; }
   .menu-chevron-svg {
     color: #333;

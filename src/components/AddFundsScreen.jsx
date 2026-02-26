@@ -185,7 +185,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         }
 
         .pack-name {
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 600;
           color: #fff;
         }
@@ -200,7 +200,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         }
 
         .pack-desc {
-          font-size: 12px;
+          font-size: 13px;
           color: #666;
           line-height: 1.5;
         }
@@ -252,7 +252,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
 
         .info-text p {
           color: rgba(255,255,255,0.4);
-          font-size: 12px;
+          font-size: 11px;
           margin: 4px 0;
           display: flex;
           align-items: center;
@@ -272,7 +272,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
 
           .pack-price-btn {
             padding: 10px 14px;
-            font-size: 13px;
+            font-size: 14px;
           }
         }
       `}</style>

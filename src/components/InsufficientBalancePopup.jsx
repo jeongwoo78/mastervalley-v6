@@ -88,7 +88,7 @@ const InsufficientBalancePopup = ({
 
         .popup-info {
           color: #888;
-          font-size: 15px;
+          font-size: 14px;
           margin-bottom: 24px;
           line-height: 1.7;
         }
@@ -118,7 +118,7 @@ const InsufficientBalancePopup = ({
         }
 
         .rec-label {
-          font-size: 12px;
+          font-size: 11px;
           color: #888;
           margin-bottom: 6px;
         }
@@ -138,7 +138,7 @@ const InsufficientBalancePopup = ({
         .popup-btn {
           padding: 16px;
           border-radius: 14px;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 600;
           cursor: pointer;
           border: none;
@@ -181,7 +181,7 @@ const InsufficientBalancePopup = ({
 
           .popup-btn {
             padding: 14px;
-            font-size: 15px;
+            font-size: 14px;
           }
         }
       `}</style>

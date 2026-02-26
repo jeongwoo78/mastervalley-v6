@@ -462,7 +462,7 @@ const MasterChat = ({
         .system-message {
           background: rgba(255, 255, 255, 0.05);
           color: rgba(255,255,255,0.5);
-          font-size: 12px;
+          font-size: 11px;
           padding: 6px 14px;
           border-radius: 20px;
           text-align: center;
