@@ -192,7 +192,7 @@ export const ui = {
 
   // ===== Subscription Info (Track A - 탐색 화면용) =====
   subscriptionInfo: {
-    line1: '정기 구독은 필요 없습니다',
+    line1: '정기 구독은 없습니다',
     line2: '필요할 때만 결제하세요'
   },
 

@@ -20,24 +20,6 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
     }
   };
 
-  // SVG Icons
-  const InfoIcon = () => (
-    <svg className="info-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
-      stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10"/>
-      <path d="M12 16v-4"/>
-      <circle cx="12" cy="8" r="0.5" fill="rgba(255,255,255,0.4)"/>
-    </svg>
-  );
-
-  const CheckIcon = () => (
-    <svg className="info-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
-      stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-      <polyline points="22 4 12 14.01 9 11.01"/>
-    </svg>
-  );
-
   return (
     <div className="funds-screen">
       {/* Header */}
@@ -87,8 +69,7 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
 
       {/* Info Text */}
       <div className="info-text">
-        <p><InfoIcon />{t.info1}</p>
-        <p><CheckIcon />{t.info2}</p>
+        <p>{t.info1} · {t.info2}</p>
       </div>
 
       <style>{`
@@ -252,16 +233,8 @@ const AddFundsScreen = ({ onBack, userCredits = 2.50, onPurchase, lang = 'en' })
         .info-text p {
           color: rgba(255,255,255,0.35);
           font-size: 14px;
-          margin: 2px 0;
+          margin: 0;
           line-height: 1.6;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-        }
-
-        .info-icon {
-          flex-shrink: 0;
         }
 
         /* Mobile */

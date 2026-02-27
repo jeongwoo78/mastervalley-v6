@@ -91,8 +91,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
 
       {/* Subscription Info */}
       <div className="subscription-info">
-        <p>{ui.subscriptionInfo.line1}</p>
-        <p>{ui.subscriptionInfo.line2}</p>
+        <p>{ui.subscriptionInfo.line1}. {ui.subscriptionInfo.line2}.</p>
       </div>
 
       <style>{`
@@ -264,8 +263,7 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         .subscription-info p {
           color: rgba(255,255,255,0.35);
           font-size: 14px;
-          margin: 2px 0;
-          line-height: 1.6;
+          margin: 0;
         }
 
         /* Mobile Responsive */

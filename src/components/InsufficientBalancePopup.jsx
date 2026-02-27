@@ -180,8 +180,7 @@ const InsufficientBalancePopup = ({
         .popup-sub-info p {
           color: rgba(255,255,255,0.35);
           font-size: 14px;
-          margin: 2px 0;
-          line-height: 1.6;
+          margin: 0;
         }
 
         /* Mobile */
