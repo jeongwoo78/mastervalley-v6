@@ -186,8 +186,14 @@ export const ui = {
     tagStarter: '지금 시작하세요',
     tagStandard: '당신의 아름다움을 공유하세요',
     tagPlus: '영감을 얻으세요',
-    info1: '잔액은 만료되지 않습니다',
-    info2: '구독 필요 없음'
+    info1: '정기 결제 없음',
+    info2: '잔액 만기 없음'
+  },
+
+  // ===== Subscription Info (Track A - 탐색 화면용) =====
+  subscriptionInfo: {
+    line1: '정기 구독은 필요 없습니다',
+    line2: '필요할 때만 결제하세요'
   },
 
   // ===== InsufficientBalance =====

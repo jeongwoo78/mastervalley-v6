@@ -186,8 +186,14 @@ export const ui = {
     tagStarter: 'Get started',
     tagStandard: 'Share your beauty',
     tagPlus: 'Get inspired',
-    info1: 'Balance never expires',
-    info2: 'No subscription required'
+    info1: 'No recurring payments',
+    info2: 'Balance never expires'
+  },
+
+  // ===== Subscription Info (Track A - 탐색 화면용) =====
+  subscriptionInfo: {
+    line1: 'No subscription needed',
+    line2: 'Pay only when you need'
   },
 
   // ===== InsufficientBalance =====

@@ -11,14 +11,15 @@ const InsufficientBalancePopup = ({
   lang = 'en'
 }) => {
 
-  const t = getUi(lang).insufficientBalance;
+  const ui = getUi(lang);
+  const t = ui.insufficientBalance;
+  const tFunds = ui.addFunds;
 
-  // 추천 팩 계산 (최소 금액 충족하는 가장 저렴한 팩)
+  // 추천 팩 계산 (AddFundsScreen 팩 기준: Starter/Standard/Plus)
   const getRecommendedPack = () => {
     const needed = requiredAmount - currentBalance;
-    if (needed <= 0.99) return { name: 'Mini', price: 0.99 };
-    if (needed <= 5.24) return { name: 'Basic', price: 4.99 };
-    if (needed <= 10.99) return { name: 'Standard', price: 9.99 };
+    if (needed <= 0.99) return { name: 'Starter', price: 0.99 };
+    if (needed <= 4.99) return { name: 'Standard', price: 4.99 };
     return { name: 'Plus', price: 49.99 };
   };
 
@@ -47,6 +48,12 @@ const InsufficientBalancePopup = ({
           <button className="popup-btn secondary" onClick={onClose}>
             {t.maybeLater}
           </button>
+        </div>
+        
+        {/* Subscription Info */}
+        <div className="popup-sub-info">
+          <p>{tFunds.info1}</p>
+          <p>{tFunds.info2}</p>
         </div>
       </div>
 
@@ -163,6 +170,18 @@ const InsufficientBalancePopup = ({
         .popup-btn.secondary:hover {
           border-color: #666;
           color: #aaa;
+        }
+
+        .popup-sub-info {
+          text-align: center;
+          padding-top: 16px;
+        }
+
+        .popup-sub-info p {
+          color: rgba(255,255,255,0.35);
+          font-size: 14px;
+          margin: 2px 0;
+          line-height: 1.6;
         }
 
         /* Mobile */

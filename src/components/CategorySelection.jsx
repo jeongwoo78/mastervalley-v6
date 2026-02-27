@@ -89,6 +89,12 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
         ))}
       </div>
 
+      {/* Subscription Info */}
+      <div className="subscription-info">
+        <p>{ui.subscriptionInfo.line1}</p>
+        <p>{ui.subscriptionInfo.line2}</p>
+      </div>
+
       <style>{`
         .main-screen {
           min-height: 100vh;
@@ -247,6 +253,19 @@ const CategorySelection = ({ onSelect, onGallery, onMenu, onAddFunds, userCredit
           font-size: 20px;
           font-weight: 300;
           padding-right: 4px;
+        }
+
+        /* Subscription Info */
+        .subscription-info {
+          text-align: center;
+          padding: 16px 24px 20px;
+        }
+
+        .subscription-info p {
+          color: rgba(255,255,255,0.35);
+          font-size: 14px;
+          margin: 2px 0;
+          line-height: 1.6;
         }
 
         /* Mobile Responsive */

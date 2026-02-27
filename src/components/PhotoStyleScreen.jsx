@@ -401,6 +401,12 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
         </div>
       </div>
 
+      {/* Subscription Info */}
+      <div className="subscription-info">
+        <p>{ui.subscriptionInfo.line1}</p>
+        <p>{ui.subscriptionInfo.line2}</p>
+      </div>
+
       <style>{`
         .style-screen {
           min-height: 100vh;
@@ -677,6 +683,19 @@ const PhotoStyleScreen = ({ mainCategory, onBack, onSelect, userCredits = 0, lan
           font-size: 11px;
           margin-top: 2px;
           text-shadow: 0 1px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5);
+        }
+
+        /* Subscription Info */
+        .subscription-info {
+          text-align: center;
+          padding: 16px 24px 20px;
+        }
+
+        .subscription-info p {
+          color: rgba(255,255,255,0.35);
+          font-size: 14px;
+          margin: 2px 0;
+          line-height: 1.6;
         }
 
         @media (max-width: 400px) {
